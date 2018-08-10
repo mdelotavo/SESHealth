@@ -1,4 +1,4 @@
-package yourteamnumber.seshealthpatient.Fragments;
+package team7.seshealthpatient.Fragments;
 
 
 import android.os.Bundle;
@@ -7,15 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import yourteamnumber.seshealthpatient.R;
+import team7.seshealthpatient.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecordVideoFragment extends Fragment {
+public class MapFragment extends Fragment {
 
 
-    public RecordVideoFragment() {
+    public MapFragment() {
         // Required empty public constructor
     }
 
@@ -24,7 +24,7 @@ public class RecordVideoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_record_video, container, false);
+        return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
 }

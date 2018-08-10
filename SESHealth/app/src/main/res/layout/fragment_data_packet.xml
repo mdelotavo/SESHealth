@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="yourteamnumber.seshealthpatient.Fragments.DataPacketFragment">
+    tools:context="team7.seshealthpatient.Fragments.DataPacketFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

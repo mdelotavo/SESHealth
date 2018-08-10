@@ -1,4 +1,4 @@
-package yourteamnumber.seshealthpatient;
+package team7.seshealthpatient;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

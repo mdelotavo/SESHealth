@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="yourteamnumber.seshealthpatient.Activities.MainActivity">
+    tools:context="team7.seshealthpatient.Activities.MainActivity">
 
 
     <!-- This layout will be the one in charge of loading the different fragments-->

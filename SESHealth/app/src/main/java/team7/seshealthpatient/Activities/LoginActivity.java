@@ -1,4 +1,4 @@
-package yourteamnumber.seshealthpatient.Activities;
+package team7.seshealthpatient.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +10,7 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import yourteamnumber.seshealthpatient.R;
+import team7.seshealthpatient.R;
 
 /**
  * Class: LoginActivity
