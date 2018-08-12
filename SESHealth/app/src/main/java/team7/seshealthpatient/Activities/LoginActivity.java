@@ -88,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         setTitle(R.string.login_activity_title);
         progressDialog = new ProgressDialog(this);
 
+        //Placeholder image
         String logoName = "health_icon_1.png";
         try {
             InputStream stream = getAssets().open(logoName);
