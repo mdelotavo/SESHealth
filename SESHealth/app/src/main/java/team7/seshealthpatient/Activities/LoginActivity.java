@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -64,6 +65,9 @@ public class LoginActivity extends AppCompatActivity {
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
      * (in this case it will get casted to Edit Text)
      */
+    @BindView(R.id.logoMain)
+    ImageView logoMain;
+
     @BindView(R.id.usernameET)
     EditText usernameEditText;
 
@@ -73,10 +77,10 @@ public class LoginActivity extends AppCompatActivity {
      */
     @BindView(R.id.passwordET)
     EditText passwordEditText;
-
-    @BindView(R.id.logoMain)
-    ImageView logoMain;
-
+    
+    @BindView(R.id.forgotPwTV)
+    TextView forgotPwText;
+    
     @BindView(R.id.google_btn)
     SignInButton mGoogleBtn;
 
@@ -180,6 +184,12 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.register_btn)
     public void goToRegisterPage() {
 
+    }
+
+    @OnClick(R.id.forgotPwTV)
+    public void navigateToForgotPw() {
+        //To navigate to forgot Password Activity
+        Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.google_btn)
