@@ -1,16 +1,30 @@
 package team7.seshealthpatient.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.renderscript.ScriptGroup;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import team7.seshealthpatient.R;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Class: LoginActivity
@@ -25,7 +39,8 @@ import team7.seshealthpatient.R;
  * <p>
  */
 public class LoginActivity extends AppCompatActivity {
-
+    private FirebaseAuth firebaseAuth;
+    private ProgressDialog progressDialog;
 
     /**
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
@@ -41,6 +56,9 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.passwordET)
     EditText passwordEditText;
 
+    @BindView(R.id.logoMain)
+    ImageView logoMain;
+
     /**
      * It is helpful to create a tag for every activity/fragment. It will be easier to understand
      * log messages by having different tags on different places.
@@ -55,13 +73,30 @@ public class LoginActivity extends AppCompatActivity {
         // You need this line on your activity so Butter Knife knows what Activity-View we are referencing
         ButterKnife.bind(this);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() != null) {
+            finish();
+            //determine whether it should be getAppContext or 'this'
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
+
         // A reference to the toolbar, that way we can modify it as we please
         Toolbar toolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(toolbar);
 
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
         setTitle(R.string.login_activity_title);
+        progressDialog = new ProgressDialog(this);
 
+        String logoName = "health_icon_1.png";
+        try {
+            InputStream stream = getAssets().open(logoName);
+            Drawable d = Drawable.createFromStream(stream, null);
+            logoMain.setImageDrawable(d);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, e.toString());
+        }
     }
 
 
@@ -70,12 +105,35 @@ public class LoginActivity extends AppCompatActivity {
      * declaration of the function, making our life way easier.
      */
     @OnClick(R.id.login_btn)
-    public void LogIn() {
+    public void logIn() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        // TODO: For now, the login button will simply print on the console the username/password and let you in
-        // TODO: It is up to you guys to implement a proper login system
+        progressDialog.setMessage("Logging in, please wait...");
+        progressDialog.show();
+
+        //Will need to work on logging in with username as well
+        firebaseAuth.signInWithEmailAndPassword(username, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            // FirebaseUser user = firebaseAuth.getCurrentUser();
+                            // updateUI(user);
+
+                            Toast.makeText(LoginActivity.this, "Success, user loggin in!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            // updateUI(null);
+                        }
+                    }
+                });
 
         // Having a tag, and the name of the function on the console message helps allot in
         // knowing where the message should appear.
@@ -83,8 +141,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
         // Start a new activity
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
 

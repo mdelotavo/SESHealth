@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1084987187210",
+    "firebase_url": "https://seshealth-f42f4.firebaseio.com",
+    "project_id": "seshealth-f42f4",
+    "storage_bucket": "seshealth-f42f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084987187210:android:e235a9214edfa332",
+        "android_client_info": {
+          "package_name": "team7.seshealthpatient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084987187210-q9bjakp1s1iaj0a224si4phno0m7pfuh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAleOwvGzTS2XACMvnRUgQyM7lBq6e0FVg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

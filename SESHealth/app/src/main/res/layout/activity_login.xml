@@ -15,6 +15,12 @@
         app:titleTextColor="@color/whiteColor"
         />
 
+    <ImageView
+        android:id="@+id/logoMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/usernameTV" />
 
     <TextView
         android:id="@+id/usernameTV"
@@ -68,6 +74,35 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         android:text="@string/log_in_txt" />
+
+
+    <TextView
+        android:id="@+id/registerTV"
+        style="@style/LoginStyles"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_btn"
+        android:text="Don't have an account?" />
+
+    <Button
+        android:id="@+id/register_btn"
+        style="@style/LoginStyles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/registerTV"
+        android:layout_centerHorizontal="true"
+        android:text="Join Now" />
+
+    <Button
+        android:id="@+id/register_google_btn"
+        style="@style/LoginStyles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/register_btn"
+        android:layout_centerHorizontal="true"
+        android:text="Join with Google" />
+
 
 
 </RelativeLayout>
