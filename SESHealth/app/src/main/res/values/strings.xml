@@ -5,8 +5,8 @@
     <string name="password_txt">Password</string>
     <string name="log_in_txt">Log In</string>
     <string name="login_activity_title">Log In</string>
+    <string name="createAccount_activity_title">Create Account</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="patient_information">Patient Information</string>
@@ -18,4 +18,5 @@
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
+    <string name="progressDialog_login">Logging in, please wait...</string>
 </resources>

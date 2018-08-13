@@ -9,7 +9,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,8 +61,6 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 1;
 
-
-
     /**
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
      * (in this case it will get casted to Edit Text)
@@ -68,20 +68,20 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.logoMain)
     ImageView logoMain;
 
-    @BindView(R.id.usernameET)
+    @BindView(R.id.loginUsernameET)
     EditText usernameEditText;
 
     /**
      * If you want to know more about Butter Knife, please, see the link I left at the build.gradle
      * file.
      */
-    @BindView(R.id.passwordET)
+    @BindView(R.id.loginPasswordET)
     EditText passwordEditText;
     
     @BindView(R.id.forgotPwTV)
     TextView forgotPwText;
     
-    @BindView(R.id.google_btn)
+    @BindView(R.id.googleBtn)
     SignInButton mGoogleBtn;
 
     /**
@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                 @Override
                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                    Toast.makeText(LoginActivity.this, "You got an erorr", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Oops an error", Toast.LENGTH_SHORT).show();
                 }
             })
             .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -145,33 +145,27 @@ public class LoginActivity extends AppCompatActivity {
      * See how Butter Knife also lets us add an on click event by adding this annotation before the
      * declaration of the function, making our life way easier.
      */
-    @OnClick(R.id.login_btn)
+    @OnClick(R.id.loginBtn)
     public void logIn() {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        progressDialog.setMessage("Logging in, please wait...");
+        progressDialog.setMessage(getString(R.string.progressDialog_login));
         progressDialog.show();
 
-        //Will need to work on logging in with username as well
+        //Will need to work on logging in with username as well + credential validation
         mAuth.signInWithEmailAndPassword(username, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            // FirebaseUser user = mAuth.getCurrentUser();
-                            // updateUI(user);
-
-                            Toast.makeText(LoginActivity.this, "Success, user logging in!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            // updateUI(null);
                         }
                     }
                 });
@@ -181,9 +175,11 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "LogIn: username: " + username + " password: " + password);
     }
 
-    @OnClick(R.id.register_btn)
+    @OnClick(R.id.navToRegisterBtn)
     public void goToRegisterPage() {
-
+        Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
+        finish();
+        startActivity(new Intent(this, CreateAccountActivity.class));
     }
 
     @OnClick(R.id.forgotPwTV)
@@ -192,9 +188,9 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.google_btn)
+    @OnClick(R.id.googleBtn)
     public void signInWithGoogle() {
-        progressDialog.setMessage("Logging in, please wait...");
+        progressDialog.setMessage(getString(R.string.progressDialog_login));
         progressDialog.show();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);

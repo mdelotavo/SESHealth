@@ -1,47 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/login_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="team7.seshealthpatient.Activities.LoginActivity">
+    tools:context=".Activities.CreateAccountActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/login_toolbar"
+        android:id="@+id/createAccount_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimaryDark"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:titleTextColor="@color/whiteColor" />
 
-    <ImageView
-        android:id="@+id/logoMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/login_toolbar"
-        android:layout_marginTop="50dp" />
-
     <EditText
-        android:id="@+id/loginUsernameET"
+        android:id="@+id/createUsernameET"
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logoMain"
+        android:layout_below="@+id/createAccount_toolbar"
         android:layout_centerVertical="true"
         android:layout_marginTop="25dp"
         android:layout_marginHorizontal="25dp"
         android:hint="@string/email_example_com"
         android:inputType="textEmailAddress" />
 
-
     <EditText
-        android:id="@+id/loginPasswordET"
+        android:id="@+id/createPasswordET"
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loginUsernameET"
+        android:layout_below="@id/createUsernameET"
         android:layout_centerVertical="true"
         android:layout_marginTop="25dp"
         android:layout_marginHorizontal="25dp"
@@ -49,53 +39,41 @@
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/loginBtn"
+        android:id="@+id/createAccountBtn"
         style="@style/LoginStyles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loginPasswordET"
+        android:layout_below="@id/createPasswordET"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/log_in_txt" />
 
     <TextView
-        android:id="@+id/forgotPwTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Forgot your password?"
-        android:layout_below="@id/loginBtn"
-        android:layout_centerHorizontal="true"
-        />
-
-
-    <TextView
-        android:id="@+id/navToRegisterTV"
+        android:id="@+id/navToLoginTV"
         style="@style/LoginStyles"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/navToRegisterBtn"
-        android:text="Don't have an account?" />
+        android:layout_above="@id/navToLoginBtn"
+        android:text="Already have an account?" />
 
     <Button
-        android:id="@+id/navToRegisterBtn"
+        android:id="@+id/navToLoginBtn"
         style="@style/LoginStyles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/googleBtn"
+        android:layout_above="@id/google_btn"
         android:layout_centerHorizontal="true"
-        android:text="Join Now" />
-
+        android:text="Go to Login" />
 
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/googleBtn"
+        android:id="@+id/google_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true">
 
     </com.google.android.gms.common.SignInButton>
-
 
 
 </RelativeLayout>

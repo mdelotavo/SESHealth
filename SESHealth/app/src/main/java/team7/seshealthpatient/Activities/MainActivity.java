@@ -52,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private DrawerLayout mDrawerLayout;
 
-    /**
-     * A reference to the toolbar
-     */
     private Toolbar toolbar;
 
     /**
