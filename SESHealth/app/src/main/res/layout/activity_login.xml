@@ -24,7 +24,7 @@
         android:layout_marginTop="50dp" />
 
     <EditText
-        android:id="@+id/loginUsernameET"
+        android:id="@+id/loginEmailET"
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loginUsernameET"
+        android:layout_below="@id/loginEmailET"
         android:layout_centerVertical="true"
         android:layout_marginTop="25dp"
         android:layout_marginHorizontal="25dp"

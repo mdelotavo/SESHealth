@@ -14,11 +14,9 @@ import team7.seshealthpatient.R;
  */
 public class HeartRateFragment extends Fragment {
 
-
     public HeartRateFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

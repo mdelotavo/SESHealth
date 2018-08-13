@@ -18,5 +18,8 @@
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
-    <string name="progressDialog_login">Logging in, please wait...</string>
+    <string name="login_progressDialog">Logging in, please wait...</string>
+    <string name="emailCheck_toast">Please fill in a valid email</string>
+    <string name="passwordCheck_toast">Please fill in your password</string>
+    <string name="passwordCheckLength_toast">Password must be 6 or more chararacters</string>
 </resources>

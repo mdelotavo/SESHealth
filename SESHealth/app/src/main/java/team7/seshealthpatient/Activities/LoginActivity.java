@@ -36,7 +36,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.io.IOException;
@@ -68,15 +67,15 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.logoMain)
     ImageView logoMain;
 
-    @BindView(R.id.loginUsernameET)
-    EditText usernameEditText;
+    @BindView(R.id.loginEmailET)
+    EditText loginEmailET;
 
     /**
      * If you want to know more about Butter Knife, please, see the link I left at the build.gradle
      * file.
      */
     @BindView(R.id.loginPasswordET)
-    EditText passwordEditText;
+    EditText loginPasswordET;
     
     @BindView(R.id.forgotPwTV)
     TextView forgotPwText;
@@ -96,13 +95,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // You need this line on your activity so Butter Knife knows what Activity-View we are referencing
         ButterKnife.bind(this);
-
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
-            finish();
-            // determine whether it should be getAppContext or 'this'
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        }
 
         // A reference to the toolbar, that way we can modify it as we please
         Toolbar toolbar = findViewById(R.id.login_toolbar);
@@ -128,7 +121,6 @@ public class LoginActivity extends AppCompatActivity {
             .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
             .build();
 
-
         //Placeholder image (update with logo when we have one)
         String logoName = "health_icon_1.png";
         try {
@@ -141,29 +133,64 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(mAuth.getCurrentUser() != null) {
+            finish();
+            // determine whether it should be getAppContext or 'this'
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
+    }
+
+    @OnClick(R.id.navToRegisterBtn)
+    public void navToRegisterPage() {
+        finish();
+        startActivity(new Intent(this, CreateAccountActivity.class));
+    }
+
+    @OnClick(R.id.forgotPwTV)
+    public void navToForgotPw() {
+        //To navigate to forgot Password Activity
+        Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+
     /**
      * See how Butter Knife also lets us add an on click event by adding this annotation before the
      * declaration of the function, making our life way easier.
      */
     @OnClick(R.id.loginBtn)
     public void logIn() {
-        String username = usernameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        String email = loginEmailET.getText().toString();
+        String password = loginPasswordET.getText().toString();
+        if(!isValidEmail(email)) {
+            Toast.makeText(this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(password)) {
+            Toast.makeText(this, getString(R.string.passwordCheck_toast), Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        progressDialog.setMessage(getString(R.string.progressDialog_login));
+        progressDialog.setMessage(getString(R.string.login_progressDialog));
         progressDialog.show();
 
         //Will need to work on logging in with username as well + credential validation
-        mAuth.signInWithEmailAndPassword(username, password)
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithEmail:sucess");
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Log.d(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -172,45 +199,19 @@ public class LoginActivity extends AppCompatActivity {
 
         // Having a tag, and the name of the function on the console message helps allot in
         // knowing where the message should appear.
-        Log.d(TAG, "LogIn: username: " + username + " password: " + password);
-    }
-
-    @OnClick(R.id.navToRegisterBtn)
-    public void goToRegisterPage() {
-        Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
-        finish();
-        startActivity(new Intent(this, CreateAccountActivity.class));
-    }
-
-    @OnClick(R.id.forgotPwTV)
-    public void navigateToForgotPw() {
-        //To navigate to forgot Password Activity
-        Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
-    }
-
-    @OnClick(R.id.googleBtn)
-    public void signInWithGoogle() {
-        progressDialog.setMessage(getString(R.string.progressDialog_login));
-        progressDialog.show();
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        Log.d(TAG, "username: " + email + " password: " + password);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                // ...
+                Log.d(TAG, "Google sign in failed", e);
             }
         }
     }
@@ -227,12 +228,18 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.d(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
 
+    @OnClick(R.id.googleBtn)
+    public void signInWithGoogle() {
+        progressDialog.setMessage(getString(R.string.login_progressDialog));
+        progressDialog.show();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
 }

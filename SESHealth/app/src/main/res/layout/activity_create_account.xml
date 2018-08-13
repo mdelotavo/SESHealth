@@ -15,7 +15,7 @@
         app:titleTextColor="@color/whiteColor" />
 
     <EditText
-        android:id="@+id/createUsernameET"
+        android:id="@+id/createEmailET"
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/createUsernameET"
+        android:layout_below="@id/createEmailET"
         android:layout_centerVertical="true"
         android:layout_marginTop="25dp"
         android:layout_marginHorizontal="25dp"
@@ -46,7 +46,7 @@
         android:layout_below="@id/createPasswordET"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="@string/log_in_txt" />
+        android:text="Create Account" />
 
     <TextView
         android:id="@+id/navToLoginTV"
