@@ -188,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:sucess");
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            finish();
                             startActivity(intent);
                         } else {
                             Log.d(TAG, "signInWithEmail:failure", task.getException());
@@ -226,6 +227,7 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredential:success");
+                            finish();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
                             Log.d(TAG, "signInWithCredential:failure", task.getException());

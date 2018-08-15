@@ -72,7 +72,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     @OnClick(R.id.createAccountBtn)
     public void createAccount() {
-        Toast.makeText(this, "Creating account", Toast.LENGTH_SHORT).show();
         String email = createEmailET.getText().toString().trim();
         String password = createPasswordET.getText().toString().trim();
         if(!isValidEmail(email)) {
@@ -83,7 +82,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.passwordCheckLength_toast), Toast.LENGTH_SHORT).show();
             return;
         }
-        progressDialog.setMessage(getString(R.string.log_in_txt));
+        progressDialog.setMessage(getString(R.string.create_account_txt));
         progressDialog.show();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -92,6 +91,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
+                            finish();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());

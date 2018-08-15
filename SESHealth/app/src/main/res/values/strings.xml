@@ -22,4 +22,5 @@
     <string name="emailCheck_toast">Please fill in a valid email</string>
     <string name="passwordCheck_toast">Please fill in your password</string>
     <string name="passwordCheckLength_toast">Password must be 6 or more chararacters</string>
+    <string name="create_account_txt">Creating account</string>
 </resources>
