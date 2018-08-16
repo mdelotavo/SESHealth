@@ -3,6 +3,8 @@ package team7.seshealthpatient.Activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,10 +15,13 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 
-
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
@@ -44,6 +49,11 @@ import team7.seshealthpatient.R;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+    private FirebaseUser fireBaseUser;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+
+
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
      * build a menu from this site:
@@ -69,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP
+        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, LOGOUT
     }
 
     /**
@@ -83,11 +93,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
+        fireBaseUser = mAuth.getCurrentUser();
+
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
 
         // go look for the main drawer layout
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() == null) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                }
+            }
+        };
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -151,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
                                     currentState = MenuStates.NAVIGATION_MAP;
                                 }
                                 break;
+                            case R.id.logout:
+                                if (currentState != MenuStates.LOGOUT) {
+                                    mAuth.signOut();
+                                }
+                                break;
                         }
 
                         return true;
@@ -190,6 +218,12 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.fragment_container, new PatientInformationFragment());
         ft.commit();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 
     /**

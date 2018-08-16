@@ -58,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private GoogleApiClient mGoogleApiClient;
     private GoogleSignInClient mGoogleSignInClient;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
 
     /**
@@ -97,6 +98,16 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
 
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() != null && firebaseAuth.getCurrentUser().isEmailVerified()) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
+            }
+        };
+
         // A reference to the toolbar, that way we can modify it as we please
         Toolbar toolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(toolbar);
@@ -134,13 +145,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        if(mAuth.getCurrentUser() != null) {
-            finish();
-            // determine whether it should be getAppContext or 'this'
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        }
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @OnClick(R.id.navToRegisterBtn)

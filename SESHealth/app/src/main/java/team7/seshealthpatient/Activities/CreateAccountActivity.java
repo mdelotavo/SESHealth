@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.w3c.dom.Text;
 
@@ -28,6 +28,7 @@ import team7.seshealthpatient.R;
 
 public class CreateAccountActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
 
@@ -47,26 +48,32 @@ public class CreateAccountActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
 
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() != null && firebaseAuth.getCurrentUser().isEmailVerified()) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
+            }
+        };
+
         toolbar = findViewById(R.id.createAccount_toolbar);
         toolbar.setTitle(getString(R.string.createAccount_activity_title));
         progressDialog = new ProgressDialog(this);
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        if(mAuth.getCurrentUser() != null) {
-            finish();
-            // determine whether it should be getAppContext or 'this'
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        }
+        mAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    public boolean isValidEmail(CharSequence target) {
+    private boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 
-    public boolean isValidPassword(CharSequence target) {
+    private boolean isValidPassword(CharSequence target) {
         return target.length() >= 6;
     }
 
@@ -91,12 +98,28 @@ public class CreateAccountActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            sendVerificationEmail();
+                            Toast.makeText(CreateAccountActivity.this, R.string.email_authentication_message, Toast.LENGTH_LONG).show();
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(CreateAccountActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void sendVerificationEmail() {
+        mAuth.getCurrentUser()
+                .sendEmailVerification()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Authentication email sent successfully " + task.getResult());
+                        } else {
+                            Log.d(TAG, "Authentication email failed to send " + task.getException());
+                            Toast.makeText(CreateAccountActivity.this, "Email failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

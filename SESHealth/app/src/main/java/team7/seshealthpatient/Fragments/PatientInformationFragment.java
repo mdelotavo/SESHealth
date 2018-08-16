@@ -14,11 +14,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import team7.seshealthpatient.Activities.LoginActivity;
 import team7.seshealthpatient.R;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Class: PatientInformationFragment
@@ -32,11 +28,6 @@ import com.google.firebase.auth.FirebaseUser;
 
  */
 public class PatientInformationFragment extends Fragment {
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser fireBaseUser;
-
-    @BindView(R.id.logout_btn)
-    Button logout_btn;
 
     // Note how Butter Knife also works on Fragments, but here it is a little different
     @BindView(R.id.blank_frag_msg)
@@ -50,16 +41,9 @@ public class PatientInformationFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firebaseAuth = FirebaseAuth.getInstance();
-        fireBaseUser = firebaseAuth.getCurrentUser();
-
-        if(firebaseAuth.getCurrentUser() == null) {
-            //Check if correct context is being passed...
-            startActivity(new Intent(getContext(), LoginActivity.class));
-        }
 
         // Note the use of getActivity() to reference the Activity holding this fragment
-        getActivity().setTitle("Welcome " + fireBaseUser.getEmail());
+        getActivity().setTitle("Welcome User");
     }
 
     @Override
@@ -80,13 +64,5 @@ public class PatientInformationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
         blankFragmentTV.setText("Welcome to this fragment");
-    }
-
-    @OnClick(R.id.logout_btn)
-    public void logout() {
-        firebaseAuth.signOut();
-        if(firebaseAuth.getCurrentUser() == null) {
-            startActivity(new Intent(getContext(), LoginActivity.class));
-        }
     }
 }

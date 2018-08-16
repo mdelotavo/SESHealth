@@ -16,9 +16,11 @@
         <item
             android:id="@+id/nav_sendfile"
             android:title="@string/send_local_file" />
-
         <item
             android:id="@+id/nav_map"
             android:title="@string/facilities_map" />
+        <item
+            android:id="@+id/logout"
+            android:title="@string/logout" />
     </group>
 </menu>
