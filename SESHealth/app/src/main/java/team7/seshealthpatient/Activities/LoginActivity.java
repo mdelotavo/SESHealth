@@ -1,8 +1,11 @@
 package team7.seshealthpatient.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
 import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -12,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,9 +38,12 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.io.IOException;
@@ -101,7 +109,8 @@ public class LoginActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() != null && firebaseAuth.getCurrentUser().isEmailVerified()) {
+                if(firebaseAuth.getCurrentUser() != null && isUserVerified()) {
+                    mAuth.removeAuthStateListener(mAuthStateListener);
                     finish();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
@@ -150,30 +159,65 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthStateListener);
     }
 
+    // Navigation method to 'CreateAccountActivity'
     @OnClick(R.id.navToRegisterBtn)
     public void navToRegisterPage() {
+        mAuth.removeAuthStateListener(mAuthStateListener);
         finish();
         startActivity(new Intent(this, CreateAccountActivity.class));
     }
 
+    // Navigation method to 'ForgotPasswordFragment'
     @OnClick(R.id.forgotPwTV)
     public void navToForgotPw() {
         //To navigate to forgot Password Activity
         Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isValidEmail(CharSequence target) {
+    private boolean isValidEmail(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+
+    private boolean isUserVerified() {
+        if(mAuth.getCurrentUser().isEmailVerified()) {
+            Log.d(TAG,mAuth.getCurrentUser().getEmail() + " has been verified");
+            mAuth.getCurrentUser().reload();
+            return true;
+        } else {
+            Log.d(TAG,mAuth.getCurrentUser().getEmail() + " has not been verified");
+            Snackbar.make(findViewById(R.id.login_layout),
+                    mAuth.getCurrentUser().getEmail() + " has not been verified yet, click the link in your email and then reload the app",
+                    Snackbar.LENGTH_LONG)
+                    .setAction("Reload", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d(TAG, "Reload button clicked");
+                            mAuth.getCurrentUser().reload();
+                        }
+                    }).show();
+            return false;
+        }
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if(view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     /**
      * See how Butter Knife also lets us add an on click event by adding this annotation before the
      * declaration of the function, making our life way easier.
      */
+    // Authenticates the email and password with Firebase
     @OnClick(R.id.loginBtn)
     public void logIn() {
         String email = loginEmailET.getText().toString();
         String password = loginPasswordET.getText().toString();
+        hideKeyboard();
+
         if(!isValidEmail(email)) {
             Toast.makeText(this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
             return;
@@ -193,13 +237,15 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithEmail:sucess");
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            finish();
-                            startActivity(intent);
+                            Log.d(TAG, "signInWithEmail: sucess");
+                            if(isUserVerified()) {
+                                mAuth.removeAuthStateListener(mAuthStateListener);
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            }
                         } else {
-                            Log.d(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Log.d(TAG, "signInWithEmail: failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -210,6 +256,16 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "username: " + email + " password: " + password);
     }
 
+    // The initial method called when clicking 'sign in with google' and verifies the google account
+    @OnClick(R.id.googleBtn)
+    public void signInWithGoogle() {
+        progressDialog.setMessage(getString(R.string.login_progressDialog));
+        progressDialog.show();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    // Makes a call to Google to verify the google account and then passes that to FirebaseAuthWithGoogle
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -224,31 +280,23 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Makes a call to firebase to sign in with the google account passed in
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        } else {
-                            Log.d(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                        }
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    progressDialog.dismiss();
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithCredential:success");
+                    } else {
+                        Log.d(TAG, "signInWithCredential:failure", task.getException());
+                        Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                     }
-                });
-    }
 
-    @OnClick(R.id.googleBtn)
-    public void signInWithGoogle() {
-        progressDialog.setMessage(getString(R.string.login_progressDialog));
-        progressDialog.show();
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+                }
+            });
     }
 }

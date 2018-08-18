@@ -24,5 +24,8 @@
     <string name="passwordCheckLength_toast">Password must be 6 or more chararacters</string>
     <string name="create_account_txt">Creating account</string>
     <string name="logout">Logout</string>
-    <string name="email_authentication_message">An email has been sent to your account, please click on the link to use the application</string>
+    <string name="email_authentication_message_success">A verification email has been sent to your account. Please click on the link sent to verify your account</string>
+    <string name="email_authentication_message_failure">Failed to create account</string>
+    <string name="exception_email_already_exists">The email address is already in use by another account</string>
+    <string name="exception_network_connectivity">Network connectivity issues, please check your internet connection</string>
 </resources>
