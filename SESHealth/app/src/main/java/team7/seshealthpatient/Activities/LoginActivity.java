@@ -162,8 +162,6 @@ public class LoginActivity extends AppCompatActivity {
     // Navigation method to 'CreateAccountActivity'
     @OnClick(R.id.navToRegisterBtn)
     public void navToRegisterPage() {
-        mAuth.removeAuthStateListener(mAuthStateListener);
-        finish();
         startActivity(new Intent(this, CreateAccountActivity.class));
     }
 
@@ -187,14 +185,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG,mAuth.getCurrentUser().getEmail() + " has not been verified");
             Snackbar.make(findViewById(R.id.login_layout),
                     mAuth.getCurrentUser().getEmail() + " has not been verified yet, click the link in your email and then reload the app",
-                    Snackbar.LENGTH_LONG)
-                    .setAction("Reload", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Log.d(TAG, "Reload button clicked");
-                            mAuth.getCurrentUser().reload();
-                        }
-                    }).show();
+                    Snackbar.LENGTH_LONG).show();
             return false;
         }
     }
@@ -276,6 +267,8 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 Log.d(TAG, "Google sign in failed", e);
+                Toast.makeText(this, getString(R.string.google_authentication_message_failure), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
         }
     }
@@ -293,7 +286,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithCredential:success");
                     } else {
                         Log.d(TAG, "signInWithCredential:failure", task.getException());
-                        Snackbar.make(findViewById(R.id.login_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
                     }
 
                 }

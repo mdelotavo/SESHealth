@@ -54,17 +54,8 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/navToLoginBtn"
-        android:text="Already have an account?" />
-
-    <Button
-        android:id="@+id/navToLoginBtn"
-        style="@style/LoginStyles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_above="@id/google_btn"
-        android:layout_centerHorizontal="true"
-        android:text="Go to Login" />
+        android:text="Already have an account?" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/google_btn"
