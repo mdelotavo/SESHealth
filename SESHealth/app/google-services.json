@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "597370876312",
+    "firebase_url": "https://seshealth-ddac7.firebaseio.com",
+    "project_id": "seshealth-ddac7",
+    "storage_bucket": "seshealth-ddac7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597370876312:android:e235a9214edfa332",
+        "android_client_info": {
+          "package_name": "team7.seshealthpatient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597370876312-3vs0i9b3t0u2fbre89h7apcq3pn3edk1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "team7.seshealthpatient",
+            "certificate_hash": "1c885c2ca96d03c42cebb755905a1647cdb03235"
+          }
+        },
+        {
+          "client_id": "597370876312-ismaetgblgj6c0hiu3ei1n94lb9kgava.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_RRtq-1gFa--njA05gmVK_TcAB__W3uw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597370876312-ismaetgblgj6c0hiu3ei1n94lb9kgava.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

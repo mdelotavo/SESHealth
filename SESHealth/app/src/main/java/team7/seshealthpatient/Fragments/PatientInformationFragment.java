@@ -1,16 +1,19 @@
 package team7.seshealthpatient.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import team7.seshealthpatient.R;
 
 /**
@@ -26,7 +29,6 @@ import team7.seshealthpatient.R;
  */
 public class PatientInformationFragment extends Fragment {
 
-
     // Note how Butter Knife also works on Fragments, but here it is a little different
     @BindView(R.id.blank_frag_msg)
     TextView blankFragmentTV;
@@ -39,9 +41,9 @@ public class PatientInformationFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO: Instead of hardcoding the title perhaps take the user name from somewhere?
+
         // Note the use of getActivity() to reference the Activity holding this fragment
-        getActivity().setTitle("Username Information");
+        getActivity().setTitle("Welcome User");
     }
 
     @Override
