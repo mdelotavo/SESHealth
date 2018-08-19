@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SESHealthPatient</string>
     <string name="username_txt">Username</string>
-    <string name="email_example_com">Email</string>
+    <string name="email_txt">Email</string>
     <string name="password_txt">Password</string>
     <string name="log_in_txt">Log In</string>
     <string name="login_activity_title">Log In</string>
@@ -26,6 +26,8 @@
     <string name="logout">Logout</string>
     <string name="email_authentication_message_success">A verification email has been sent to your account. Please click on the link sent to verify your account</string>
     <string name="email_authentication_message_failure">Failed to create account</string>
+    <string name="email_success">Email sent, please check your inbox</string>
+    <string name="email_failure">Email failed to send, please try againt</string>
     <string name="google_authentication_message_failure">An error occurred when authenticating with Google</string>
     <string name="exception_email_already_exists">The email address is already in use by another account</string>
     <string name="exception_network_connectivity">Network connectivity issues, please check your internet connection</string>

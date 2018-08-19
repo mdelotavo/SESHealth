@@ -183,23 +183,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isUserVerified() {
-        if(mAuth.getCurrentUser().isEmailVerified()) {
-            Log.d(TAG,mAuth.getCurrentUser().getEmail() + " has been verified");
-            mAuth.getCurrentUser().reload();
-            return true;
-        } else {
-            Log.d(TAG,mAuth.getCurrentUser().getEmail() + " has not been verified");
-            Snackbar.make(findViewById(R.id.login_layout),
-                    "Account has not been verified yet, check your inbox or resend a verification email", 5000)
-                    .setAction("Resend", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Log.d(TAG, "Send verification button clicked");
-                            sendVerificationEmail();
-                        }
-                    }).show();
-            return false;
+        if(mAuth.getCurrentUser() != null) {
+            String email = mAuth.getCurrentUser().getEmail();
+            if(mAuth.getCurrentUser().isEmailVerified()) {
+                Log.d(TAG,email + " has been verified");
+                mAuth.getCurrentUser().reload();
+                return true;
+            } else {
+                Log.d(TAG,email + " has not been verified");
+                Snackbar.make(findViewById(R.id.login_layout),
+                        email + " has not been verified yet, check your inbox or resend a verification email", 5000)
+                        .setAction("Resend", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Log.d(TAG, "Send verification button clicked");
+                                sendVerificationEmail();
+                            }
+                        }).show();
+                return false;
+            }
         }
+        return false;
     }
 
     // Repeated code from CreateAccountActivity.... Sends a verification email to logged in user
