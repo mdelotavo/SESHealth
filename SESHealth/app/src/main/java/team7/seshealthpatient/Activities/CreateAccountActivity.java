@@ -1,5 +1,7 @@
 package team7.seshealthpatient.Activities;
 
+import team7.seshealthpatient.R;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,23 +21,16 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseNetworkException;
-import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
-
-import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import team7.seshealthpatient.R;
-
 
 public class CreateAccountActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
 
@@ -44,7 +39,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     @BindView(R.id.createPasswordET)
     EditText createPasswordET;
-
 
     private static String TAG = "CreateAccountActivity";
 

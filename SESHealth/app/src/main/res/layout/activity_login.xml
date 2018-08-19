@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/logoMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/login_toolbar"
         android:layout_marginTop="50dp" />
@@ -64,6 +64,7 @@
         android:layout_height="wrap_content"
         android:text="Forgot your password?"
         android:layout_below="@id/loginBtn"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         />
 
