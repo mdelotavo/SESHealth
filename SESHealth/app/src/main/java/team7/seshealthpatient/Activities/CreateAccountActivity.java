@@ -24,6 +24,11 @@ import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,11 +39,17 @@ public class CreateAccountActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
 
-    @BindView(R.id.createEmailET)
-    EditText createEmailET;
+    @BindView(R.id.createAccEmailET)
+    EditText createAccEmailET;
 
-    @BindView(R.id.createPasswordET)
-    EditText createPasswordET;
+    @BindView(R.id.createAccPasswordET)
+    EditText createAccPasswordET;
+
+    @BindView(R.id.createAccFirstNameET)
+    EditText createAccFirstName;
+
+    @BindView(R.id.createAccLastNameET)
+    EditText createAccLastName;
 
     private static String TAG = "CreateAccountActivity";
 
@@ -92,10 +103,10 @@ public class CreateAccountActivity extends AppCompatActivity {
         };
     }
 
-    @OnClick(R.id.createAccountBtn)
+    @OnClick(R.id.createAccBtn)
     public void createAccount() {
-        String email = createEmailET.getText().toString().trim();
-        String password = createPasswordET.getText().toString().trim();
+        String email = createAccEmailET.getText().toString().trim();
+        String password = createAccPasswordET.getText().toString().trim();
         hideKeyboard();
 
         if(!isValidEmail(email)) {
@@ -115,12 +126,34 @@ public class CreateAccountActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail: success");
-                            sendVerificationEmail();
+                            addUserInformation();
                         } else {
                             checkExceptions(task);
                         }
                     }
             });
+    }
+
+    private void addUserInformation() {
+        String userId = mAuth.getCurrentUser().getUid();
+        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+        String firstName = createAccFirstName.getText().toString().trim();
+        String lastName = createAccLastName.getText().toString().trim();
+        Map newPost = new HashMap();
+        newPost.put("firstName", firstName);
+        newPost.put("lastName", lastName);
+
+        currentUser.setValue(newPost).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    sendVerificationEmail();
+                } else {
+                    Log.d(TAG, "Setting user information failed" + task.getException());
+                    Toast.makeText(CreateAccountActivity.this, "Failed to add user information", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void sendVerificationEmail() {
@@ -132,8 +165,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "Authentication email sent successfully " + task.getResult());
                         Toast.makeText(CreateAccountActivity.this, R.string.email_authentication_message_success, Toast.LENGTH_LONG).show();
-                        createEmailET.setText("");
-                        createPasswordET.setText("");
                         finish();
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     } else {

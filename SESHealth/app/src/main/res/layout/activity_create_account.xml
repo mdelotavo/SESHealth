@@ -15,7 +15,7 @@
         app:titleTextColor="@color/whiteColor" />
 
     <EditText
-        android:id="@+id/createEmailET"
+        android:id="@+id/createAccEmailET"
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,23 +27,45 @@
         android:inputType="textEmailAddress" />
 
     <EditText
-        android:id="@+id/createPasswordET"
+        android:id="@+id/createAccPasswordET"
         style="@style/LoginStyles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/createEmailET"
+        android:layout_below="@id/createAccEmailET"
         android:layout_centerVertical="true"
         android:layout_marginTop="25dp"
         android:layout_marginHorizontal="25dp"
         android:hint="@string/password_txt"
         android:inputType="textPassword" />
 
+    <EditText
+        android:id="@+id/createAccFirstNameET"
+        style="@style/LoginStyles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createAccPasswordET"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginHorizontal="25dp"
+        android:hint="First Name" />
+
+    <EditText
+        android:id="@+id/createAccLastNameET"
+        style="@style/LoginStyles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createAccFirstNameET"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginHorizontal="25dp"
+        android:hint="Last Name" />
+
     <Button
-        android:id="@+id/createAccountBtn"
+        android:id="@+id/createAccBtn"
         style="@style/LoginStyles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/createPasswordET"
+        android:layout_below="@id/createAccLastNameET"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="Create Account" />
