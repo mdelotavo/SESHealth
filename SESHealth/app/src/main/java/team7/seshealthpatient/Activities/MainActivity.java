@@ -19,11 +19,17 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser fireBaseUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
 
     /**
@@ -97,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         fireBaseUser = mAuth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(fireBaseUser.getUid());
 
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
@@ -269,6 +279,22 @@ public class MainActivity extends AppCompatActivity {
         }else{
             this.finishAffinity();
         }
+    }
 
+    public void setTVValues(final TextView textView, String child) {
+        //fireBaseUser
+        //database
+        //reference
+
+        reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                textView.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }

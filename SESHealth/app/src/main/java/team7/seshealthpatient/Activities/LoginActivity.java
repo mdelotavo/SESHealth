@@ -51,6 +51,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -303,6 +305,9 @@ public class LoginActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
+
+        String[] children = {"fullName", "phoneNo", "birthDate",
+                "allergies", "medication", "gender"};
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

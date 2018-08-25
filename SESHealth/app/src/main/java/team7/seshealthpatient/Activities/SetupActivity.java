@@ -72,7 +72,7 @@ public class SetupActivity extends AppCompatActivity{
     public void setUserInfo() {
         if (checkPassed()) {
             String[] children = {"fullName", "phoneNo", "birthDate",
-                    "allergies", "medication", "gender"};
+                    "allergies", "medication"};
 
             EditText[] childrenET = {nameET,phoneET,bDET,allergiesET,medicationET};
 

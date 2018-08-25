@@ -14,6 +14,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
 
 /**
@@ -29,13 +30,14 @@ import team7.seshealthpatient.R;
  */
 public class PatientInformationFragment extends Fragment {
 
-    // Note how Butter Knife also works on Fragments, but here it is a little different
-    @BindView(R.id.blank_frag_msg)
-    TextView blankFragmentTV;
-
+    TextView nameTV;
+    TextView phoneTV;
+    TextView dobTV;
+    TextView allergiesTV;
+    TextView medicationTV;
+    TextView genderTV;
 
     public PatientInformationFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -52,6 +54,23 @@ public class PatientInformationFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_patient_information, container, false);
 
+        nameTV = v.findViewById(R.id.nameTV);
+        phoneTV = v.findViewById(R.id.phoneTV);
+        dobTV = v.findViewById(R.id.dobTV);
+        allergiesTV = v.findViewById(R.id.allergiesTV);
+        medicationTV = v.findViewById(R.id.medicationTV);
+        genderTV = v.findViewById(R.id.genderTV);
+
+        TextView[] textViews =
+                {nameTV, phoneTV, dobTV, allergiesTV, medicationTV, genderTV};
+
+        String[] children = {"fullName", "phoneNo", "birthDate",
+                "allergies", "medication", "gender"};
+
+        setTVValues(textViews, children);
+
+        nameTV.setText("b");
+
         // Note how we are telling butter knife to bind during the on create view method
         ButterKnife.bind(this, v);
 
@@ -63,6 +82,10 @@ public class PatientInformationFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
-        blankFragmentTV.setText("Welcome to this fragment");
+    }
+
+    public void setTVValues(TextView[] textViews, String[] children) {
+        for (int i = 0; i < textViews.length; i++)
+        ((MainActivity)getActivity()).setTVValues(textViews[i], children[i]);
     }
 }
