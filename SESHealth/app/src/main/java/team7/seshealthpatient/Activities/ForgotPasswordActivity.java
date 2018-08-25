@@ -7,6 +7,7 @@ import team7.seshealthpatient.R;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -74,22 +75,28 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     public void sendPasswordResetEmail() {
         String email = forgotPasswordET.getText().toString().trim();
         hideKeyboard();
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-        mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.dismiss();
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "Email successfully sent");
-                            Toast.makeText(ForgotPasswordActivity.this, getString(R.string.email_success), Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Toast.makeText(ForgotPasswordActivity.this, getString(R.string.email_success), Toast.LENGTH_SHORT).show();
+        if(isValidEmail(email)) {
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+            mAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.dismiss();
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Email successfully sent");
+                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.email_success), Toast.LENGTH_SHORT).show();
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            } else {
+                                Toast.makeText(ForgotPasswordActivity.this, getString(R.string.email_failure), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+
+        } else {
+            Toast.makeText(ForgotPasswordActivity.this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
+        }
 
     }
 

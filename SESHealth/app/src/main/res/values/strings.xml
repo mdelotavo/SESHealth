@@ -21,13 +21,13 @@
     <string name="login_progressDialog">Logging in, please wait...</string>
     <string name="emailCheck_toast">Please fill in a valid email</string>
     <string name="passwordCheck_toast">Please fill in your password</string>
-    <string name="passwordCheckLength_toast">Password must be 6 or more chararacters</string>
+    <string name="passwordCheckLength_toast">Password must be 6 or more characters</string>
     <string name="create_account_txt">Creating account</string>
     <string name="logout">Logout</string>
     <string name="email_authentication_message_success">A verification email has been sent to your account. Please click on the link sent to verify your account</string>
     <string name="email_authentication_message_failure">Failed to create account</string>
     <string name="email_success">Email sent, please check your inbox</string>
-    <string name="email_failure">Email failed to send, please try againt</string>
+    <string name="email_failure">Email failed to send, please try again</string>
     <string name="google_authentication_message_failure">An error occurred when authenticating with Google</string>
     <string name="exception_email_already_exists">The email address is already in use by another account</string>
     <string name="exception_network_connectivity">Network connectivity issues, please check your internet connection</string>
