@@ -32,6 +32,10 @@ import team7.seshealthpatient.R;
 
 public class SetupActivity extends AppCompatActivity{
 
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+    private FirebaseUser user;
+
     @BindView(R.id.nameET)
     EditText nameET;
 
@@ -55,6 +59,11 @@ public class SetupActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(user.getUid());
+
         ButterKnife.bind(this);
         textChangedListeners();
     }
@@ -62,11 +71,6 @@ public class SetupActivity extends AppCompatActivity{
     @OnClick(R.id.setupMain)
     public void setUserInfo() {
         if (checkPassed()) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference reference = database.getReference("Users").child(user.getUid());
-
             String[] children = {"fullName", "phoneNo", "birthDate",
                     "allergies", "medication", "gender"};
 
@@ -82,6 +86,7 @@ public class SetupActivity extends AppCompatActivity{
 
             Intent intent = new Intent(SetupActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 

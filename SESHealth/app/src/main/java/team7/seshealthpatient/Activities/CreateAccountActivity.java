@@ -24,6 +24,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -38,6 +40,11 @@ public class CreateAccountActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
+
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+    private FirebaseUser user;
+
 
     @BindView(R.id.createEmailET)
     EditText createEmailET;
@@ -122,11 +129,14 @@ public class CreateAccountActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail: success");
                             sendVerificationEmail();
+                            setSetupFlag();
                         } else {
                             checkExceptions(task);
                         }
                     }
             });
+
+
     }
 
     private void sendVerificationEmail() {
@@ -148,5 +158,14 @@ public class CreateAccountActivity extends AppCompatActivity {
                     }
                 }
             });
+    }
+
+    private void setSetupFlag() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(user.getUid());
+
+        reference.child("setupComplete").setValue(false);
     }
 }

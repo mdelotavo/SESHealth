@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -71,6 +73,9 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
+    FirebaseUser user;
+    FirebaseDatabase database;
+    DatabaseReference reference;
 
     /**
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
@@ -114,7 +119,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null && isUserVerified()) {
                     mAuth.removeAuthStateListener(mAuthStateListener);
-                    finish();
                     setupCompletedCheck();
                 }
             }
@@ -234,7 +238,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail: sucess");
                             if (isUserVerified()) {
                                 mAuth.removeAuthStateListener(mAuthStateListener);
-                                finish();
                                 setupCompletedCheck();
                             }
                         } else {
@@ -297,23 +300,35 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void setupCompletedCheck() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if ((boolean)dataSnapshot.getValue())
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                else
-                    startActivity(new Intent(LoginActivity.this, SetupActivity.class));
+                if ((boolean) dataSnapshot.getValue()) {
+                    startMain();
+                    finish();
                 }
+                else {
+                    startSetup();
+                    finish();
+                }
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
+
+    public void startMain() {
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+    }
+
+    public void startSetup() {
+        startActivity(new Intent(LoginActivity.this, SetupActivity.class));
+    }
 }
+
