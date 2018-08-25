@@ -38,13 +38,16 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,10 +88,10 @@ public class LoginActivity extends AppCompatActivity {
      */
     @BindView(R.id.loginPasswordET)
     EditText loginPasswordET;
-    
+
     @BindView(R.id.forgotPwTV)
     TextView forgotPwText;
-    
+
     @BindView(R.id.googleBtn)
     SignInButton mGoogleBtn;
 
@@ -109,10 +112,10 @@ public class LoginActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() != null && isUserVerified()) {
+                if (firebaseAuth.getCurrentUser() != null && isUserVerified()) {
                     mAuth.removeAuthStateListener(mAuthStateListener);
                     finish();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    setupCompletedCheck();
                 }
             }
         };
@@ -132,14 +135,14 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
-            .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                @Override
-                public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                    Toast.makeText(LoginActivity.this, "Oops an error", Toast.LENGTH_SHORT).show();
-                }
-            })
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .build();
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Toast.makeText(LoginActivity.this, "Oops an error", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
         //Placeholder image (update with logo when we have one)
         String logoName = "health_icon_1.png";
@@ -177,12 +180,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isUserVerified() {
-        if(mAuth.getCurrentUser().isEmailVerified()) {
-            Log.d(TAG,mAuth.getCurrentUser().getEmail() + " has been verified");
+        if (mAuth.getCurrentUser().isEmailVerified()) {
+            Log.d(TAG, mAuth.getCurrentUser().getEmail() + " has been verified");
             mAuth.getCurrentUser().reload();
             return true;
         } else {
-            Log.d(TAG,mAuth.getCurrentUser().getEmail() + " has not been verified");
+            Log.d(TAG, mAuth.getCurrentUser().getEmail() + " has not been verified");
             Snackbar.make(findViewById(R.id.login_layout),
                     mAuth.getCurrentUser().getEmail() + " has not been verified yet, click the link in your email and then reload the app",
                     Snackbar.LENGTH_LONG).show();
@@ -192,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
-        if(view != null) {
+        if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
@@ -209,11 +212,11 @@ public class LoginActivity extends AppCompatActivity {
         String password = loginPasswordET.getText().toString();
         hideKeyboard();
 
-        if(!isValidEmail(email)) {
+        if (!isValidEmail(email)) {
             Toast.makeText(this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, getString(R.string.passwordCheck_toast), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -229,10 +232,10 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail: sucess");
-                            if(isUserVerified()) {
+                            if (isUserVerified()) {
                                 mAuth.removeAuthStateListener(mAuthStateListener);
                                 finish();
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                setupCompletedCheck();
                             }
                         } else {
                             Log.d(TAG, "signInWithEmail: failure", task.getException());
@@ -278,18 +281,39 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    progressDialog.dismiss();
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "signInWithCredential:success");
-                    } else {
-                        Log.d(TAG, "signInWithCredential:failure", task.getException());
-                        Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
-                    }
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithCredential:success");
+                        } else {
+                            Log.d(TAG, "signInWithCredential:failure", task.getException());
+                            Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
+                        }
 
+                    }
+                });
+    }
+
+    public void setupCompletedCheck() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if ((boolean)dataSnapshot.getValue())
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                else
+                    startActivity(new Intent(LoginActivity.this, SetupActivity.class));
                 }
-            });
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }
