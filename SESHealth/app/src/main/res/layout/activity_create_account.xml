@@ -38,14 +38,21 @@
                 android:hint="@string/email_txt"
                 android:inputType="textEmailAddress" />
 
-            <EditText
-                android:id="@+id/createAccPasswordET"
-                style="@style/LoginStyles"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:hint="@string/password_txt"
-                android:inputType="textPassword" />
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/createAccPasswordET"
+                    style="@style/LoginStyles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:hint="@string/password_txt"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <EditText
                 android:id="@+id/createAccFirstNameET"
@@ -84,7 +91,6 @@
                     android:hint="Select Date" />
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -96,18 +102,14 @@
                     style="@style/LoginStyles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
                     android:hint="Gender" />
 
                 <Spinner
                     android:id="@+id/createAccGenderSpinner"
                     style="@style/LoginStyles"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp" />
-
+                    android:layout_height="wrap_content" />
             </LinearLayout>
-
 
             <Button
                 android:id="@+id/createAccBtn"
@@ -118,13 +120,13 @@
                 android:layout_gravity="center_horizontal"
                 android:text="Create Account" />
 
-
             <TextView
                 android:id="@+id/navToLoginTV"
                 style="@style/LoginStyles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
                 android:text="Already have an account?" />
 
             <com.google.android.gms.common.SignInButton
@@ -132,11 +134,8 @@
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content">
-
             </com.google.android.gms.common.SignInButton>
-
 
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>
