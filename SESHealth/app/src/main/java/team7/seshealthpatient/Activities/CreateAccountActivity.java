@@ -2,9 +2,12 @@ package team7.seshealthpatient.Activities;
 
 import team7.seshealthpatient.R;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +18,11 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +34,11 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,18 +50,25 @@ public class CreateAccountActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @BindView(R.id.createAccEmailET)
-    EditText createAccEmailET;
+    EditText createAccEmail;
 
     @BindView(R.id.createAccPasswordET)
-    EditText createAccPasswordET;
+    EditText createAccPassword;
 
     @BindView(R.id.createAccFirstNameET)
     EditText createAccFirstName;
 
     @BindView(R.id.createAccLastNameET)
     EditText createAccLastName;
+
+    @BindView(R.id.createAccGenderSpinner)
+    Spinner createAccGender;
+
+    @BindView(R.id.createAccDOBDateTV)
+    TextView createAccDOB;
 
     private static String TAG = "CreateAccountActivity";
 
@@ -69,6 +88,53 @@ public class CreateAccountActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
 
         progressDialog = new ProgressDialog(this);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.genders, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        createAccGender.setAdapter(adapter);
+
+        // Listener for the Date Picker
+        createAccDOB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                int day, month, year;
+                day = 1;
+                month = 0;
+                year = cal.get(Calendar.YEAR);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        CreateAccountActivity.this,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        mDateSetListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month++;
+                String dayString = day + "";
+                String monthString = month + "";
+
+                // Do this to keep the format consistent
+                if(dayString.length() == 1) {
+                    dayString = "0" + dayString;
+                }
+                if(monthString.length() == 1) {
+                    monthString = "0" + monthString;
+                }
+
+                String currentDateString = dayString + "/" + monthString + "/" + year;
+                Log.d(TAG, "Logged date as: " + currentDateString);
+                createAccDOB.setText(currentDateString);
+            }
+        };
     }
 
     @Override
@@ -103,24 +169,45 @@ public class CreateAccountActivity extends AppCompatActivity {
         };
     }
 
-    @OnClick(R.id.createAccBtn)
-    public void createAccount() {
-        String email = createAccEmailET.getText().toString().trim();
-        String password = createAccPasswordET.getText().toString().trim();
-        hideKeyboard();
-
+    private boolean checkAllFields() {
+        String email = createAccEmail.getText().toString().trim();
+        String password = createAccPassword.getText().toString().trim();
+        String firstName = createAccFirstName.getText().toString().trim();
+        String lastName = createAccLastName.getText().toString().trim();
+        String dob = createAccDOB.getText().toString().trim();
         if(!isValidEmail(email)) {
             Toast.makeText(this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         if(!isValidPassword(password)) {
             Toast.makeText(this, getString(R.string.passwordCheckLength_toast), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
-        progressDialog.setMessage(getString(R.string.create_account_txt));
-        progressDialog.show();
-        mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        if(firstName.length() == 0) {
+            Toast.makeText(this, R.string.firstNameCheckLength_toast, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(lastName.length() == 0) {
+            Toast.makeText(this, R.string.lastNameCheckLength_toast, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(dob.length() == 0) {
+            Toast.makeText(this, R.string.dateOfBirthCheckLength_toast, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    @OnClick(R.id.createAccBtn)
+    public void createAccount() {
+        String email = createAccEmail.getText().toString().trim();
+        String password = createAccPassword.getText().toString().trim();
+        hideKeyboard();
+        if(checkAllFields()) {
+            progressDialog.setMessage(getString(R.string.create_account_txt));
+            progressDialog.show();
+            mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
@@ -131,7 +218,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                             checkExceptions(task);
                         }
                     }
-            });
+                });
+        }
     }
 
     private void addUserInformation() {
@@ -139,9 +227,18 @@ public class CreateAccountActivity extends AppCompatActivity {
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
         String firstName = createAccFirstName.getText().toString().trim();
         String lastName = createAccLastName.getText().toString().trim();
+        String gender = createAccGender.getSelectedItem().toString();
+        Date dob = new Date();
+        try {
+            dob = new SimpleDateFormat("dd/mm/yyyy").parse(createAccDOB.getText().toString().trim());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Map newPost = new HashMap();
         newPost.put("firstName", firstName);
         newPost.put("lastName", lastName);
+        newPost.put("dob", dob);
+        newPost.put("gender", gender);
 
         currentUser.setValue(newPost).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

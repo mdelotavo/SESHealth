@@ -55,20 +55,61 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/createAccFirstNameET"
-        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
         android:layout_marginHorizontal="25dp"
         android:hint="Last Name" />
+
+    <TextView
+        android:id="@+id/createAccDOBTV"
+        style="@style/LoginStyles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/createAccLastNameET"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:hint="Date of Birth: " />
+
+    <TextView
+        android:id="@+id/createAccDOBDateTV"
+        style="@style/LoginStyles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/createAccLastNameET"
+        android:layout_marginTop="25dp"
+        android:hint="Select Date" />
+
+
+    <TextView
+        android:id="@+id/createAccGenderTV"
+        style="@style/LoginStyles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/createAccDOBDateTV"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:hint="Gender" />
+
+    <Spinner
+        android:id="@+id/createAccGenderSpinner"
+        style="@style/LoginStyles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/createAccDOBTV"
+        android:layout_marginTop="25dp"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/createAccBtn"
         style="@style/LoginStyles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/createAccLastNameET"
+        android:layout_below="@id/createAccGenderSpinner"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="25dp"
         android:text="Create Account" />
+
 
     <TextView
         android:id="@+id/navToLoginTV"
