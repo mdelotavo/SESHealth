@@ -116,6 +116,11 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
 
+        database = FirebaseDatabase.getInstance();
+        try {
+            database.setPersistenceEnabled(true);
+        } catch (Exception e){}
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -305,8 +310,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void setupCompletedCheck() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        database.setPersistenceEnabled(true);
+
         reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
         reference.keepSynced(true);
 
