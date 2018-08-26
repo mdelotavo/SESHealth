@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,12 +26,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseNetworkException;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -51,6 +61,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+    private GoogleApiClient mGoogleApiClient;
+    private static final int RC_SIGN_IN = 1;
+
 
     @BindView(R.id.createAccEmailET)
     EditText createAccEmail;
@@ -89,6 +102,23 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
 
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Toast.makeText(CreateAccountActivity.this, "Oops an error", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.genders, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -118,21 +148,21 @@ public class CreateAccountActivity extends AppCompatActivity {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month++;
-                String dayString = day + "";
-                String monthString = month + "";
+                    month++;
+                    String dayString = day + "";
+                    String monthString = month + "";
+                    // Do this to keep the format consistent
+                    if(dayString.length() == 1) {
+                        dayString = "0" + dayString;
+                    }
+                    if(monthString.length() == 1) {
+                        monthString = "0" + monthString;
+                    }
 
-                // Do this to keep the format consistent
-                if(dayString.length() == 1) {
-                    dayString = "0" + dayString;
-                }
-                if(monthString.length() == 1) {
-                    monthString = "0" + monthString;
-                }
+                    String currentDateString = dayString + "/" + monthString + "/" + year;
+                    Log.d(TAG, "Logged date as: " + currentDateString);
+                    createAccDOB.setText(currentDateString);
 
-                String currentDateString = dayString + "/" + monthString + "/" + year;
-                Log.d(TAG, "Logged date as: " + currentDateString);
-                createAccDOB.setText(currentDateString);
             }
         };
     }
@@ -140,6 +170,28 @@ public class CreateAccountActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    private boolean isValidDOB() {
+        Calendar cal = Calendar.getInstance();
+        String date = createAccDOB.getText().toString().trim();
+        if(date.length() == 0) {
+            return false;
+        }
+        int day = Integer.parseInt(date.substring(0,2));
+        int month = Integer.parseInt(date.substring(3,5));
+        int year = Integer.parseInt(date.substring(6,10));
+        Log.d(TAG, "IsValidDOB being called: " + day + "/" + month + "/" + year);
+
+        if(year <= cal.get(Calendar.YEAR)) {
+            if(month <= cal.get(Calendar.MONTH) + 1) {
+                if(day <= cal.get(Calendar.DAY_OF_MONTH)) {
+                    return true;
+                }
+            }
+        }
+        Toast.makeText(CreateAccountActivity.this, R.string.dateOfBirthCheckValidDate_toast, Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     private boolean isValidEmail(CharSequence target) {
@@ -175,6 +227,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         String firstName = createAccFirstName.getText().toString().trim();
         String lastName = createAccLastName.getText().toString().trim();
         String dob = createAccDOB.getText().toString().trim();
+        Log.d(TAG, "Check all fields being called");
         if(!isValidEmail(email)) {
             Toast.makeText(this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
             return false;
@@ -193,6 +246,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
         if(dob.length() == 0) {
             Toast.makeText(this, R.string.dateOfBirthCheckLength_toast, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(!isValidDOB()) {
             return false;
         }
         return true;
@@ -224,26 +280,25 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     private void addUserInformation() {
         String userId = mAuth.getCurrentUser().getUid();
-        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
         String firstName = createAccFirstName.getText().toString().trim();
         String lastName = createAccLastName.getText().toString().trim();
         String gender = createAccGender.getSelectedItem().toString();
-        Date dob = new Date();
-        try {
-            dob = new SimpleDateFormat("dd/mm/yyyy").parse(createAccDOB.getText().toString().trim());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Map newPost = new HashMap();
-        newPost.put("firstName", firstName);
-        newPost.put("lastName", lastName);
-        newPost.put("dob", dob);
-        newPost.put("gender", gender);
+        String date = createAccDOB.getText().toString().trim();
 
-        currentUser.setValue(newPost).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Map userProfile = new HashMap();
+        userProfile.put("firstName", firstName);
+        userProfile.put("lastName", lastName);
+        userProfile.put("dateOfBirth", date);
+        userProfile.put("gender", gender);
+        userProfile.put("phoneNumber", "");
+        userProfile.put("setupComplete", false);
+
+        currentUser.setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
+                    Log.d(TAG, "User's profile was successfully created");
                     sendVerificationEmail();
                 } else {
                     Log.d(TAG, "Setting user information failed" + task.getException());
@@ -270,5 +325,51 @@ public class CreateAccountActivity extends AppCompatActivity {
                     }
                 }
             });
+    }
+
+    // The initial method called when clicking 'sign in with google' and verifies the google account
+    @OnClick(R.id.createAccGoogleBtn)
+    public void signInWithGoogle() {
+        progressDialog.setMessage(getString(R.string.login_progressDialog));
+        progressDialog.show();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    // Makes a call to Google to verify the google account and then passes that to FirebaseAuthWithGoogle
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                Log.d(TAG, "Google sign in failed", e);
+                Toast.makeText(this, getString(R.string.google_authentication_message_failure), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        }
+    }
+
+    // Makes a call to firebase to sign in with the google account passed in
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithCredential:success");
+                        } else {
+                            Log.d(TAG, "signInWithCredential:failure", task.getException());
+                            Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
     }
 }

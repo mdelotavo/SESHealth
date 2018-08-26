@@ -66,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
     private GoogleApiClient mGoogleApiClient;
-    private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
 
@@ -89,9 +88,6 @@ public class LoginActivity extends AppCompatActivity {
     
     @BindView(R.id.forgotPwTV)
     TextView forgotPwText;
-    
-    @BindView(R.id.googleBtn)
-    SignInButton mGoogleBtn;
 
     /**
      * It is helpful to create a tag for every activity/fragment. It will be easier to understand
