@@ -129,7 +129,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail: success");
                             sendVerificationEmail();
-                            setSetupFlag();
                         } else {
                             checkExceptions(task);
                         }
@@ -158,14 +157,5 @@ public class CreateAccountActivity extends AppCompatActivity {
                     }
                 }
             });
-    }
-
-    private void setSetupFlag() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("Users").child(user.getUid());
-
-        reference.child("setupComplete").setValue(false);
     }
 }
