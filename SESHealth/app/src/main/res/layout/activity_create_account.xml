@@ -14,57 +14,128 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:titleTextColor="@color/whiteColor" />
 
-    <EditText
-        android:id="@+id/createEmailET"
-        style="@style/LoginStyles"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/createAccount_toolbar"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginHorizontal="25dp"
-        android:hint="@string/email_example_com"
-        android:inputType="textEmailAddress" />
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:scrollbars="none">
 
-    <EditText
-        android:id="@+id/createPasswordET"
-        style="@style/LoginStyles"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/createEmailET"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginHorizontal="25dp"
-        android:hint="@string/password_txt"
-        android:inputType="textPassword" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/createAccountBtn"
-        style="@style/LoginStyles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/createPasswordET"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Create Account" />
+            <EditText
+                android:id="@+id/createAccEmailET"
+                style="@style/LoginStyles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:hint="@string/email_txt"
+                android:inputType="textEmailAddress" />
 
-    <TextView
-        android:id="@+id/navToLoginTV"
-        style="@style/LoginStyles"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/google_btn"
-        android:text="Already have an account?" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true">
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/google_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+                <EditText
+                    android:id="@+id/createAccPasswordET"
+                    style="@style/LoginStyles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:hint="@string/password_txt"
+                    android:inputType="textPassword" />
 
-    </com.google.android.gms.common.SignInButton>
+            </android.support.design.widget.TextInputLayout>
 
+            <EditText
+                android:id="@+id/createAccFirstNameET"
+                style="@style/LoginStyles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:hint="First Name" />
 
+            <EditText
+                android:id="@+id/createAccLastNameET"
+                style="@style/LoginStyles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:hint="Last Name" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="25dp">
+
+                <TextView
+                    android:id="@+id/createAccDOBTV"
+                    style="@style/LoginStyles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Date of Birth: " />
+
+                <TextView
+                    android:id="@+id/createAccDOBDateTV"
+                    style="@style/LoginStyles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Select Date" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="25dp">
+
+                <TextView
+                    android:id="@+id/createAccGenderTV"
+                    style="@style/LoginStyles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Gender" />
+
+                <Spinner
+                    android:id="@+id/createAccGenderSpinner"
+                    style="@style/LoginStyles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/createAccBtn"
+                style="@style/LoginStyles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Create Account" />
+
+            <TextView
+                android:id="@+id/navToLoginTV"
+                style="@style/LoginStyles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:text="Already have an account?" />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/createAccGoogleBtn"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content">
+            </com.google.android.gms.common.SignInButton>
+
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

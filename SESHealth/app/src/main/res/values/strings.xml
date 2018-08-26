@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SESHealthPatient</string>
     <string name="username_txt">Username</string>
-    <string name="email_example_com">Email</string>
+    <string name="email_txt">Email</string>
     <string name="password_txt">Password</string>
     <string name="log_in_txt">Log In</string>
     <string name="login_activity_title">Log In</string>
@@ -21,13 +21,29 @@
     <string name="login_progressDialog">Logging in, please wait...</string>
     <string name="emailCheck_toast">Please fill in a valid email</string>
     <string name="passwordCheck_toast">Please fill in your password</string>
-    <string name="passwordCheckLength_toast">Password must be 6 or more chararacters</string>
+    <string name="passwordCheckLength_toast">Password must be 6 or more characters</string>
     <string name="create_account_txt">Creating account</string>
     <string name="logout">Logout</string>
     <string name="email_authentication_message_success">A verification email has been sent to your account. Please click on the link sent to verify your account</string>
     <string name="email_authentication_message_failure">Failed to create account</string>
+    <string name="email_success">Email sent, please check your inbox</string>
+    <string name="email_failure">Email failed to send, please try again</string>
     <string name="google_authentication_message_failure">An error occurred when authenticating with Google</string>
     <string name="exception_email_already_exists">The email address is already in use by another account</string>
     <string name="exception_network_connectivity">Network connectivity issues, please check your internet connection</string>
+    <string name="forgotPassword_activity_title">Forgot Password</string>
+    <string name="firstNameCheckLength_toast">Please fill in your first name</string>
+    <string name="lastNameCheckLength_toast">Please fill in your last name</string>
+    <string name="dateOfBirthCheckLength_toast">Please fill in your date of birth</string>
+    <string name="genderCheckLength_toast">Please fill in your gender</string>
+    <string name="dateOfBirthCheckValidDate_toast">Date of birth must not be later than today\'s date</string>
+
+
+    <string-array
+        name="genders">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Prefer Not To Say</item>
+    </string-array>
 
 </resources>

@@ -3,6 +3,7 @@ package team7.seshealthpatient.Activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -55,6 +56,8 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class: LoginActivity
@@ -72,7 +75,6 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressDialog progressDialog;
     private GoogleApiClient mGoogleApiClient;
-    private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
     FirebaseUser user;
@@ -157,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        //Placeholder image (update with logo when we have one)
+        // Placeholder image (update with logo when we have one)
         String logoName = "health_icon_1.png";
         try {
             InputStream stream = getAssets().open(logoName);
@@ -167,6 +169,12 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d(TAG, e.toString());
         }
+    }
+
+    // Using this so the activity isn't recreated on orientation change
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -184,8 +192,7 @@ public class LoginActivity extends AppCompatActivity {
     // Navigation method to 'ForgotPasswordFragment'
     @OnClick(R.id.forgotPwTV)
     public void navToForgotPw() {
-        //To navigate to forgot Password Activity
-        Toast.makeText(this, "Will navigate to forgot password!", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, ForgotPasswordActivity.class));
     }
 
     private boolean isValidEmail(CharSequence target) {
@@ -193,19 +200,50 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isUserVerified() {
-        if (mAuth.getCurrentUser().isEmailVerified()) {
-            Log.d(TAG, mAuth.getCurrentUser().getEmail() + " has been verified");
-            mAuth.getCurrentUser().reload();
-            return true;
-        } else {
-            Log.d(TAG, mAuth.getCurrentUser().getEmail() + " has not been verified");
-            Snackbar.make(findViewById(R.id.login_layout),
-                    mAuth.getCurrentUser().getEmail() + " has not been verified yet, click the link in your email and then reload the app",
-                    Snackbar.LENGTH_LONG).show();
-            return false;
+        if(mAuth.getCurrentUser() != null) {
+            String email = mAuth.getCurrentUser().getEmail();
+            if(mAuth.getCurrentUser().isEmailVerified()) {
+                Log.d(TAG,email + " has been verified");
+                mAuth.getCurrentUser().reload();
+                return true;
+            } else {
+                Log.d(TAG,email + " has not been verified");
+                Snackbar.make(findViewById(R.id.login_layout),
+                        email + " has not been verified yet, check your inbox or resend a verification email", 5000)
+                        .setAction("Resend", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Log.d(TAG, "Send verification button clicked");
+                                sendVerificationEmail();
+                            }
+                        }).show();
+                return false;
+            }
         }
+        return false;
     }
 
+    // Repeated code from CreateAccountActivity.... Sends a verification email to logged in user
+    private void sendVerificationEmail() {
+        mAuth.getCurrentUser()
+                .sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Authentication email sent successfully " + task.getResult());
+                            Toast.makeText(LoginActivity.this, R.string.email_authentication_message_success, Toast.LENGTH_LONG).show();
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        } else {
+                            Log.d(TAG, "Authentication email failed to send " + task.getException());
+                            Toast.makeText(LoginActivity.this, R.string.email_authentication_message_failure, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    // Hides the keyboard if a text field is focused
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -293,17 +331,16 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
-                        } else {
-                            Log.d(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
-                        }
-
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    progressDialog.dismiss();
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "signInWithCredential:success");
+                        addUserInformationForGoogle();
+                    } else {
+                        Log.d(TAG, "signInWithCredential:failure", task.getException());
+                        Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -344,6 +381,51 @@ public class LoginActivity extends AppCompatActivity {
 
     public void startSetup() {
         startActivity(new Intent(LoginActivity.this, SetupActivity.class));
+    }
+
+    // Checks if user authenticating with google has a 'profile' in the db, if not it will create one
+    private void addUserInformationForGoogle() {
+        String userId = mAuth.getCurrentUser().getUid();
+        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
+        String user = mAuth.getCurrentUser().getDisplayName().toString();
+        int whiteSpace = user.indexOf(" ");
+        final String firstName = user.substring(0, whiteSpace);
+        final String lastName = user.substring(whiteSpace+1, user.length());
+
+        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // ...
+                long count = dataSnapshot.getChildrenCount();
+                Log.d(TAG, "The row count for this profile is: " + count);
+                if(count == 0) {
+                    Map userProfile = new HashMap();
+                    userProfile.put("firstName", firstName);
+                    userProfile.put("lastName", lastName);
+                    userProfile.put("dateOfBirth", "");
+                    userProfile.put("gender", "");
+                    userProfile.put("phoneNumber", "");
+                    userProfile.put("setupComplete", false);
+
+                    currentUser.setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()) {
+                                Log.d(TAG, "User's profile was successfully created");
+                            } else {
+                                Log.d(TAG, "Setting user information failed" + task.getException());
+                                Toast.makeText(LoginActivity.this, "Failed to add user information", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "An error occurred with the database: " + databaseError);
+            }
+        });
     }
 }
 
