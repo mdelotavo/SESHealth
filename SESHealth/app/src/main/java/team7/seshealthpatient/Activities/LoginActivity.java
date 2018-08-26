@@ -120,6 +120,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null && isUserVerified()) {
+                    progressDialog.setMessage(getString(R.string.login_progressDialog));
+                    progressDialog.show();
                     mAuth.removeAuthStateListener(mAuthStateListener);
                     setupCompletedCheck();
                 }
@@ -304,7 +306,9 @@ public class LoginActivity extends AppCompatActivity {
     public void setupCompletedCheck() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
+        database.setPersistenceEnabled(true);
         reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
+        reference.keepSynced(true);
 
         String[] children = {"fullName", "phoneNo", "birthDate",
                 "allergies", "medication", "gender"};
@@ -315,9 +319,12 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     if ((boolean) dataSnapshot.getValue())
                         startMain();
+                    else
+                        startSetup();
                 } catch (Exception e) {
                     startSetup();
                 }
+                progressDialog.dismiss();
                 finish();
             }
 
