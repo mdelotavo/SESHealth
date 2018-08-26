@@ -41,8 +41,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -278,6 +281,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
     }
 
+    // Adds user information to Firebase Database attached to their account
     private void addUserInformation() {
         String userId = mAuth.getCurrentUser().getUid();
         DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
@@ -364,6 +368,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredential:success");
+                            addUserInformationForGoogle();
                         } else {
                             Log.d(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
@@ -371,5 +376,51 @@ public class CreateAccountActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    // Checks if user authenticating with google has a 'profile' in the db, if not it will create one
+    private void addUserInformationForGoogle() {
+        String userId = mAuth.getCurrentUser().getUid();
+        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
+
+        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // ...
+                long count = dataSnapshot.getChildrenCount();
+                Log.d(TAG, "The row count for this profile is: " + count);
+                if(count == 0) {
+                    Map userProfile = new HashMap();
+                    userProfile.put("firstName", "");
+                    userProfile.put("lastName", "");
+                    userProfile.put("dateOfBirth", "");
+                    userProfile.put("gender", "");
+                    userProfile.put("phoneNumber", "");
+                    userProfile.put("setupComplete", false);
+
+                    currentUser.setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()) {
+                                Log.d(TAG, "User's profile was successfully created");
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            } else {
+                                Log.d(TAG, "Setting user information failed" + task.getException());
+                                Toast.makeText(CreateAccountActivity.this, "Failed to add user information", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "An error occurred with the database: " + databaseError);
+            }
+        });
     }
 }
