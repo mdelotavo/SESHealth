@@ -338,6 +338,10 @@ public class LoginActivity extends AppCompatActivity {
     private void addUserInformationForGoogle() {
         String userId = mAuth.getCurrentUser().getUid();
         final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
+        String user = mAuth.getCurrentUser().getDisplayName().toString();
+        int whiteSpace = user.indexOf(" ");
+        final String firstName = user.substring(0, whiteSpace);
+        final String lastName = user.substring(whiteSpace+1, user.length());
 
         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -347,8 +351,8 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "The row count for this profile is: " + count);
                 if(count == 0) {
                     Map userProfile = new HashMap();
-                    userProfile.put("firstName", "");
-                    userProfile.put("lastName", "");
+                    userProfile.put("firstName", firstName);
+                    userProfile.put("lastName", lastName);
                     userProfile.put("dateOfBirth", "");
                     userProfile.put("gender", "");
                     userProfile.put("phoneNumber", "");
