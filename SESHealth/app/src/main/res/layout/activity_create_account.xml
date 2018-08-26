@@ -130,7 +130,7 @@
                 android:text="Already have an account?" />
 
             <com.google.android.gms.common.SignInButton
-                android:id="@+id/google_btn"
+                android:id="@+id/createAccGoogleBtn"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content">

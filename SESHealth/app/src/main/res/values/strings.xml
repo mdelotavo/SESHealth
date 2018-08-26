@@ -36,6 +36,7 @@
     <string name="lastNameCheckLength_toast">Please fill in your last name</string>
     <string name="dateOfBirthCheckLength_toast">Please fill in your date of birth</string>
     <string name="genderCheckLength_toast">Please fill in your gender</string>
+    <string name="dateOfBirthCheckValidDate_toast">Date of birth must not be later than today\'s date</string>
 
 
     <string-array
