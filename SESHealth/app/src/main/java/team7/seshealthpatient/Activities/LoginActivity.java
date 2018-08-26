@@ -312,9 +312,11 @@ public class LoginActivity extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if ((boolean) dataSnapshot.getValue()) {
-                    startMain();
-                    finish();
+                if (dataSnapshot != null) {
+                    if ((boolean) dataSnapshot.getValue()) {
+                        startMain();
+                        finish();
+                    }
                 }
                 else {
                     startSetup();
