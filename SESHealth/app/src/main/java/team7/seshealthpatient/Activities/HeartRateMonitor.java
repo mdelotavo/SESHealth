@@ -213,7 +213,7 @@ public class HeartRateMonitor extends Activity {
                 camera.setPreviewDisplay(previewHolder);
                 camera.setPreviewCallback(previewCallback);
             } catch (Throwable t) {
-                Log.e("PreviewDemo-surfaceCallback", "Exception in setPreviewDisplay()", t);
+                // Log.e("PreviewDemo-surfaceCallback", "Exception in setPreviewDisplay()", t);
             }
         }
 
