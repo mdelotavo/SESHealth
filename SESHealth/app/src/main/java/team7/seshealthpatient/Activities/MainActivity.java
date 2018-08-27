@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.id.nav_recordvideo:
                                 if (currentState != MenuStates.RECORD_VIDEO) {
-                                    ChangeFragment(new RecordVideoFragment());
+                                    ChangeFragment(new RecordVideoFragment(getApplicationContext()));
                                     currentState = MenuStates.RECORD_VIDEO;
                                 }
                                 break;
