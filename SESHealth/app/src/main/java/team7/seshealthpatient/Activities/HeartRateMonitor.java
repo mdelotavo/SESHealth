@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import team7.seshealthpatient.R;
+
 /**
  * This class extends Activity to handle a picture preview, process the preview
  * for a red values and determine a heart beat.
@@ -59,7 +61,7 @@ public class HeartRateMonitor extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.heartbeat_view);
 
         preview = (SurfaceView) findViewById(R.id.preview);
         previewHolder = preview.getHolder();
