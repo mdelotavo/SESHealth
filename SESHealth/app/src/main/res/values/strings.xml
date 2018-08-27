@@ -38,6 +38,8 @@
     <string name="genderCheckLength_toast">Please fill in your gender</string>
     <string name="dateOfBirthCheckValidDate_toast">Date of birth must not be later than today\'s date</string>
 
+    <string name="heartbeat_view">HeartRateMonitor</string>
+
 
     <string-array
         name="genders">
