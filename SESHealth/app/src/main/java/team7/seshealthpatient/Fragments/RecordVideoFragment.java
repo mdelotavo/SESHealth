@@ -40,6 +40,8 @@ import butterknife.OnClick;
 import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -100,9 +102,7 @@ public class RecordVideoFragment extends Fragment {
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         } else {
-            Toast.makeText(getActivity(),
-                    getString(R.string.cameraPermissionException),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -113,7 +113,7 @@ public class RecordVideoFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST_CODE) {
+        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             Uri videoUri = data.getData();
             Log.d(TAG, "onActivityResult: done taking a video");
             mVideoView.setVideoURI(videoUri);
