@@ -152,6 +152,7 @@ public class RecordVideoFragment extends Fragment {
         }
     }
 
+    // Gets the path from the URI so the video captured can be uploaded to Firebase Storage
     private String getRealPathFromURI(Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         CursorLoader loader = new CursorLoader(getActivity(), contentUri, proj, null, null, null);
@@ -163,6 +164,7 @@ public class RecordVideoFragment extends Fragment {
         return result;
     }
 
+    // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access. 
     public boolean checkPermissions(String permission){
         Log.d(TAG, "checkPermissions: checking permission: " + permission);
         int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
