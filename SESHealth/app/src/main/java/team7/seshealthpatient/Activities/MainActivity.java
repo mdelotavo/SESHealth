@@ -262,24 +262,4 @@ public class MainActivity extends AppCompatActivity {
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
-    /**
-     * Check a single permission is it has been verified
-     * @param permission
-     * @return
-     */
-    public boolean checkPermissions(String permission){
-        Log.d(TAG, "checkPermissions: checking permission: " + permission);
-
-        int permissionRequest = ActivityCompat.checkSelfPermission(MainActivity.this, permission);
-
-        if(permissionRequest != PackageManager.PERMISSION_GRANTED){
-            Log.d(TAG, "checkPermissions: \n Permission was not granted for: " + permission);
-            return false;
-        }
-        else{
-            Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
-            return true;
-        }
-    }
 }

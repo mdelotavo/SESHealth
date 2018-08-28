@@ -109,7 +109,7 @@ public class RecordVideoFragment extends Fragment {
         }
     }
 
-    // This is triggered after the user presses 'ok' after recording video
+    // This is triggered when the user presses 'ok' after recording video
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -128,7 +128,6 @@ public class RecordVideoFragment extends Fragment {
             }
 
             // FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
-
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             String[] uriPath = uri.split("/[a-zA-z0-9]");
             String uriString = uriPath[uriPath.length-1];
@@ -164,7 +163,7 @@ public class RecordVideoFragment extends Fragment {
         return result;
     }
 
-    // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access. 
+    // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access.
     public boolean checkPermissions(String permission){
         Log.d(TAG, "checkPermissions: checking permission: " + permission);
         int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
