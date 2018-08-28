@@ -97,6 +97,7 @@ public class RecordVideoFragment extends Fragment {
             Log.d(TAG, "onClick: starting camera");
             Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
+            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         } else {
             Toast.makeText(getActivity(),
