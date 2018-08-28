@@ -63,7 +63,9 @@ public class RecordVideoFragment extends Fragment {
 
     @OnClick(R.id.cameraBtn)
     public void cameraOnClick() {
+
         Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
         if(cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
            Log.d(TAG, "OnClick: starting camera");
            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
