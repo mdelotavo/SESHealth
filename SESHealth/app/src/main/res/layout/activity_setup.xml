@@ -1,87 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/nameET"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Full Name (required)"
-        android:inputType="textPersonName" />
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/phoneET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Mobile Phone No. (required)"
-        android:inputType="phone" />
+        <EditText
+            android:id="@+id/nameET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Full Name (required)"
+            android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/bDET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Birth Date (DD/MM/YYYY) (required)"
-        android:inputType="date"
-        android:maxLength="10"/>
+        <EditText
+            android:id="@+id/phoneET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Mobile Phone No. (required)"
+            android:inputType="phone" />
 
-    <EditText
-        android:id="@+id/allergiesET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Allergies"
-        android:inputType="textMultiLine" />
+        <EditText
+            android:id="@+id/bDET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Birth Date (DD/MM/YYYY) (required)"
+            android:inputType="date"
+            android:maxLength="10" />
 
-    <EditText
-        android:id="@+id/medicationET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Current Medication"
-        android:inputType="textMultiLine" />
+        <EditText
+            android:id="@+id/allergiesET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Allergies"
+            android:inputType="textMultiLine" />
 
-    <RadioGroup
-        android:id="@+id/genderRG"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/medicationET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Current Medication"
+            android:inputType="textMultiLine" />
 
-        <TextView
-            android:id="@+id/textView"
+        <RadioGroup
+            android:id="@+id/genderRG"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Gender" />
+
+            <RadioButton
+                android:id="@+id/maleRB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Male" />
+
+            <RadioButton
+                android:id="@+id/femaleRB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Female" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/setupMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Gender" />
+            android:text="Continue"
+            tools:layout_editor_absoluteX="210dp"
+            tools:layout_editor_absoluteY="345dp" />
 
-        <RadioButton
-            android:id="@+id/maleRB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Male" />
+    </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/femaleRB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Female" />
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/setupMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Continue"
-        tools:layout_editor_absoluteX="210dp"
-        tools:layout_editor_absoluteY="345dp" />
-
-</LinearLayout>
+</ScrollView>
