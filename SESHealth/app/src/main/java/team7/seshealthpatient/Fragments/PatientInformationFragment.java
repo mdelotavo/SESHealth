@@ -30,11 +30,22 @@ import team7.seshealthpatient.R;
  */
 public class PatientInformationFragment extends Fragment {
 
+    @BindView(R.id.nameTV)
     TextView nameTV;
+
+    @BindView(R.id.phoneTV)
     TextView phoneTV;
+
+    @BindView(R.id.dobTV)
     TextView dobTV;
+
+    @BindView(R.id.allergiesTV)
     TextView allergiesTV;
+
+    @BindView(R.id.medicationTV)
     TextView medicationTV;
+
+    @BindView(R.id.genderTV)
     TextView genderTV;
 
     public PatientInformationFragment() {
@@ -45,6 +56,7 @@ public class PatientInformationFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Note the use of getActivity() to reference the Activity holding this fragment
+
         getActivity().setTitle("Welcome User");
     }
 
@@ -54,12 +66,7 @@ public class PatientInformationFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_patient_information, container, false);
 
-        nameTV = v.findViewById(R.id.nameTV);
-        phoneTV = v.findViewById(R.id.phoneTV);
-        dobTV = v.findViewById(R.id.dobTV);
-        allergiesTV = v.findViewById(R.id.allergiesTV);
-        medicationTV = v.findViewById(R.id.medicationTV);
-        genderTV = v.findViewById(R.id.genderTV);
+        ButterKnife.bind(this, v);
 
         TextView[] textViews =
                 {nameTV, phoneTV, dobTV, allergiesTV, medicationTV, genderTV};
