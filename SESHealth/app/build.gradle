@@ -34,8 +34,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation  'com.google.android.gms:play-services-places:9.4.0'
+    //implementation  'com.google.android.gms:play-services-places:9.4.0'
+    implementation 'com.google.android.gms:play-services-places:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation "com.google.android.gms:play-services-location:15.0.1"
 
 
 
