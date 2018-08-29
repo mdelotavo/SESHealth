@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/nameLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -29,11 +29,11 @@
             android:text="A"/>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/phoneLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView1"
-            android:layout_below="@+id/textView1"
+            android:layout_alignStart="@+id/nameLabelTV"
+            android:layout_below="@+id/nameLabelTV"
             android:text="Phone No: " />
 
         <TextView
@@ -45,11 +45,11 @@
             android:text="A"/>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/dobLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView2"
-            android:layout_below="@+id/textView2"
+            android:layout_alignStart="@+id/phoneLabelTV"
+            android:layout_below="@+id/phoneLabelTV"
             android:text="DoB: " />
 
         <TextView
@@ -61,11 +61,11 @@
             android:text="A"/>
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/allergiesLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView3"
-            android:layout_below="@+id/textView3"
+            android:layout_alignStart="@+id/dobLabelTV"
+            android:layout_below="@+id/dobLabelTV"
             android:text="Allergies: " />
 
         <TextView
@@ -77,11 +77,11 @@
             android:text="A"/>
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/medicationLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView4"
-            android:layout_below="@+id/textView4"
+            android:layout_alignStart="@+id/allergiesLabelTV"
+            android:layout_below="@+id/allergiesLabelTV"
             android:text="Medication: " />
 
         <TextView
@@ -93,11 +93,11 @@
             android:text="A"/>
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/genderLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView5"
-            android:layout_below="@+id/textView5"
+            android:layout_alignStart="@+id/medicationLabelTV"
+            android:layout_below="@+id/medicationLabelTV"
             android:text="Gender: " />
 
         <TextView
