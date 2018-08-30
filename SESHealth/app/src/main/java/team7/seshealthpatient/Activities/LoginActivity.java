@@ -7,6 +7,8 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -39,11 +41,9 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +51,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,6 +77,9 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
+    FirebaseUser user;
+    FirebaseDatabase database;
+    DatabaseReference reference;
 
     /**
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
@@ -92,9 +97,12 @@ public class LoginActivity extends AppCompatActivity {
      */
     @BindView(R.id.loginPasswordET)
     EditText loginPasswordET;
-    
+
     @BindView(R.id.forgotPwTV)
     TextView forgotPwText;
+
+    @BindView(R.id.googleBtn)
+    SignInButton mGoogleBtn;
 
     /**
      * It is helpful to create a tag for every activity/fragment. It will be easier to understand
@@ -110,13 +118,19 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
 
+        database = FirebaseDatabase.getInstance();
+        try {
+            database.setPersistenceEnabled(true);
+        } catch (Exception e){}
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() != null && isUserVerified()) {
+                if (firebaseAuth.getCurrentUser() != null && isUserVerified()) {
+                    progressDialog.setMessage(getString(R.string.login_progressDialog));
+                    progressDialog.show();
                     mAuth.removeAuthStateListener(mAuthStateListener);
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    setupCompletedCheck();
                 }
             }
         };
@@ -136,14 +150,14 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
-            .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                @Override
-                public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                    Toast.makeText(LoginActivity.this, "Oops an error", Toast.LENGTH_SHORT).show();
-                }
-            })
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .build();
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Toast.makeText(LoginActivity.this, "Oops an error", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
         // Placeholder image (update with logo when we have one)
         String logoName = "health_icon_1.png";
@@ -232,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
     // Hides the keyboard if a text field is focused
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
-        if(view != null) {
+        if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
@@ -249,11 +263,11 @@ public class LoginActivity extends AppCompatActivity {
         String password = loginPasswordET.getText().toString();
         hideKeyboard();
 
-        if(!isValidEmail(email)) {
+        if (!isValidEmail(email)) {
             Toast.makeText(this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(password)) {
             Toast.makeText(this, getString(R.string.passwordCheck_toast), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -269,10 +283,9 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail: sucess");
-                            if(isUserVerified()) {
+                            if (isUserVerified()) {
                                 mAuth.removeAuthStateListener(mAuthStateListener);
-                                finish();
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                setupCompletedCheck();
                             }
                         } else {
                             Log.d(TAG, "signInWithEmail: failure", task.getException());
@@ -318,64 +331,54 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    progressDialog.dismiss();
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "signInWithCredential:success");
-                        addUserInformationForGoogle();
-                    } else {
-                        Log.d(TAG, "signInWithCredential:failure", task.getException());
-                        Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
-                    }
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithCredential:success");
+                        } else {
+                            Log.d(TAG, "signInWithCredential:failure", task.getException());
+                            Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
+                        }
 
-                }
-            });
+                    }
+                });
     }
 
-    // Checks if user authenticating with google has a 'profile' in the db, if not it will create one
-    private void addUserInformationForGoogle() {
-        String userId = mAuth.getCurrentUser().getUid();
-        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
-        String user = mAuth.getCurrentUser().getDisplayName().toString();
-        int whiteSpace = user.indexOf(" ");
-        final String firstName = user.substring(0, whiteSpace);
-        final String lastName = user.substring(whiteSpace+1, user.length());
+    public void setupCompletedCheck() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
+        reference.keepSynced(true);
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // ...
-                long count = dataSnapshot.getChildrenCount();
-                Log.d(TAG, "The row count for this profile is: " + count);
-                if(count == 0) {
-                    Map userProfile = new HashMap();
-                    userProfile.put("firstName", firstName);
-                    userProfile.put("lastName", lastName);
-                    userProfile.put("dateOfBirth", "");
-                    userProfile.put("gender", "");
-                    userProfile.put("phoneNumber", "");
-                    userProfile.put("setupComplete", false);
-
-                    currentUser.setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
-                                Log.d(TAG, "User's profile was successfully created");
-                            } else {
-                                Log.d(TAG, "Setting user information failed" + task.getException());
-                                Toast.makeText(LoginActivity.this, "Failed to add user information", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    if ((boolean) dataSnapshot.getValue())
+                        startMain();
+                    else
+                        startSetup();
+                } catch (Exception e) {
+                    startSetup();
                 }
+                progressDialog.dismiss();
+                finish();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "An error occurred with the database: " + databaseError);
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
+
+    public void startMain() {
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+    }
+
+    public void startSetup() {
+        startActivity(new Intent(LoginActivity.this, SetupActivity.class));
+    }
 }
+
