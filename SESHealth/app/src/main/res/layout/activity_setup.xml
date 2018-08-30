@@ -28,14 +28,35 @@
             android:hint="Mobile Phone No. (required)"
             android:inputType="phone" />
 
-        <EditText
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="25dp">
+
+            <TextView
+                android:id="@+id/setupDOBTV"
+                style="@style/LoginStyles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Date of Birth: " />
+
+            <TextView
+                android:id="@+id/setupDOBDateTV"
+                style="@style/LoginStyles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Select Date" />
+        </LinearLayout>
+
+        <!-- <EditText
             android:id="@+id/bDET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Birth Date (DD/MM/YYYY) (required)"
             android:inputType="date"
-            android:maxLength="10" />
+            android:maxLength="10" /> -->
 
         <EditText
             android:id="@+id/allergiesET"
@@ -88,6 +109,12 @@
             android:text="Continue"
             tools:layout_editor_absoluteX="210dp"
             tools:layout_editor_absoluteY="345dp" />
+
+        <Button
+            android:id="@+id/setupLogOutBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log Out" />
 
     </LinearLayout>
 

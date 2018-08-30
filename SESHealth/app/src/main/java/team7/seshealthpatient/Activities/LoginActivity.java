@@ -337,7 +337,6 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredential:success");
-                            addUserInformationForGoogle();
                         } else {
                             Log.d(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.login_layout), getString(R.string.google_authentication_message_failure), Snackbar.LENGTH_SHORT).show();
@@ -352,9 +351,6 @@ public class LoginActivity extends AppCompatActivity {
 
         reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
         reference.keepSynced(true);
-
-        String[] children = {"fullName", "phoneNo", "birthDate",
-                "allergies", "medication", "gender"};
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -383,47 +379,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void startSetup() {
         startActivity(new Intent(LoginActivity.this, SetupActivity.class));
-    }
-
-    // Checks if user authenticating with google has a 'profile' in the db, if not it will create one
-    private void addUserInformationForGoogle() {
-        String userId = mAuth.getCurrentUser().getUid();
-        final DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
-
-        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // ...
-                long count = dataSnapshot.getChildrenCount();
-                Log.d(TAG, "The row count for this profile is: " + count);
-                if(count == 0) {
-                    Map userProfile = new HashMap();
-                    userProfile.put("firstName", "");
-                    userProfile.put("lastName", "");
-                    userProfile.put("dateOfBirth", "");
-                    userProfile.put("gender", "");
-                    userProfile.put("phoneNumber", "");
-                    userProfile.put("setupComplete", false);
-
-                    currentUser.setValue(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
-                                Log.d(TAG, "User's profile was successfully created");
-                            } else {
-                                Log.d(TAG, "Setting user information failed" + task.getException());
-                                Toast.makeText(LoginActivity.this, "Failed to add user information", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "An error occurred with the database: " + databaseError);
-            }
-        });
     }
 }
 

@@ -56,7 +56,6 @@ public class PatientInformationFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Note the use of getActivity() to reference the Activity holding this fragment
-
         getActivity().setTitle("Welcome User");
     }
 
@@ -68,15 +67,14 @@ public class PatientInformationFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
-        TextView[] textViews =
-                {nameTV, phoneTV, dobTV, allergiesTV, medicationTV, genderTV};
+        TextView[] textViewsProfile = {nameTV, phoneTV, dobTV, genderTV};
+        TextView[] textViews = {allergiesTV, medicationTV};
 
-        String[] children = {"fullName", "phoneNo", "birthDate",
-                "allergies", "medication", "gender"};
+        String[] childrenProfile = {"name", "phoneNO", "DOB", "gender"};
+        String[] children = {"allergies", "medication"};
 
+        setTVValuesProfile(textViewsProfile, childrenProfile);
         setTVValues(textViews, children);
-
-        nameTV.setText("b");
 
         // Note how we are telling butter knife to bind during the on create view method
         ButterKnife.bind(this, v);
@@ -89,6 +87,11 @@ public class PatientInformationFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
+    }
+
+    public void setTVValuesProfile(TextView[] textViews, String[] children) {
+        for (int i = 0; i < textViews.length; i++)
+            ((MainActivity)getActivity()).setTVValuesProfile(textViews[i], children[i]);
     }
 
     public void setTVValues(TextView[] textViews, String[] children) {

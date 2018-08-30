@@ -222,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-
         // More on this code, check the tutorial at http://www.vogella.com/tutorials/AndroidFragments/article.html
         fragmentManager = getFragmentManager();
 
@@ -281,17 +280,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setTVValues(final TextView textView, String child) {
-        //fireBaseUser
-        //database
-        //reference
+    public void setTVValuesProfile(final TextView textView, String child) {
+        reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                textView.setText(dataSnapshot.getValue().toString());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
 
+    public void setTVValues(final TextView textView, String child) {
         reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 textView.setText(dataSnapshot.getValue().toString());
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
