@@ -68,6 +68,10 @@ public class SettingsFragment extends Fragment {
         // Now that the view has been created, we can use butter knife functionality
     }
 
+    private boolean isValidPassword(CharSequence target) {
+        return target.length() >= 6;
+    }
+
     @OnClick(R.id.settingsSaveBtn)
     public void saveNewPassword() {
         String currentPassword = currentPasswordET.getText().toString().trim();
@@ -76,11 +80,26 @@ public class SettingsFragment extends Fragment {
         final FirebaseAuth mAuth = ((MainActivity)getActivity()).getFirebaseAuth();
         final FirebaseUser mUser = mAuth.getCurrentUser();
 
+        // Alert users that authenticated with Google that they cannot change their password from this application
+        try {
+            if (mUser.getProviders().contains("google.com")) {
+                Toast.makeText(getActivity(), "You cannot change your Google password from here", Toast.LENGTH_LONG).show();
+                return;
+            }
+        } catch(Exception e) {
+            Log.d(TAG, e.toString());
+        }
+        if(!isValidPassword(currentPassword) || !isValidPassword(newPassword) || !isValidPassword(newRetypedPassword)) {
+            Toast.makeText(getActivity(), "Please fill in all fields with 6 or more characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if(!newPassword.equals(newRetypedPassword)) {
             Log.d(TAG, "Passwords do not match");
             Toast.makeText(getActivity(), "Your new and retyped passwords do not match", Toast.LENGTH_SHORT).show();
             return;
         }
+        Log.d(TAG, mUser.getProviderId() + "\n" + mUser.getProviderData().toString() + "\n" + mUser.getProviders().toString());
 
         // Get auth credentials from the user for re-authentication. The example below shows
         // email and password credentials but there are multiple possible providers,
