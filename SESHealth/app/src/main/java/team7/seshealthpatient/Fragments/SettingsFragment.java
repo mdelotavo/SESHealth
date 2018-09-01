@@ -59,10 +59,6 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, v);
-
-        // Note how we are telling butter knife to bind during the on create view method
-        ButterKnife.bind(this, v);
-
         return v;
     }
 
