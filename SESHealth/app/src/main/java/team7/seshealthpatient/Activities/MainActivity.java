@@ -39,6 +39,7 @@ import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.RecordVideoFragment;
 import team7.seshealthpatient.Fragments.SendFileFragment;
+import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
 
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, LOGOUT
+        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
     }
 
     /**
@@ -186,6 +187,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     ChangeFragment(new MapFragment());
                                     currentState = MenuStates.NAVIGATION_MAP;
+                                }
+                                break;
+                            case R.id.nav_settings:
+                                if (currentState != MenuStates.SETTINGS) {
+                                    ChangeFragment(new SettingsFragment());
+                                    currentState = MenuStates.SETTINGS;
                                 }
                                 break;
                             case R.id.logout:
@@ -304,5 +311,9 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuth;
     }
 }

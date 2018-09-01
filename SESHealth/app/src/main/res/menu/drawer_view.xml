@@ -20,6 +20,9 @@
             android:id="@+id/nav_map"
             android:title="@string/facilities_map" />
         <item
+            android:id="@+id/nav_settings"
+            android:title="@string/settings" />
+        <item
             android:id="@+id/logout"
             android:title="@string/logout" />
     </group>

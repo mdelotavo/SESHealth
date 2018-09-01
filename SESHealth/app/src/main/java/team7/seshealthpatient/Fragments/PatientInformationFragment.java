@@ -56,7 +56,8 @@ public class PatientInformationFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Note the use of getActivity() to reference the Activity holding this fragment
-        getActivity().setTitle("Welcome User");
+        // TODO: Add users first name here
+        getActivity().setTitle("Welcome");
     }
 
     @Override
