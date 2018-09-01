@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -39,6 +40,7 @@ import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.RecordVideoFragment;
 import team7.seshealthpatient.Fragments.SendFileFragment;
+import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
 
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, LOGOUT
+        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
     }
 
     /**
@@ -188,6 +190,12 @@ public class MainActivity extends AppCompatActivity {
                                     currentState = MenuStates.NAVIGATION_MAP;
                                 }
                                 break;
+                            case R.id.nav_settings:
+                                if (currentState != MenuStates.SETTINGS) {
+                                    ChangeFragment(new SettingsFragment());
+                                    currentState = MenuStates.SETTINGS;
+                                }
+                                break;
                             case R.id.logout:
                                 if (currentState != MenuStates.LOGOUT) {
                                     mAuth.signOut();
@@ -238,6 +246,18 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+    /**
+        Using this at the moment to stop the activity being recreated on orientation change
+        This is needed as otherwise it will overlay any fragment with the patient info fragment
+    **/
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "Providers: " + FirebaseAuth.getInstance().getCurrentUser().getProviders().toString());
+    }
+
+
 
     /**
      * Called when one of the items in the toolbar was clicked, in this case, the menu button.
@@ -260,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
     public void ChangeTitle(String newTitle) {
         toolbar.setTitle(newTitle);
     }
-
 
     /**
      * This function allows to change the content of the Fragment holder
@@ -304,5 +323,9 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuth;
     }
 }
