@@ -246,7 +246,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
-    // Using this at the moment to stop the activity being created and recreating the patient info Fragment
+    /** 
+        Using this at the moment to stop the activity being recreated on orientation change
+        This is needed as otherwise it will overlay any fragment with the patient info fragment
+    **/
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
