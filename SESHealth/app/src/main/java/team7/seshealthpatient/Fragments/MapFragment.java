@@ -2,36 +2,75 @@ package team7.seshealthpatient.Fragments;
 
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import team7.seshealthpatient.PlaceAutocompleteAdapter;
 import team7.seshealthpatient.R;
+import team7.seshealthpatient.models.CustomInfoWindowAdapter;
+import team7.seshealthpatient.models.PlaceInfo;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+    private static final String TAG = "MapActivity";
 
     private GoogleMap mGoogleMap;
     private MapView mMapView;
@@ -43,30 +82,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LatLng mDefaultLocation = new LatLng(-33.86, 151.2);
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 15;
+    private static final int PLACE_PICKER_REQUEST = 1;
     private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
+            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
+
+    //widgets
+    private AutoCompleteTextView mSearchText;
+    private ImageView mGps, mInfo, mPlacePicker;
+    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
+    private GoogleApiClient mGoogleApiClient;
+    private PlaceInfo mPlace;
+    private Marker mMarker;
+
+
+
 
 
     public MapFragment() {
         // Required empty public constructor
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
-
-        mGeoDataClient = Places.getGeoDataClient(getActivity());
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        mMapView = view.findViewById(R.id.map);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
-        mMapView.onResume();
-
-        return view;
     }
 
     @Override
@@ -79,7 +114,206 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         updateLocationUI();
         getDeviceLocation();
 
+        init();
+
     }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        //for search bar
+        mSearchText = view.findViewById(R.id.input_search);
+        mGps = view.findViewById(R.id.ic_gps);
+        mInfo = view.findViewById(R.id.place_info);
+        mPlacePicker = view.findViewById(R.id.place_picker);
+
+        //for exact location
+        mGeoDataClient = Places.getGeoDataClient(getActivity());
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        mMapView = view.findViewById(R.id.map);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
+        mMapView.onResume();
+        return view;
+    }
+
+    private void init(){
+        Log.d(TAG, "init: initializing");
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .enableAutoManage((FragmentActivity) getActivity() /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        // your code here
+                    }
+                })
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+
+        mSearchText.setOnItemClickListener(mAutocompleteClickListener);
+
+        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
+                LAT_LNG_BOUNDS, null);
+
+        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
+
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+
+                    //execute our method for searching
+                    geoLocate();
+                }
+
+                return false;
+            }
+        });
+
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked gps icon");
+                getDeviceLocation();
+            }
+        });
+
+        mInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: clicked place info");
+                try{
+                    if(mMarker.isInfoWindowShown()){
+                        mMarker.hideInfoWindow();
+                    }else{
+                        Log.d(TAG, "onClick: place info: " + mPlace.toString());
+                        mMarker.showInfoWindow();
+                    }
+                }catch (NullPointerException e){
+                    Log.e(TAG, "onClick: NullPointerException: " + e.getMessage() );
+                }
+            }
+        });
+
+        mPlacePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+                } catch (GooglePlayServicesRepairableException e) {
+                    Log.e(TAG, "onClick: GooglePlayServicesRepairableException: " + e.getMessage() );
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    Log.e(TAG, "onClick: GooglePlayServicesNotAvailableException: " + e.getMessage() );
+                }
+            }
+        });
+
+        hideSoftKeyboard();
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(getActivity(), data);
+
+                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                        .getPlaceById(mGoogleApiClient, place.getId());
+                placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+            }
+        }
+    }
+
+    private void geoLocate(){
+        Log.d(TAG, "geoLocate: geolocating");
+
+        String searchString = mSearchText.getText().toString();
+
+        Geocoder geocoder = new Geocoder(getActivity());
+        List<Address> list = new ArrayList<>();
+        try{
+            list = geocoder.getFromLocationName(searchString, 1);
+        }catch (IOException e){
+            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
+        }
+
+        if(list.size() > 0){
+            Address address = list.get(0);
+
+            Log.d(TAG, "geoLocate: found a location: " + address.toString());
+            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
+                    address.getAddressLine(0));
+
+        }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
+        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        mGoogleMap.clear();
+
+        mGoogleMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getActivity()));
+
+        if(placeInfo != null){
+            try{
+                String snippet = "Address: " + placeInfo.getAddress() + "\n" +
+                        "Phone Number: " + placeInfo.getPhoneNumber() + "\n" +
+                        "Website: " + placeInfo.getWebsiteUri() + "\n" +
+                        "Rating: " + placeInfo.getRating() + "\n";
+
+                MarkerOptions options = new MarkerOptions()
+                        .position(latLng)
+                        .title(placeInfo.getName())
+                        .snippet(snippet);
+                mMarker = mGoogleMap.addMarker(options);
+
+            }catch (NullPointerException e){
+                Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage() );
+            }
+        }else{
+            mGoogleMap.addMarker(new MarkerOptions().position(latLng));
+        }
+
+        hideSoftKeyboard();
+    }
+
+    private void moveCamera(LatLng latLng, float zoom, String title){
+        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        if(!title.equals("My Location")){
+            MarkerOptions options = new MarkerOptions()
+                    .position(latLng)
+                    .title(title);
+            mGoogleMap.addMarker(options);
+        }
+
+        hideSoftKeyboard();
+    }
+
+    private void hideSoftKeyboard(){
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+
+
 
     private void getDeviceLocation() {
         try {
@@ -182,5 +416,65 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             throw(e);
         }
     }
+
+    /*
+        --------------------------- google places API autocomplete suggestions -----------------
+     */
+
+    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            hideSoftKeyboard();
+
+            final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(i);
+            final String placeId = item.getPlaceId();
+
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(@NonNull PlaceBuffer places) {
+            if(!places.getStatus().isSuccess()){
+                Log.d(TAG, "onResult: Place query did not complete successfully: " + places.getStatus().toString());
+                places.release();
+                return;
+            }
+            final Place place = places.get(0);
+
+            try{
+                mPlace = new PlaceInfo();
+                mPlace.setName(place.getName().toString());
+                Log.d(TAG, "onResult: name: " + place.getName());
+                mPlace.setAddress(place.getAddress().toString());
+                Log.d(TAG, "onResult: address: " + place.getAddress());
+//                mPlace.setAttributions(place.getAttributions().toString());
+//                Log.d(TAG, "onResult: attributions: " + place.getAttributions());
+                mPlace.setId(place.getId());
+                Log.d(TAG, "onResult: id:" + place.getId());
+                mPlace.setLatlng(place.getLatLng());
+                Log.d(TAG, "onResult: latlng: " + place.getLatLng());
+                mPlace.setRating(place.getRating());
+                Log.d(TAG, "onResult: rating: " + place.getRating());
+                mPlace.setPhoneNumber(place.getPhoneNumber().toString());
+                Log.d(TAG, "onResult: phone number: " + place.getPhoneNumber());
+                mPlace.setWebsiteUri(place.getWebsiteUri());
+                Log.d(TAG, "onResult: website uri: " + place.getWebsiteUri());
+
+                Log.d(TAG, "onResult: place: " + mPlace.toString());
+            }catch (NullPointerException e){
+                Log.e(TAG, "onResult: NullPointerException: " + e.getMessage() );
+            }
+
+            moveCamera(new LatLng(place.getViewport().getCenter().latitude,
+                    place.getViewport().getCenter().longitude), DEFAULT_ZOOM, mPlace);
+
+            places.release();
+        }
+    };
+
 
 }

@@ -23,6 +23,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCGgXz5rhoUx-TgIzy1vcPHvYsCiHieSH4"/>
 
+
         <activity
             android:name=".Activities.LoginActivity"
             android:configChanges="orientation|screenSize">
