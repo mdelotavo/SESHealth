@@ -4,10 +4,19 @@
     android:layout_height="match_parent"
     tools:context="team7.seshealthpatient.Fragments.RecordVideoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <VideoView
+        android:id="@+id/cameraVideoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/cameraBtn"
+        android:layout_gravity="bottom"
+        android:text="Capture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
 
 </FrameLayout>
