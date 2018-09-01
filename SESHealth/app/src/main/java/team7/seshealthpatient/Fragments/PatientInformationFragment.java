@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,6 +32,7 @@ import team7.seshealthpatient.R;
 
  */
 public class PatientInformationFragment extends Fragment {
+    private FirebaseUser mUser;
 
     @BindView(R.id.nameTV)
     TextView nameTV;
@@ -57,7 +61,8 @@ public class PatientInformationFragment extends Fragment {
 
         // Note the use of getActivity() to reference the Activity holding this fragment
         // TODO: Add users first name here
-        getActivity().setTitle("Welcome");
+        mUser = ((MainActivity)getActivity()).getFirebaseAuth().getCurrentUser();
+        getActivity().setTitle("Welcome " + mUser.getDisplayName());
     }
 
     @Override
