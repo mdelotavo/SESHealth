@@ -12,6 +12,7 @@ import android.provider.ContactsContract;
 import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -77,9 +78,9 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
-    FirebaseUser user;
-    FirebaseDatabase database;
-    DatabaseReference reference;
+    private FirebaseUser user;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
     /**
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
@@ -90,6 +91,12 @@ public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.loginEmailET)
     EditText loginEmailET;
+
+    @BindView(R.id.emailInputLayout)
+    TextInputLayout emailInputLayout;
+
+    @BindView(R.id.passwordInputLayout)
+    TextInputLayout passwordInputLayout;
 
     /**
      * If you want to know more about Butter Knife, please, see the link I left at the build.gradle
@@ -135,9 +142,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        // A reference to the toolbar, that way we can modify it as we please
+        /*// A reference to the toolbar, that way we can modify it as we please
         Toolbar toolbar = findViewById(R.id.login_toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);*/
+
+        emailInputLayout.setHintEnabled(false);
+        passwordInputLayout.setHintEnabled(false);
 
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
         setTitle(R.string.login_activity_title);
