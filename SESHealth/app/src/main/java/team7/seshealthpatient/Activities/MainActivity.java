@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -245,6 +246,13 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+    // Using this at the moment to stop the activity being created and recreating the patient info Fragment
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+
 
     /**
      * Called when one of the items in the toolbar was clicked, in this case, the menu button.
@@ -267,7 +275,6 @@ public class MainActivity extends AppCompatActivity {
     public void ChangeTitle(String newTitle) {
         toolbar.setTitle(newTitle);
     }
-
 
     /**
      * This function allows to change the content of the Fragment holder

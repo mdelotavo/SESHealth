@@ -81,9 +81,8 @@ public class SettingsFragment extends Fragment {
         final FirebaseUser mUser = mAuth.getCurrentUser();
 
         if(!newPassword.equals(newRetypedPassword)) {
-            Log.d(TAG, "Password do not match, newPassword: " + newPassword + "\t retyped: " + newRetypedPassword);
-            Log.d(TAG, newPassword + ":" + newRetypedPassword);
-            Toast.makeText(getActivity(), "New password does not match", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Passwords do not match");
+            Toast.makeText(getActivity(), "Your new and retyped passwords do not match", Toast.LENGTH_SHORT).show();
             return;
         }
 
