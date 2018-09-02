@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -107,6 +108,26 @@ public class SendFileFragment extends Fragment {
 
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
+
+
+    // Checkboxes
+    @BindView(R.id.packetGenderCheck)
+    CheckBox packetGenderCheck;
+
+    @BindView(R.id.packetMobileCheck)
+    CheckBox packetMobileCheck;
+
+    @BindView(R.id.packetHeightCheck)
+    CheckBox packetHeightCheck;
+
+    @BindView(R.id.packetWeightCheck)
+    CheckBox packetWeightCheck;
+
+    @BindView(R.id.packetMedicalCheck)
+    CheckBox packetMedicalCheck;
+
+    @BindView(R.id.packetAllergiesCheck)
+    CheckBox packetAllergiesCheck;
 
     public SendFileFragment() {
         // Required empty public constructor
@@ -284,22 +305,47 @@ public class SendFileFragment extends Fragment {
         userProfile.put("Timestamp", currentTimestamp.toString());
         userProfile.put("name", name);
         userProfile.put("DOB", DOB);
-        userProfile.put("gender", gender);
-        userProfile.put("mobile", mobile);
-        userProfile.put("height", height);
-        userProfile.put("weight", weight);
-        userProfile.put("allergies", allergies);
-        userProfile.put("medication", medication);
+
+        if(packetGenderCheck.isChecked())
+            userProfile.put("gender", gender);
+        else
+            userProfile.put("gender", "");
+
+        if(packetMobileCheck.isChecked())
+            userProfile.put("mobile", mobile);
+        else
+            userProfile.put("mobile", "");
+
+        if(packetHeightCheck.isChecked())
+            userProfile.put("height", height);
+        else
+            userProfile.put("height", "");
+
+        if(packetWeightCheck.isChecked())
+            userProfile.put("weight", weight);
+        else
+            userProfile.put("weight", "");
+
+        if(packetAllergiesCheck.isChecked())
+            userProfile.put("allergies", allergies);
+        else
+            userProfile.put("allergies", "");
+
+        if(packetMedicalCheck.isChecked())
+            userProfile.put("medication", medication);
+        else
+            userProfile.put("medication", "");
+
         userProfile.put("message", message);
-        userProfile.put("videoURI", videoUri.toString());
+
+        try {
+            userProfile.put("videoURI", videoUri.toString());
+        } catch(Exception e) {
+            userProfile.put("videoURI", "");
+
+        }
+
         DatabaseReference ref = reference.child("Packets").push();
         ref.setValue(userProfile);
-
     }
-
-    private String getPacketNumber() {
-        reference.child("Packet");
-        return "";
-    }
-
 }
