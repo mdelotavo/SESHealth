@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() == null) {
+                if (firebaseAuth.getCurrentUser() == null) {
                     finish();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function allows to change the content of the Fragment holder
+     *
      * @param fragment The fragment to be displayed
      */
     private void ChangeFragment(Fragment fragment) {
@@ -275,9 +276,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
-        }else{
+        } else {
             this.finishAffinity();
         }
     }
@@ -286,8 +287,12 @@ public class MainActivity extends AppCompatActivity {
         reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else
+                    textView.setText(dataSnapshot.getValue().toString());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -298,8 +303,12 @@ public class MainActivity extends AppCompatActivity {
         reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else
+                    textView.setText(dataSnapshot.getValue().toString());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }

@@ -48,6 +48,12 @@ public class PatientInformationFragment extends Fragment {
     @BindView(R.id.genderTV)
     TextView genderTV;
 
+    @BindView(R.id.weightTV)
+    TextView weightTV;
+
+    @BindView(R.id.heightTV)
+    TextView heightTV;
+
     public PatientInformationFragment() {
     }
 
@@ -67,10 +73,10 @@ public class PatientInformationFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
-        TextView[] textViewsProfile = {nameTV, phoneTV, dobTV, genderTV};
+        TextView[] textViewsProfile = {nameTV, phoneTV, dobTV, genderTV, weightTV, heightTV};
         TextView[] textViews = {allergiesTV, medicationTV};
 
-        String[] childrenProfile = {"name", "phoneNO", "DOB", "gender"};
+        String[] childrenProfile = {"name", "phoneNO", "DOB", "gender", "weight", "height"};
         String[] children = {"allergies", "medication"};
 
         setTVValuesProfile(textViewsProfile, childrenProfile);

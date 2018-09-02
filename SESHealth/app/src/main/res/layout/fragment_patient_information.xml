@@ -77,19 +77,51 @@
             android:text="A"/>
 
         <TextView
-            android:id="@+id/allergiesLabelTV"
+            android:id="@+id/weightLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/phoneLabelTV"
             android:layout_below="@+id/phoneLabelTV"
+            android:text="Weight (kg): " />
+
+        <TextView
+            android:id="@+id/weightTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/phoneTV"
+            android:layout_below="@+id/phoneTV"
+            android:text="A"/>
+
+        <TextView
+            android:id="@+id/heightLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/weightLabelTV"
+            android:layout_below="@+id/weightLabelTV"
+            android:text="Height (cm): " />
+
+        <TextView
+            android:id="@+id/heightTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/weightTV"
+            android:layout_below="@+id/weightTV"
+            android:text="A"/>
+
+        <TextView
+            android:id="@+id/allergiesLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/heightLabelTV"
+            android:layout_below="@+id/heightLabelTV"
             android:text="Allergies: " />
 
         <TextView
             android:id="@+id/allergiesTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/phoneTV"
-            android:layout_below="@+id/phoneTV"
+            android:layout_alignStart="@+id/heightTV"
+            android:layout_below="@+id/heightTV"
             android:text="A"/>
 
         <TextView
