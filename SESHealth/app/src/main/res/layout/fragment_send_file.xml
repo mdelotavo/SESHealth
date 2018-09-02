@@ -1,13 +1,255 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="team7.seshealthpatient.Fragments.SendFileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/packetNameLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
+            android:text="Name: " />
+
+        <TextView
+            android:id="@+id/packetNameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="200dp"
+            android:layout_marginTop="30dp"
+            android:text="Not set"/>
+
+        <TextView
+            android:id="@+id/packetDateOfBirthLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetNameLabelTV"
+            android:text="Date of Birth:"
+            android:layout_below="@+id/packetNameLabelTV" />
+
+        <TextView
+            android:id="@+id/packetDateOfBirthTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetNameTV"
+            android:layout_below="@+id/packetNameTV"
+            android:text="Not set"/>
+
+        <TextView
+            android:id="@+id/packetGenderLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetDateOfBirthLabelTV"
+            android:layout_below="@+id/packetDateOfBirthLabelTV"
+            android:text="Gender:" />
+
+        <TextView
+            android:id="@+id/packetGenderTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetDateOfBirthTV"
+            android:layout_below="@+id/packetDateOfBirthTV"
+            android:text="Not set" />
+
+        <TextView
+            android:id="@+id/packetMobileLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetGenderLabelTV"
+            android:layout_below="@+id/packetGenderLabelTV"
+            android:text="Mobile:" />
+        <TextView
+            android:id="@+id/packetMobileTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetGenderTV"
+            android:layout_below="@+id/packetGenderTV"
+            android:text="Not set" />
+
+        <TextView
+            android:id="@+id/packetHeightLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetMobileLabelTV"
+            android:layout_below="@+id/packetMobileLabelTV"
+            android:text="Height:" />
+
+        <TextView
+            android:id="@+id/packetHeightTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetMobileTV"
+            android:layout_below="@+id/packetMobileTV"
+            android:text="Not set" />
+
+        <TextView
+            android:id="@+id/packetWeightLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetHeightLabelTV"
+            android:layout_below="@+id/packetHeightLabelTV"
+            android:text="Weight:"/>
+
+        <TextView
+            android:id="@+id/packetWeightTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetHeightTV"
+            android:layout_below="@+id/packetHeightTV"
+            android:text="Not set"/>
+
+        <TextView
+            android:id="@+id/packetMedicalLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetWeightLabelTV"
+            android:layout_below="@+id/packetWeightLabelTV"
+            android:text="Medical:"/>
+
+        <TextView
+            android:id="@+id/packetMedicalTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetWeightTV"
+            android:layout_below="@+id/packetWeightTV"
+            android:text="Not set" />
+
+        <TextView
+            android:id="@+id/packetAllergiesLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetMedicalLabelTV"
+            android:layout_below="@+id/packetMedicalLabelTV"
+            android:text="Allergies:" />
+
+        <TextView
+            android:id="@+id/packetAllergiesTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetMedicalTV"
+            android:layout_below="@+id/packetMedicalTV"
+            android:text="Not set" />
+
+
+        <EditText
+            android:id="@+id/packetMessageET"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Add a message"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/packetAllergiesLabelTV"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/packetCameraBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take a Video"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/packetMessageET"
+            android:layout_centerHorizontal="true"/>
+
+        <LinearLayout
+            android:id="@+id/packetCheckboxLockup1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/packetCameraBtn"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/packetGenderCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Gender"
+                />
+
+            <CheckBox
+                android:id="@+id/packetMobileCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Mobile" />
+
+            <CheckBox
+                android:id="@+id/packetHeightCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Height" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/packetCheckboxLockup2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/packetCheckboxLockup1"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/packetWeightCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Weight"
+                />
+
+            <CheckBox
+                android:id="@+id/packetMedicalCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Medical" />
+
+            <CheckBox
+                android:id="@+id/packetAllergiesCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Allergies" />
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/packetCheckboxLockup3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_below="@+id/packetCheckboxLockup2"
+            android:gravity="center_horizontal">
+
+            <CheckBox
+                android:id="@+id/packetGPSCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="GPS" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/packetSubmitBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_below="@+id/packetCheckboxLockup3"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+</ScrollView>

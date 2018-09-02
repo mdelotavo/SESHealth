@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.CreateAccountActivity">
+    tools:context=".Activities.CreateAccountActivity"
+    android:background="@drawable/gradient_login_bg">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/createAccount_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:titleTextColor="@color/whiteColor" />
+        app:titleTextColor="#eee" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,114 +28,66 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
 
-            <EditText
-                android:id="@+id/createAccEmailET"
-                style="@style/LoginStyles"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:hint="@string/email_txt"
-                android:inputType="textEmailAddress" />
+                android:layout_marginBottom="30dp"
+                android:text="Create an Account"
+                android:textColor="#444"
+                android:textSize="33sp"/>
+
+            <TextView
+                android:id="@+id/createAccDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20sp"
+                android:text="Enter an E-mail and password into the fields below to use with our service"
+                android:textSize="18sp"/>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/createEmailInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/createAccEmailET"
+                    style="@style/loginEditTexts"
+                    android:background="@drawable/edit_text_top"
+                    android:drawableStart="@drawable/ic_mail_outline"
+                    android:hint="@string/email_txt"
+                    android:inputType="textEmailAddress" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/createPasswordInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:passwordToggleEnabled="true">
 
                 <EditText
                     android:id="@+id/createAccPasswordET"
-                    style="@style/LoginStyles"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
+                    style="@style/loginEditTexts"
+                    android:background="@drawable/edit_text_bottom"
+                    android:drawableStart="@drawable/ic_lock_outline"
                     android:hint="@string/password_txt"
                     android:inputType="textPassword" />
 
             </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/createAccFirstNameET"
-                style="@style/LoginStyles"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:hint="First Name" />
-
-            <EditText
-                android:id="@+id/createAccLastNameET"
-                style="@style/LoginStyles"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:hint="Last Name" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginTop="25dp">
-
-                <TextView
-                    android:id="@+id/createAccDOBTV"
-                    style="@style/LoginStyles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Date of Birth: " />
-
-                <TextView
-                    android:id="@+id/createAccDOBDateTV"
-                    style="@style/LoginStyles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Select Date" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginTop="25dp">
-
-                <TextView
-                    android:id="@+id/createAccGenderTV"
-                    style="@style/LoginStyles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Gender" />
-
-                <Spinner
-                    android:id="@+id/createAccGenderSpinner"
-                    style="@style/LoginStyles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
             <Button
                 android:id="@+id/createAccBtn"
-                style="@style/LoginStyles"
-                android:layout_width="wrap_content"
+                android:layout_width="275dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Create Account" />
-
-            <TextView
-                android:id="@+id/navToLoginTV"
-                style="@style/LoginStyles"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="25dp"
-                android:text="Already have an account?" />
-
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/createAccGoogleBtn"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_height="wrap_content">
-            </com.google.android.gms.common.SignInButton>
+                android:text="Create Account"
+                android:textSize="20sp"
+                android:textColor="#eee"
+                android:background="@drawable/gradient_login_btn"/>
 
         </LinearLayout>
     </ScrollView>

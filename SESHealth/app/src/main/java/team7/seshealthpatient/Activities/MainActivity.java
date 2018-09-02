@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,20 +17,25 @@ import android.support.v7.widget.Toolbar;
 
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
-import team7.seshealthpatient.Fragments.RecordVideoFragment;
 import team7.seshealthpatient.Fragments.SendFileFragment;
+import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
 
@@ -53,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser fireBaseUser;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
 
     /**
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, LOGOUT
+        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
     }
 
     /**
@@ -96,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         fireBaseUser = mAuth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(fireBaseUser.getUid());
 
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
@@ -145,22 +155,10 @@ public class MainActivity extends AppCompatActivity {
                                     currentState = MenuStates.PATIENT_INFO;
                                 }
                                 break;
-                            case R.id.nav_data_packet:
-                                if (currentState != MenuStates.DATA_PACKET) {
-                                    ChangeFragment(new DataPacketFragment());
-                                    currentState = MenuStates.DATA_PACKET;
-                                }
-                                break;
                             case R.id.nav_heartrate:
                                 if (currentState != MenuStates.HEARTRATE) {
                                     ChangeFragment(new HeartRateFragment());
                                     currentState = MenuStates.HEARTRATE;
-                                }
-                                break;
-                            case R.id.nav_recordvideo:
-                                if (currentState != MenuStates.RECORD_VIDEO) {
-                                    ChangeFragment(new RecordVideoFragment());
-                                    currentState = MenuStates.RECORD_VIDEO;
                                 }
                                 break;
                             case R.id.nav_sendfile:
@@ -173,6 +171,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     ChangeFragment(new MapFragment());
                                     currentState = MenuStates.NAVIGATION_MAP;
+                                }
+                                break;
+                            case R.id.nav_settings:
+                                if (currentState != MenuStates.SETTINGS) {
+                                    ChangeFragment(new SettingsFragment());
+                                    currentState = MenuStates.SETTINGS;
                                 }
                                 break;
                             case R.id.logout:
@@ -211,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-
         // More on this code, check the tutorial at http://www.vogella.com/tutorials/AndroidFragments/article.html
         fragmentManager = getFragmentManager();
 
@@ -226,6 +229,18 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+    /**
+        Using this at the moment to stop the activity being recreated on orientation change
+        This is needed as otherwise it will overlay any fragment with the patient info fragment
+    **/
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "Providers: " + FirebaseAuth.getInstance().getCurrentUser().getProviders().toString());
+    }
+
+
 
     /**
      * Called when one of the items in the toolbar was clicked, in this case, the menu button.
@@ -249,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(newTitle);
     }
 
-
     /**
      * This function allows to change the content of the Fragment holder
      * @param fragment The fragment to be displayed
@@ -259,5 +273,42 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawer(Gravity.START);
+        }else{
+            this.finishAffinity();
+        }
+    }
+
+    public void setTVValuesProfile(final TextView textView, String child) {
+        reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                textView.setText(dataSnapshot.getValue().toString());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void setTVValues(final TextView textView, String child) {
+        reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                textView.setText(dataSnapshot.getValue().toString());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuth;
     }
 }

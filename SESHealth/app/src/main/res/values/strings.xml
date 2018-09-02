@@ -40,9 +40,10 @@
 
     <string name="heartbeat_view">HeartRateMonitor</string>
 
+    <string name="cameraPermissionException">Please change your security preferences to allow this application to use the camera and write to the gallery</string>
+    <string name="settings">Settings</string>
 
-    <string-array
-        name="genders">
+    <string-array name="genders">
         <item>Male</item>
         <item>Female</item>
         <item>Prefer Not To Say</item>
