@@ -31,7 +31,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
+        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
     }
 
     /**
@@ -154,12 +153,6 @@ public class MainActivity extends AppCompatActivity {
                                     // change the fragment to the new fragment
                                     ChangeFragment(new PatientInformationFragment());
                                     currentState = MenuStates.PATIENT_INFO;
-                                }
-                                break;
-                            case R.id.nav_data_packet:
-                                if (currentState != MenuStates.DATA_PACKET) {
-                                    ChangeFragment(new DataPacketFragment());
-                                    currentState = MenuStates.DATA_PACKET;
                                 }
                                 break;
                             case R.id.nav_heartrate:
