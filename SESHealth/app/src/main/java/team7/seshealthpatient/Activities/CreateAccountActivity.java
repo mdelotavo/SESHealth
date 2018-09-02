@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,13 +46,17 @@ public class CreateAccountActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private FirebaseUser user;
 
-
     @BindView(R.id.createAccEmailET)
     EditText createEmailET;
 
     @BindView(R.id.createAccPasswordET)
     EditText createPasswordET;
 
+    @BindView(R.id.createEmailInputLayout)
+    TextInputLayout createEmailInputLayout;
+
+    @BindView(R.id.createPasswordInputLayout)
+    TextInputLayout createPasswordInputLayout;
 
     private static String TAG = "CreateAccountActivity";
 
@@ -64,6 +69,9 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.createAccount_toolbar);
         toolbar.setTitle(getString(R.string.createAccount_activity_title));
+
+        createEmailInputLayout.setHintEnabled(false);
+        createPasswordInputLayout.setHintEnabled(false);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -134,8 +142,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
     }
 
     private void sendVerificationEmail() {
@@ -157,5 +163,11 @@ public class CreateAccountActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }

@@ -64,6 +64,12 @@ public class SetupActivity extends AppCompatActivity {
     @BindView(R.id.setupDOBDateTV)
     TextView setupDOBDateTV;
 
+    @BindView(R.id.heightET)
+    EditText heightET;
+
+    @BindView(R.id.weightET)
+    EditText weightET;
+
     @BindView(R.id.allergiesET)
     EditText allergiesET;
 
@@ -173,6 +179,14 @@ public class SetupActivity extends AppCompatActivity {
         }
         if (!isValidDOB()) {
             Toast.makeText(SetupActivity.this, R.string.dateOfBirthCheckValidDate_toast, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (heightET.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter your height", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (weightET.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter your weight", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (genderRG.getCheckedRadioButtonId() == -1) {

@@ -62,6 +62,22 @@
             android:maxLength="10" /> -->
 
         <EditText
+            android:id="@+id/heightET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Height (required)"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/weightET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Weight (required)"
+            android:inputType="numberDecimal" />
+
+        <EditText
             android:id="@+id/allergiesET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -12,6 +12,7 @@ import android.provider.ContactsContract;
 import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +52,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shobhitpuri.custombuttons.GoogleSignInButton;
 
 import org.w3c.dom.Text;
 
@@ -77,9 +79,9 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RC_SIGN_IN = 1;
-    FirebaseUser user;
-    FirebaseDatabase database;
-    DatabaseReference reference;
+    private FirebaseUser user;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
     /**
      * Use the @BindView annotation so Butter Knife can search for that view, and cast it for you
@@ -91,6 +93,12 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.loginEmailET)
     EditText loginEmailET;
 
+    @BindView(R.id.emailInputLayout)
+    TextInputLayout emailInputLayout;
+
+    @BindView(R.id.passwordInputLayout)
+    TextInputLayout passwordInputLayout;
+
     /**
      * If you want to know more about Butter Knife, please, see the link I left at the build.gradle
      * file.
@@ -98,11 +106,11 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.loginPasswordET)
     EditText loginPasswordET;
 
-    @BindView(R.id.forgotPwTV)
-    TextView forgotPwText;
+    @BindView(R.id.resetPwTV)
+    TextView resetPwTv;
 
     @BindView(R.id.googleBtn)
-    SignInButton mGoogleBtn;
+    GoogleSignInButton mGoogleBtn;
 
     /**
      * It is helpful to create a tag for every activity/fragment. It will be easier to understand
@@ -134,10 +142,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
-
-        // A reference to the toolbar, that way we can modify it as we please
-        Toolbar toolbar = findViewById(R.id.login_toolbar);
-        setSupportActionBar(toolbar);
+        emailInputLayout.setHintEnabled(false);
+        passwordInputLayout.setHintEnabled(false);
 
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
         setTitle(R.string.login_activity_title);
@@ -184,13 +190,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // Navigation method to 'CreateAccountActivity'
-    @OnClick(R.id.navToRegisterBtn)
+    @OnClick(R.id.createAccTV)
     public void navToRegisterPage() {
         startActivity(new Intent(this, CreateAccountActivity.class));
     }
 
     // Navigation method to 'ForgotPasswordFragment'
-    @OnClick(R.id.forgotPwTV)
+    @OnClick(R.id.resetPwTV)
     public void navToForgotPw() {
         startActivity(new Intent(this, ForgotPasswordActivity.class));
     }
@@ -387,6 +393,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public void startSetup() {
         startActivity(new Intent(LoginActivity.this, SetupActivity.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finishAffinity();
     }
 }
 
