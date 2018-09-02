@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.MediaStore;
@@ -24,10 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -55,8 +61,13 @@ public class SendFileFragment extends Fragment {
     private static final int  CAMERA_REQUEST_CODE = 5;
     private FirebaseStorage storage;
     private StorageReference storageRef;
+    private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private ProgressDialog progressDialog;
+    private Uri videoUri;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+
 
     private static final String[] CAMERA_PERMISSION = {
             Manifest.permission.CAMERA,
@@ -94,7 +105,8 @@ public class SendFileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUser = ((MainActivity)getActivity()).getFirebaseAuth().getCurrentUser();
+        mAuth = ((MainActivity)getActivity()).getFirebaseAuth();
+        mUser = mAuth.getCurrentUser();
 
 
         // Note the use of getActivity() to reference the Activity holding this fragment
@@ -102,6 +114,8 @@ public class SendFileFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(mUser.getUid());
 
     }
 
@@ -174,32 +188,47 @@ public class SendFileFragment extends Fragment {
                 Log.d(TAG, e.toString());
                 progressDialog.dismiss();
             }
-
             // FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             String[] uriPath = uri.split("/[a-zA-z0-9]");
             String uriString = uriPath[uriPath.length-1];
 
-            StorageReference videoRef = storageRef.child("Users/" + userId + "/videos/" + uriString);
-            UploadTask uploadTask = videoRef.putStream(stream);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                    Log.d(TAG, "An error occurred when uploading the video: " + exception);
+            final StorageReference ref = storageRef.child("Users/" + userId + "/videos/" + uriString);
+            UploadTask uploadTask = ref.putStream(stream);
+            uploadToFirebase(ref, uploadTask);
+             // videoUri = urlTask;
+            // Log.d(TAG, "Video uri: " + videoUri);
+        }
+    }
+
+    private void uploadToFirebase(final StorageReference ref, UploadTask uploadTask) {
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    Log.d(TAG, "An error occurred when uploading the video: " + task.getException());
                     Toast.makeText(getActivity(), "An error occurred when uploading the video", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
+                    throw task.getException();
                 }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                    Log.d(TAG, "Upload video succeeded: " + taskSnapshot.toString());
-                    Toast.makeText(getActivity(), "The video was successfully uploaded", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Video uri: " + ref.getDownloadUrl());
+                // Continue with the task to get the download URL
+                return ref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    videoUri = downloadUri;
                     progressDialog.dismiss();
+                } else {
+                    Log.d(TAG, "An error occurred when uploading the video: " + task.getException());
+                    progressDialog.dismiss();
+                    Toast.makeText(getActivity(), "An error occurred when uploading the video", Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+            }
+        });
     }
 
     // Gets the path from the URI so the video captured can be uploaded to Firebase Storage
@@ -228,4 +257,22 @@ public class SendFileFragment extends Fragment {
         }
     }
 
+    @OnClick(R.id.packetSubmitBtn)
+    public void sendPacket() {
+        String name = packetNameTV.getText().toString();
+        String dob = packetDateOfBirthTV.getText().toString();
+        String gender = packetGenderTV.getText().toString();
+        String height = packetHeightTV.getText().toString();
+        String weight = packetWeightTV.getText().toString();
+        String medical = packetMedicalTV.getText().toString();
+        String allergies = packetAllergiesTV.getText().toString();
+        String message = packetMessageET.getText().toString();
+
+        reference.child("Packet").child("name").setValue(name);
+        reference.child("Packet").child("DOB").setValue(dob);
+        reference.child("Packet").child("gender").setValue(gender);
+
+        reference.child("Packet").child("allergies").setValue(allergies);
+        reference.child("Packet").child("medication").setValue(medical);
+    }
 }
