@@ -10,6 +10,7 @@
 
         <TextView
             android:id="@+id/nameLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -19,17 +20,8 @@
             android:text="Name: " />
 
         <TextView
-            android:id="@+id/nameTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="200dp"
-            android:layout_marginTop="30dp"
-            android:text="A"/>
-
-        <TextView
             android:id="@+id/genderLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/nameLabelTV"
@@ -37,15 +29,8 @@
             android:text="Gender: " />
 
         <TextView
-            android:id="@+id/genderTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/nameTV"
-            android:layout_below="@+id/nameTV"
-            android:text="A"/>
-
-        <TextView
             android:id="@+id/dobLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/genderLabelTV"
@@ -53,15 +38,8 @@
             android:text="DoB: " />
 
         <TextView
-            android:id="@+id/dobTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/genderTV"
-            android:layout_below="@+id/genderTV"
-            android:text="A"/>
-
-        <TextView
             android:id="@+id/phoneLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/dobLabelTV"
@@ -69,15 +47,8 @@
             android:text="Phone No: " />
 
         <TextView
-            android:id="@+id/phoneTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/dobTV"
-            android:layout_below="@+id/dobTV"
-            android:text="A"/>
-
-        <TextView
             android:id="@+id/weightLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/phoneLabelTV"
@@ -85,15 +56,8 @@
             android:text="Weight (kg): " />
 
         <TextView
-            android:id="@+id/weightTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/phoneTV"
-            android:layout_below="@+id/phoneTV"
-            android:text="A"/>
-
-        <TextView
             android:id="@+id/heightLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/weightLabelTV"
@@ -101,15 +65,8 @@
             android:text="Height (cm): " />
 
         <TextView
-            android:id="@+id/heightTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/weightTV"
-            android:layout_below="@+id/weightTV"
-            android:text="A"/>
-
-        <TextView
             android:id="@+id/allergiesLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/heightLabelTV"
@@ -117,15 +74,8 @@
             android:text="Allergies: " />
 
         <TextView
-            android:id="@+id/allergiesTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/heightTV"
-            android:layout_below="@+id/heightTV"
-            android:text="A"/>
-
-        <TextView
             android:id="@+id/medicationLabelTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/allergiesLabelTV"
@@ -133,17 +83,78 @@
             android:text="Medication: " />
 
         <TextView
+            android:id="@+id/nameTV"
+            style="@style/patientInfoTVSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="210dp"
+            android:layout_marginTop="30dp"
+            android:text="A"/>
+
+        <TextView
+            android:id="@+id/genderTV"
+            style="@style/patientInfoTVSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/nameTV"
+            android:layout_below="@+id/nameTV"
+            android:text="A" />
+
+        <TextView
+            android:id="@+id/dobTV"
+            style="@style/patientInfoTVSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/genderTV"
+            android:layout_below="@+id/genderTV"
+            android:text="A" />
+
+        <TextView
+            android:id="@+id/phoneTV"
+            style="@style/patientInfoTVSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/dobTV"
+            android:layout_below="@+id/dobTV"
+            android:text="A" />
+
+        <TextView
+            android:id="@+id/weightTV"
+            style="@style/patientInfoTVSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/phoneTV"
+            android:layout_below="@+id/phoneTV"
+            android:text="A" />
+
+        <TextView
+            android:id="@+id/heightTV"
+            style="@style/patientInfoTVSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/weightTV"
+            android:layout_below="@+id/weightTV"
+            android:text="A" />
+
+        <TextView
+            android:id="@+id/allergiesTV"
+            style="@style/patientInfoTVSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/heightTV"
+            android:layout_below="@+id/heightTV"
+            android:text="A" />
+
+        <TextView
             android:id="@+id/medicationTV"
+            style="@style/patientInfoTVSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/allergiesTV"
             android:layout_below="@+id/allergiesTV"
-            android:text="A"/>
-
-
-
+            android:text="A" />
 
     </RelativeLayout>
-
-
 </FrameLayout>
