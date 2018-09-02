@@ -7,6 +7,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -109,7 +110,6 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
 
-
     // Checkboxes
     @BindView(R.id.packetGenderCheck)
     CheckBox packetGenderCheck;
@@ -129,6 +129,9 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetAllergiesCheck)
     CheckBox packetAllergiesCheck;
 
+    @BindView(R.id.packetGPSCheck)
+    CheckBox packetGPSCheck;
+
     public SendFileFragment() {
         // Required empty public constructor
     }
@@ -138,7 +141,6 @@ public class SendFileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mAuth = ((MainActivity)getActivity()).getFirebaseAuth();
         mUser = mAuth.getCurrentUser();
-
 
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Send file");
@@ -208,8 +210,6 @@ public class SendFileFragment extends Fragment {
             progressDialog.show();
             Uri videoUri = data.getData();
             Log.d(TAG, "onActivityResult: done taking a video");
-//            mVideoView.setVideoURI(videoUri);
-//            mVideoView.start();
 
             String uri = getRealPathFromURI(videoUri);
             InputStream stream = null;
@@ -219,21 +219,21 @@ public class SendFileFragment extends Fragment {
                 Log.d(TAG, e.toString());
                 progressDialog.dismiss();
             }
-            // FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
+
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            // Gets the filename which is added to Firebase
             String[] uriPath = uri.split("/[a-zA-z0-9]");
             String uriString = uriPath[uriPath.length-1];
 
             final StorageReference ref = storageRef.child("Users/" + userId + "/videos/" + uriString);
             UploadTask uploadTask = ref.putStream(stream);
             uploadToFirebase(ref, uploadTask);
-             // videoUri = urlTask;
-            // Log.d(TAG, "Video uri: " + videoUri);
         }
     }
 
     private void uploadToFirebase(final StorageReference ref, UploadTask uploadTask) {
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
@@ -306,6 +306,7 @@ public class SendFileFragment extends Fragment {
         userProfile.put("name", name);
         userProfile.put("DOB", DOB);
 
+        // TODO: This should be a loop if possible
         if(packetGenderCheck.isChecked())
             userProfile.put("gender", gender);
         else
@@ -336,8 +337,15 @@ public class SendFileFragment extends Fragment {
         else
             userProfile.put("medication", "");
 
+        // TODO: Get Coordinates to send
+        if(packetGPSCheck.isChecked())
+            userProfile.put("coordinates", "");
+        else
+            userProfile.put("coordinates", "");
+
         userProfile.put("message", message);
 
+        // Sets an empty string if videoURI has not been set
         try {
             userProfile.put("videoURI", videoUri.toString());
         } catch(Exception e) {
@@ -345,7 +353,14 @@ public class SendFileFragment extends Fragment {
 
         }
 
+        // Creates a database reference with a unique ID and provides it with the data packet
         DatabaseReference ref = reference.child("Packets").push();
         ref.setValue(userProfile);
+    }
+
+    private String getLocation() {
+        LocationManager locationManager = (LocationManager)
+                getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+        return "";
     }
 }

@@ -5,14 +5,8 @@
             android:id="@+id/nav_patient_info"
             android:title="@string/patient_information" />
         <item
-            android:id="@+id/nav_data_packet"
-            android:title="@string/create_data_packet" />
-        <item
             android:id="@+id/nav_heartrate"
             android:title="@string/heart_rate" />
-        <item
-            android:id="@+id/nav_recordvideo"
-            android:title="@string/record_video" />
         <item
             android:id="@+id/nav_sendfile"
             android:title="@string/send_local_file" />

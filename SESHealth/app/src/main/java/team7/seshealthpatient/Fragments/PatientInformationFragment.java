@@ -60,8 +60,7 @@ public class PatientInformationFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Note the use of getActivity() to reference the Activity holding this fragment
-        mUser = ((MainActivity)getActivity()).getFirebaseAuth().getCurrentUser();
-        getActivity().setTitle("Welcome " + mUser.getDisplayName());
+        getActivity().setTitle("Patient Information");
     }
 
     @Override
