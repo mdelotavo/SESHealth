@@ -19,15 +19,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +55,7 @@ public class SendFileFragment extends Fragment {
     private static final int  CAMERA_REQUEST_CODE = 5;
     private FirebaseStorage storage;
     private StorageReference storageRef;
+    private FirebaseUser mUser;
     private ProgressDialog progressDialog;
 
     private static final String[] CAMERA_PERMISSION = {
@@ -57,11 +63,29 @@ public class SendFileFragment extends Fragment {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    @BindView(R.id.packetCameraBtn)
-    Button cameraBtn;
+    @BindView(R.id.packetNameTV)
+    TextView packetNameTV;
 
-//    @BindView(R.id.cameraVideoView)
-//    VideoView mVideoView;
+    @BindView(R.id.packetDateOfBirthTV)
+    TextView packetDateOfBirthTV;
+
+    @BindView(R.id.packetGenderTV)
+    TextView packetGenderTV;
+
+    @BindView(R.id.packetHeightTV)
+    TextView packetHeightTV;
+
+    @BindView(R.id.packetWeightTV)
+    TextView packetWeightTV;
+
+    @BindView(R.id.packetMedicalTV)
+    TextView packetMedicalTV;
+
+    @BindView(R.id.packetAllergiesTV)
+    TextView packetAllergiesTV;
+
+    @BindView(R.id.packetMessageET)
+    EditText packetMessageET;
 
     public SendFileFragment() {
         // Required empty public constructor
@@ -70,20 +94,33 @@ public class SendFileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mUser = ((MainActivity)getActivity()).getFirebaseAuth().getCurrentUser();
+
 
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Send file");
         progressDialog = new ProgressDialog(getActivity());
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_send_file, container, false);
         ButterKnife.bind(this, v);
+
+        TextView[] textViewsProfile = {packetNameTV, packetDateOfBirthTV, packetGenderTV};
+        TextView[] textViews = {packetAllergiesTV, packetMedicalTV};
+
+        String[] childrenProfile = {"name", "DOB", "gender"};
+        String[] children = {"allergies", "medication"};
+
+        setTVValuesProfile(textViewsProfile, childrenProfile);
+        setTVValues(textViews, children);
+
+        // Inflate the layout for this fragment
         return v;
     }
 
@@ -91,6 +128,16 @@ public class SendFileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Now that the view has been created, we can use butter knife functionality
+    }
+
+    public void setTVValuesProfile(TextView[] textViews, String[] children) {
+        for (int i = 0; i < textViews.length; i++)
+            ((MainActivity)getActivity()).setTVValuesProfile(textViews[i], children[i]);
+    }
+
+    public void setTVValues(TextView[] textViews, String[] children) {
+        for (int i = 0; i < textViews.length; i++)
+            ((MainActivity)getActivity()).setTVValues(textViews[i], children[i]);
     }
 
     // During onClick event, the camera application will open up allowing users to record video
