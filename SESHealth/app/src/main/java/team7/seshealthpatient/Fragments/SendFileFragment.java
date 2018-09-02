@@ -291,7 +291,7 @@ public class SendFileFragment extends Fragment {
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
         userProfile.put("message", message);
-        userProfile.put("videoURI", videoUri);
+        userProfile.put("videoURI", videoUri.toString());
         DatabaseReference ref = reference.child("Packets").push();
         ref.setValue(userProfile);
 
