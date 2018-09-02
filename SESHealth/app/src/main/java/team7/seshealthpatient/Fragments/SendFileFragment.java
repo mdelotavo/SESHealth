@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.health.TimerStat;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,6 +45,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,7 +71,7 @@ public class SendFileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private ProgressDialog progressDialog;
-    private Uri videoUri;
+    private Uri videoUri = null;
     private FirebaseDatabase database;
     private DatabaseReference reference;
 
@@ -82,6 +89,9 @@ public class SendFileFragment extends Fragment {
 
     @BindView(R.id.packetGenderTV)
     TextView packetGenderTV;
+
+    @BindView(R.id.packetMobileTV)
+    TextView packetMobileTV;
 
     @BindView(R.id.packetHeightTV)
     TextView packetHeightTV;
@@ -125,10 +135,10 @@ public class SendFileFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_send_file, container, false);
         ButterKnife.bind(this, v);
 
-        TextView[] textViewsProfile = {packetNameTV, packetDateOfBirthTV, packetGenderTV};
+        TextView[] textViewsProfile = {packetNameTV, packetDateOfBirthTV, packetGenderTV, packetMobileTV};
         TextView[] textViews = {packetAllergiesTV, packetMedicalTV};
 
-        String[] childrenProfile = {"name", "DOB", "gender"};
+        String[] childrenProfile = {"name", "DOB", "gender", "phoneNO"};
         String[] children = {"allergies", "medication"};
 
         setTVValuesProfile(textViewsProfile, childrenProfile);
@@ -260,19 +270,36 @@ public class SendFileFragment extends Fragment {
     @OnClick(R.id.packetSubmitBtn)
     public void sendPacket() {
         String name = packetNameTV.getText().toString();
-        String dob = packetDateOfBirthTV.getText().toString();
+        String DOB = packetDateOfBirthTV.getText().toString();
         String gender = packetGenderTV.getText().toString();
+        String mobile = packetMobileTV.getText().toString();
         String height = packetHeightTV.getText().toString();
         String weight = packetWeightTV.getText().toString();
-        String medical = packetMedicalTV.getText().toString();
+        String medication = packetMedicalTV.getText().toString();
         String allergies = packetAllergiesTV.getText().toString();
         String message = packetMessageET.getText().toString();
 
-        reference.child("Packet").child("name").setValue(name);
-        reference.child("Packet").child("DOB").setValue(dob);
-        reference.child("Packet").child("gender").setValue(gender);
+        Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        Map userProfile = new HashMap();
+        userProfile.put("Timestamp", currentTimestamp.toString());
+        userProfile.put("name", name);
+        userProfile.put("DOB", DOB);
+        userProfile.put("gender", gender);
+        userProfile.put("mobile", mobile);
+        userProfile.put("height", height);
+        userProfile.put("weight", weight);
+        userProfile.put("allergies", allergies);
+        userProfile.put("medication", medication);
+        userProfile.put("message", message);
+        userProfile.put("videoURI", videoUri);
+        DatabaseReference ref = reference.child("Packets").push();
+        ref.setValue(userProfile);
 
-        reference.child("Packet").child("allergies").setValue(allergies);
-        reference.child("Packet").child("medication").setValue(medical);
     }
+
+    private String getPacketNumber() {
+        reference.child("Packet");
+        return "";
+    }
+
 }

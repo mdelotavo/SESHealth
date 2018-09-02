@@ -62,19 +62,34 @@
             android:text="Not set" />
 
         <TextView
-            android:id="@+id/packetHeightLabelTV"
+            android:id="@+id/packetMobileLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/packetGenderLabelTV"
             android:layout_below="@+id/packetGenderLabelTV"
+            android:text="Mobile:" />
+        <TextView
+            android:id="@+id/packetMobileTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetGenderTV"
+            android:layout_below="@+id/packetGenderTV"
+            android:text="Not set" />
+
+        <TextView
+            android:id="@+id/packetHeightLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetMobileLabelTV"
+            android:layout_below="@+id/packetMobileLabelTV"
             android:text="Height:" />
 
         <TextView
             android:id="@+id/packetHeightTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/packetGenderTV"
-            android:layout_below="@+id/packetGenderTV"
+            android:layout_alignStart="@+id/packetMobileTV"
+            android:layout_below="@+id/packetMobileTV"
             android:text="Not set" />
 
         <TextView
