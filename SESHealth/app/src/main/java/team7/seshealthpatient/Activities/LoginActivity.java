@@ -142,11 +142,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
-
-        /*// A reference to the toolbar, that way we can modify it as we please
-        Toolbar toolbar = findViewById(R.id.login_toolbar);
-        setSupportActionBar(toolbar);*/
-
         emailInputLayout.setHintEnabled(false);
         passwordInputLayout.setHintEnabled(false);
 
