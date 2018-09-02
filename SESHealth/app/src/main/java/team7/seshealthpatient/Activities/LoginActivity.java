@@ -52,6 +52,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shobhitpuri.custombuttons.GoogleSignInButton;
 
 import org.w3c.dom.Text;
 
@@ -105,11 +106,11 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.loginPasswordET)
     EditText loginPasswordET;
 
-    @BindView(R.id.forgotPwTV)
-    TextView forgotPwText;
+    @BindView(R.id.resetPwTV)
+    TextView resetPwTv;
 
     @BindView(R.id.googleBtn)
-    SignInButton mGoogleBtn;
+    GoogleSignInButton mGoogleBtn;
 
     /**
      * It is helpful to create a tag for every activity/fragment. It will be easier to understand
@@ -194,13 +195,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // Navigation method to 'CreateAccountActivity'
-    @OnClick(R.id.navToRegisterBtn)
+    @OnClick(R.id.createAccTV)
     public void navToRegisterPage() {
         startActivity(new Intent(this, CreateAccountActivity.class));
     }
 
     // Navigation method to 'ForgotPasswordFragment'
-    @OnClick(R.id.forgotPwTV)
+    @OnClick(R.id.resetPwTV)
     public void navToForgotPw() {
         startActivity(new Intent(this, ForgotPasswordActivity.class));
     }
@@ -389,6 +390,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public void startSetup() {
         startActivity(new Intent(LoginActivity.this, SetupActivity.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finishAffinity();
     }
 }
 

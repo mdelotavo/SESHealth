@@ -35,6 +35,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.0'
 
+    /*
+    * https://github.com/shobhitpuri/custom-google-signin-button/
+    */
+    implementation 'com.shobhitpuri.custombuttons:google-signin:1.0.0'
+
 
 
     /**

@@ -191,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.logout:
                                 if (currentState != MenuStates.LOGOUT) {
                                     mAuth.signOut();
-                                    finish();
                                 }
                                 break;
                         }
