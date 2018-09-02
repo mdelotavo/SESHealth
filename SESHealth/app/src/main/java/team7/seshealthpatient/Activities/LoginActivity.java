@@ -295,8 +295,16 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         } else {
                             Log.d(TAG, "signInWithEmail: failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed",
-                                    Toast.LENGTH_SHORT).show();
+                            String invalidUser = "com.google.firebase.auth.FirebaseAuthInvalidUserException";
+                            String invalidCredentials = "com.google.firebase.auth.FirebaseAuthInvalidCredentialsException";
+                            String exceptionString = task.getException().toString();
+                            if(exceptionString.startsWith(invalidUser) || exceptionString.startsWith(invalidCredentials)) {
+                                Toast.makeText(LoginActivity.this, "You have entered an invalid username or password",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "An error occurred during logging in, please try again",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });

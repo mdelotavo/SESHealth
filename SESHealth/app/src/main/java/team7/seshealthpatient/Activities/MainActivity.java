@@ -4,10 +4,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -22,7 +21,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,8 +35,8 @@ import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
-import team7.seshealthpatient.Fragments.RecordVideoFragment;
 import team7.seshealthpatient.Fragments.SendFileFragment;
+import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
 
@@ -91,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, LOGOUT
+        PATIENT_INFO, DATA_PACKET, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
     }
 
     /**
@@ -170,12 +168,6 @@ public class MainActivity extends AppCompatActivity {
                                     currentState = MenuStates.HEARTRATE;
                                 }
                                 break;
-                            case R.id.nav_recordvideo:
-                                if (currentState != MenuStates.RECORD_VIDEO) {
-                                    ChangeFragment(new RecordVideoFragment());
-                                    currentState = MenuStates.RECORD_VIDEO;
-                                }
-                                break;
                             case R.id.nav_sendfile:
                                 if (currentState != MenuStates.SEND_FILE) {
                                     ChangeFragment(new SendFileFragment());
@@ -186,6 +178,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     ChangeFragment(new MapFragment());
                                     currentState = MenuStates.NAVIGATION_MAP;
+                                }
+                                break;
+                            case R.id.nav_settings:
+                                if (currentState != MenuStates.SETTINGS) {
+                                    ChangeFragment(new SettingsFragment());
+                                    currentState = MenuStates.SETTINGS;
                                 }
                                 break;
                             case R.id.logout:
@@ -238,6 +236,18 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+    /**
+        Using this at the moment to stop the activity being recreated on orientation change
+        This is needed as otherwise it will overlay any fragment with the patient info fragment
+    **/
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "Providers: " + FirebaseAuth.getInstance().getCurrentUser().getProviders().toString());
+    }
+
+
 
     /**
      * Called when one of the items in the toolbar was clicked, in this case, the menu button.
@@ -260,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
     public void ChangeTitle(String newTitle) {
         toolbar.setTitle(newTitle);
     }
-
 
     /**
      * This function allows to change the content of the Fragment holder
@@ -304,5 +313,9 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuth;
     }
 }
