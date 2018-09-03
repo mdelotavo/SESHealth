@@ -2,6 +2,7 @@ package team7.seshealthpatient.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,14 @@ public class ChatFragment extends Fragment {
 
     public ChatFragment() {
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Note the use of getActivity() to reference the Activity holding this fragment
+        getActivity().setTitle("Chat");
     }
 
     @Override
