@@ -50,7 +50,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
 
         progressDialog = new ProgressDialog(this);
-
     }
 
     @Override
@@ -69,7 +68,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
 
     @OnClick(R.id.forgotPasswordBtn)
     public void sendPasswordResetEmail() {
@@ -97,8 +95,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         } else {
             Toast.makeText(ForgotPasswordActivity.this, getString(R.string.emailCheck_toast), Toast.LENGTH_SHORT).show();
         }
-
     }
 
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
 }

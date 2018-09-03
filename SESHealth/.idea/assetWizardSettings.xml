@@ -3,11 +3,16 @@
   <component name="WizardSettings">
     <option name="children">
       <map>
+
         <entry key="imageWizard">
+=======
+        <entry key="vectorWizard">
+
           <value>
             <PersistentState>
               <option name="children">
                 <map>
+
                   <entry key="imageAssetPanel">
                     <value>
                       <PersistentState>
@@ -57,6 +62,17 @@
                         <option name="values">
                           <map>
                             <entry key="outputIconType" value="ACTIONBAR" />
+
+                  <entry key="vectorAssetStep">
+                    <value>
+                      <PersistentState>
+                        <option name="values">
+                          <map>
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="opacityPercent" value="80" />
+                            <entry key="outputName" value="ic_lock_outline" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/app/src/main/res/drawable/outline-lock-24px.svg" />
+
                           </map>
                         </option>
                       </PersistentState>
