@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="EditMenuCancel"
+        android:id="@+id/edit_menu_cancel"
+        android:icon="@drawable/ic_cancel_outline"
+        app:showAsAction="always"/>
+
+    <item
+        android:title="EditMenuSave"
+        android:id="@+id/edit_menu_save"
+        android:icon="@drawable/ic_save_outline"
+        app:showAsAction="always"/>
+
+</menu>
