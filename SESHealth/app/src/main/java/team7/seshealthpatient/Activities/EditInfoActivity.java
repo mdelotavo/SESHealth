@@ -93,7 +93,7 @@ public class EditInfoActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.edit_menu_save:
                 updateValues();
-                Toast.makeText(this, "save", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.edit_menu_cancel:
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
@@ -149,5 +149,12 @@ public class EditInfoActivity extends AppCompatActivity {
                 else
                     reference.child(children[i]).setValue(editTexts[i].getText().toString().trim());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
