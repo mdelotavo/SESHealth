@@ -303,7 +303,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             mLastKnownLocation = task.getResult();
-                            ((MainActivity)getActivity()).setUserLocation(mLastKnownLocation);
                             if (mLastKnownLocation == null){
                                 mGoogleMap.moveCamera(CameraUpdateFactory
                                         .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
@@ -312,6 +311,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                ((MainActivity)getActivity()).setUserLocation(mLastKnownLocation);
                             }
                         } else {
                             mGoogleMap.moveCamera(CameraUpdateFactory
