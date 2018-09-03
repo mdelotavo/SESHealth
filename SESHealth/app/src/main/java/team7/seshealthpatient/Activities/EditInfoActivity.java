@@ -78,7 +78,10 @@ public class EditInfoActivity extends AppCompatActivity {
         initializeArrays();
 
         for (int i = 0; i < editTexts.length; i++)
-            setETHints(editTexts[i], children[i], i, labels[i]);
+            if (i < 3)
+                setETHintsProfile(editTexts[i], children[i], labels[i]);
+            else
+                setETHints(editTexts[i], children[i], labels[i]);
     }
 
     @Override
@@ -109,19 +112,35 @@ public class EditInfoActivity extends AppCompatActivity {
         return true;
     }
 
-    public void setETHints(final EditText editText, String child, int i, final String label) {
-        if (i < 3)
-            reference = reference.child("Profile");
-        else
-            reference = database.getReference("Users").child(fireBaseUser.getUid());
+    public void setETHints(final EditText editText, String child, final String label) {
 
         reference.child(child)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null)
+                        if (dataSnapshot.getValue() == null) {
                             editText.setHint(label + "null");
-                        else
+                            Toast.makeText(EditInfoActivity.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
+                        } else
+                            editText.setHint(label + dataSnapshot.getValue().toString());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+    }
+
+    public void setETHintsProfile(final EditText editText, String child, final String label) {
+
+        reference.child("Profile").child(child)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() == null) {
+                            editText.setHint(label + "null");
+                            Toast.makeText(EditInfoActivity.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
+                        } else
                             editText.setHint(label + dataSnapshot.getValue().toString());
                     }
 
