@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,9 +15,9 @@
         tools:context="team7.seshealthpatient.Fragments.PatientInformationFragment">
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/nameLabelTV"
@@ -38,9 +44,9 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/genderLabelTV"
@@ -67,9 +73,9 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/dobLabelTV"
@@ -96,9 +102,9 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/phoneLabelTV"
@@ -125,9 +131,9 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/weightLabelTV"
@@ -154,9 +160,9 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/heightLabelTV"
@@ -183,9 +189,9 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/allergiesLabelTV"
@@ -212,9 +218,9 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/cardViewInfoStyle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/medicationLabelTV"
@@ -240,3 +246,4 @@
         </android.support.v7.widget.CardView>
 
     </LinearLayout>
+</ScrollView>
