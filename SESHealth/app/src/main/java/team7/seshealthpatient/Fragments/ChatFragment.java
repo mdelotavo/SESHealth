@@ -33,10 +33,13 @@ public class ChatFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
         FloatingActionButton fab = v.findViewById(R.id.fab);
+        final EditText input = v.findViewById(R.id.input);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toastMessage("sent");
+                input.setText("");
             }
         });
 
