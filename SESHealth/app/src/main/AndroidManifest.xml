@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="team7.seshealthpatient">
 
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="com.google.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <uses-feature android:name="android.hardware.camera"/>
     <uses-feature android:name="android.hardware.camera.flash"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -12,6 +19,7 @@
     <uses-permission android:name="android.hardware.camera2.full" android:required="true" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +27,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCGgXz5rhoUx-TgIzy1vcPHvYsCiHieSH4"/>
+
+
         <activity
             android:name=".Activities.LoginActivity"
             android:configChanges="orientation|screenSize">
