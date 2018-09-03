@@ -7,6 +7,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -73,10 +75,9 @@ public class SendFileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private ProgressDialog progressDialog;
-    private Uri videoUri = null;
     private FirebaseDatabase database;
     private DatabaseReference reference;
-
+    private Uri videoUri = null;
 
     private static final String[] CAMERA_PERMISSION = {
             Manifest.permission.CAMERA,
@@ -149,7 +150,6 @@ public class SendFileFragment extends Fragment {
         storageRef = storage.getReference();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(mUser.getUid());
-
     }
 
     @Override
@@ -337,11 +337,10 @@ public class SendFileFragment extends Fragment {
         else
             userProfile.put("medication", "");
 
-        // TODO: Get Coordinates to send
         if(packetGPSCheck.isChecked())
-            userProfile.put("coordinates", "");
+            userProfile.put("coordinates", getLocation(true));
         else
-            userProfile.put("coordinates", "");
+            userProfile.put("coordinates", getLocation(false));
 
         userProfile.put("message", message);
 
@@ -356,11 +355,24 @@ public class SendFileFragment extends Fragment {
         // Creates a database reference with a unique ID and provides it with the data packet
         DatabaseReference ref = reference.child("Packets").push();
         ref.setValue(userProfile);
+
     }
 
-    private String getLocation() {
-        LocationManager locationManager = (LocationManager)
-                getActivity().getSystemService(getActivity().LOCATION_SERVICE);
-        return "";
+    private Map getLocation(boolean isChecked) {
+        Location userLocation = ((MainActivity)getActivity()).getUserLocation();
+        Map coordinates = new HashMap();
+        if(isChecked) {
+            try {
+                coordinates.put("latitude", userLocation.getLatitude());
+                coordinates.put("longitude", userLocation.getLongitude());
+            } catch(Exception e) {
+                coordinates.put("latitude", 0);
+                coordinates.put("longitude", 0);
+            }
+        } else {
+            coordinates.put("latitude", 0);
+            coordinates.put("longitude", 0);
+        }
+        return coordinates;
     }
 }

@@ -63,7 +63,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.LoginActivity" />
         </activity>
-        <activity android:name=".Activities.HeartRateMonitor" />
+        <activity android:name=".HeartBeat.HeartRateMonitor" />
     </application>
 
 </manifest>
