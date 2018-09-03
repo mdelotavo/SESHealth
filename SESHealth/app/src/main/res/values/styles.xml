@@ -36,4 +36,17 @@
         <item name="android:visibility">invisible</item>
     </style>
 
+    <style name="toolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorControlNormal">#eee</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="cardViewInfoStyle" parent="CardView">
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="cardElevation">5dp</item>
+    </style>
+
 </resources>

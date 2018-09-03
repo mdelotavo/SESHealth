@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import butterknife.BindView;
 import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
@@ -98,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
      * The current fragment being displayed.
      */
     private MenuStates currentState;
+
+    @BindView(R.id.nav_patient_info)
+    MenuItem patientInfoMenuItem;
 
 
     @Override
@@ -231,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.fragment_container, new PatientInformationFragment());
         ft.commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
