@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -31,6 +32,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -41,8 +44,10 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -54,17 +59,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import team7.seshealthpatient.MapModels.GetNearbyPlacesData;
 import team7.seshealthpatient.PlaceAutocompleteAdapter;
 import team7.seshealthpatient.R;
-import team7.seshealthpatient.models.CustomInfoWindowAdapter;
-import team7.seshealthpatient.models.PlaceInfo;
+import team7.seshealthpatient.MapModels.CustomInfoWindowAdapter;
+import team7.seshealthpatient.MapModels.PlaceInfo;
 
 import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener{
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -81,16 +87,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
     private LatLng mDefaultLocation = new LatLng(-33.86, 151.2);
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 13;
     private static final int PLACE_PICKER_REQUEST = 1;
     private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
+    int PROXIMITY_RADIUS = 10000;
+
+
     //widgets
-    private AutoCompleteTextView mSearchText;
-    private ImageView mGps, mInfo, mPlacePicker;
+//    private AutoCompleteTextView mSearchText;
+    private ImageView mGps, mInfo, mPlacePicker, mHospital;
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
@@ -126,10 +135,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         //for search bar
-        mSearchText = view.findViewById(R.id.input_search);
+//        mSearchText = view.findViewById(R.id.input_search);
         mGps = view.findViewById(R.id.ic_gps);
         mInfo = view.findViewById(R.id.place_info);
         mPlacePicker = view.findViewById(R.id.place_picker);
+        mHospital = view.findViewById(R.id.hospitals);
 
         //for exact location
         mGeoDataClient = Places.getGeoDataClient(getActivity());
@@ -141,6 +151,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mMapView.onResume();
         return view;
     }
+
+//    @Override
+//    public void onLocationChanged(Location location) {
+//
+//        latitude = location.getLatitude();
+//        longitude = location.getLongitude();
+//        lastlocation = location;
+//        if(currentLocationmMarker != null)
+//        {
+//            currentLocationmMarker.remove();
+//
+//        }
+//        Log.d("lat = ",""+latitude);
+//        LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Current Location");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//        currentLocationmMarker = mGoogleMap.addMarker(markerOptions);
+//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//        mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(10));
+//
+//        if(mGoogleApiClient != null)
+//        {
+//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (LocationListener) getActivity());
+//        }
+//    }
 
     private void init(){
         Log.d(TAG, "init: initializing");
@@ -156,28 +193,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
 
-        mSearchText.setOnItemClickListener(mAutocompleteClickListener);
-
-        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
-                LAT_LNG_BOUNDS, null);
-
-        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
-
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-
-                    //execute our method for searching
-                    geoLocate();
-                }
-
-                return false;
-            }
-        });
+//        mSearchText.setOnItemClickListener(mAutocompleteClickListener);
+//
+//        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
+//                LAT_LNG_BOUNDS, null);
+//
+//        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
+//
+//        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+//                if(actionId == EditorInfo.IME_ACTION_SEARCH
+//                        || actionId == EditorInfo.IME_ACTION_DONE
+//                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+//                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+//
+//                    //execute our method for searching
+//                    geoLocate();
+//                }
+//
+//                return false;
+//            }
+//        });
 
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,8 +257,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             }
         });
 
+        mHospital.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object dataTransfer[] = new Object[2];
+                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+
+                mGoogleMap.clear();
+                String hospital = "hospital";
+                String url = getUrl(hospital);
+                dataTransfer[0] = mGoogleMap;
+                dataTransfer[1] = url;
+
+                getNearbyPlacesData.execute(dataTransfer);
+                Toast.makeText(getActivity(), "Showing Nearby Hospitals", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         hideSoftKeyboard();
 
+    }
+
+
+
+
+    private String getUrl(String nearbyPlace)
+    {
+
+        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlaceUrl.append("location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude());
+        googlePlaceUrl.append("&radius="+ PROXIMITY_RADIUS);
+        googlePlaceUrl.append("&type="+ nearbyPlace);
+        googlePlaceUrl.append("&keyword=true");
+        googlePlaceUrl.append("&key="+"AIzaSyCGgXz5rhoUx-TgIzy1vcPHvYsCiHieSH4");
+
+
+        Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
+
+        return googlePlaceUrl.toString();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -238,30 +311,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         }
     }
 
-    private void geoLocate(){
-        Log.d(TAG, "geoLocate: geolocating");
-
-        String searchString = mSearchText.getText().toString();
-
-        Geocoder geocoder = new Geocoder(getActivity());
-        List<Address> list = new ArrayList<>();
-        try{
-            list = geocoder.getFromLocationName(searchString, 1);
-        }catch (IOException e){
-            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-        }
-
-        if(list.size() > 0){
-            Address address = list.get(0);
-
-            Log.d(TAG, "geoLocate: found a location: " + address.toString());
-            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
-                    address.getAddressLine(0));
-
-        }
-    }
+//    private void geoLocate(){
+//        Log.d(TAG, "geoLocate: geolocating");
+//
+//        String searchString = mSearchText.getText().toString();
+//
+//        Geocoder geocoder = new Geocoder(getActivity());
+//        List<Address> list = new ArrayList<>();
+//        try{
+//            list = geocoder.getFromLocationName(searchString, 1);
+//        }catch (IOException e){
+//            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
+//        }
+//
+//        if(list.size() > 0){
+//            Address address = list.get(0);
+//
+//            Log.d(TAG, "geoLocate: found a location: " + address.toString());
+//            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+//
+//            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
+//                    address.getAddressLine(0));
+//
+//        }
+//    }
 
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
