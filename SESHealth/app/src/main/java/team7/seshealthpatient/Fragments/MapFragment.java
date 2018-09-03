@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.MapModels.GetNearbyPlacesData;
 import team7.seshealthpatient.PlaceAutocompleteAdapter;
 import team7.seshealthpatient.R;
@@ -76,7 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-    private static final String TAG = "MapActivity";
+    private static final String TAG = "MapFragment";
 
     private GoogleMap mGoogleMap;
     private MapView mMapView;
@@ -105,10 +106,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     private PlaceInfo mPlace;
     private Marker mMarker;
 
-
-
-
-
     public MapFragment() {
         // Required empty public constructor
     }
@@ -124,9 +121,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         getDeviceLocation();
 
         init();
-
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,7 +130,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         //for search bar
-//        mSearchText = view.findViewById(R.id.input_search);
         mGps = view.findViewById(R.id.ic_gps);
         mInfo = view.findViewById(R.id.place_info);
         mPlacePicker = view.findViewById(R.id.place_picker);
@@ -152,33 +146,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         return view;
     }
 
-//    @Override
-//    public void onLocationChanged(Location location) {
-//
-//        latitude = location.getLatitude();
-//        longitude = location.getLongitude();
-//        lastlocation = location;
-//        if(currentLocationmMarker != null)
-//        {
-//            currentLocationmMarker.remove();
-//
-//        }
-//        Log.d("lat = ",""+latitude);
-//        LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(latLng);
-//        markerOptions.title("Current Location");
-//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-//        currentLocationmMarker = mGoogleMap.addMarker(markerOptions);
-//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        mGoogleMap.animateCamera(CameraUpdateFactory.zoomBy(10));
-//
-//        if(mGoogleApiClient != null)
-//        {
-//            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (LocationListener) getActivity());
-//        }
-//    }
-
     private void init(){
         Log.d(TAG, "init: initializing");
 
@@ -192,29 +159,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .build();
-
-//        mSearchText.setOnItemClickListener(mAutocompleteClickListener);
-//
-//        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
-//                LAT_LNG_BOUNDS, null);
-//
-//        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
-//
-//        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-//                if(actionId == EditorInfo.IME_ACTION_SEARCH
-//                        || actionId == EditorInfo.IME_ACTION_DONE
-//                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-//                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-//
-//                    //execute our method for searching
-//                    geoLocate();
-//                }
-//
-//                return false;
-//            }
-//        });
 
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,7 +188,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         mPlacePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                 try {
@@ -275,15 +218,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         });
 
         hideSoftKeyboard();
-
     }
 
-
-
-
-    private String getUrl(String nearbyPlace)
-    {
-
+    private String getUrl(String nearbyPlace) {
         StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlaceUrl.append("location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude());
         googlePlaceUrl.append("&radius="+ PROXIMITY_RADIUS);
@@ -291,15 +228,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         googlePlaceUrl.append("&keyword=true");
         googlePlaceUrl.append("&key="+"AIzaSyCGgXz5rhoUx-TgIzy1vcPHvYsCiHieSH4");
 
-
-        Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
+        Log.d(TAG, "url = " + googlePlaceUrl.toString());
 
         return googlePlaceUrl.toString();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(getActivity(), data);
@@ -310,31 +244,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             }
         }
     }
-
-//    private void geoLocate(){
-//        Log.d(TAG, "geoLocate: geolocating");
-//
-//        String searchString = mSearchText.getText().toString();
-//
-//        Geocoder geocoder = new Geocoder(getActivity());
-//        List<Address> list = new ArrayList<>();
-//        try{
-//            list = geocoder.getFromLocationName(searchString, 1);
-//        }catch (IOException e){
-//            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
-//        }
-//
-//        if(list.size() > 0){
-//            Address address = list.get(0);
-//
-//            Log.d(TAG, "geoLocate: found a location: " + address.toString());
-//            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-//
-//            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
-//                    address.getAddressLine(0));
-//
-//        }
-//    }
 
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
@@ -360,7 +269,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             }catch (NullPointerException e){
                 Log.e(TAG, "moveCamera: NullPointerException: " + e.getMessage() );
             }
-        }else{
+        } else{
             mGoogleMap.addMarker(new MarkerOptions().position(latLng));
         }
 
@@ -385,9 +294,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-
-
-
     private void getDeviceLocation() {
         try {
             if (mLocationPermissionGranted) {
@@ -405,6 +311,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                ((MainActivity)getActivity()).setUserLocation(mLastKnownLocation);
                             }
                         } else {
                             mGoogleMap.moveCamera(CameraUpdateFactory
@@ -418,7 +325,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             Log.e("Exception: %s", e.getMessage());
         }
     }
-
 
     @Override
     public void onResume() {
@@ -524,8 +430,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                 Log.d(TAG, "onResult: name: " + place.getName());
                 mPlace.setAddress(place.getAddress().toString());
                 Log.d(TAG, "onResult: address: " + place.getAddress());
-//                mPlace.setAttributions(place.getAttributions().toString());
-//                Log.d(TAG, "onResult: attributions: " + place.getAttributions());
                 mPlace.setId(place.getId());
                 Log.d(TAG, "onResult: id:" + place.getId());
                 mPlace.setLatlng(place.getLatLng());
@@ -548,6 +452,5 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             places.release();
         }
     };
-
 
 }
