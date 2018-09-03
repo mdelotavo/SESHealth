@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
+        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, CHAT, SETTINGS, LOGOUT
     }
 
     /**
@@ -171,6 +172,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     ChangeFragment(new MapFragment());
                                     currentState = MenuStates.NAVIGATION_MAP;
+                                }
+                                break;
+                            case R.id.nav_chat:
+                                if (currentState != MenuStates.CHAT) {
+                                    ChangeFragment(new ChatFragment());
+                                    currentState = MenuStates.CHAT;
                                 }
                                 break;
                             case R.id.nav_settings:
