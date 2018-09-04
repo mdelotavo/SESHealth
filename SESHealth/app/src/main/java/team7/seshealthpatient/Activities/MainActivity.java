@@ -4,10 +4,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -19,9 +21,11 @@ import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +36,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import butterknife.BindView;
+import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
+import team7.seshealthpatient.Fragments.RecordVideoFragment;
 import team7.seshealthpatient.Fragments.SendFileFragment;
-import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
 
@@ -90,13 +96,16 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
+        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP, LOGOUT
     }
 
     /**
      * The current fragment being displayed.
      */
     private MenuStates currentState;
+
+    @BindView(R.id.nav_patient_info)
+    MenuItem patientInfoMenuItem;
 
 
     @Override
@@ -118,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() == null) {
+                if (firebaseAuth.getCurrentUser() == null) {
                     finish();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
@@ -157,10 +166,22 @@ public class MainActivity extends AppCompatActivity {
                                     currentState = MenuStates.PATIENT_INFO;
                                 }
                                 break;
+                            case R.id.nav_data_packet:
+                                if (currentState != MenuStates.DATA_PACKET) {
+                                    ChangeFragment(new DataPacketFragment());
+                                    currentState = MenuStates.DATA_PACKET;
+                                }
+                                break;
                             case R.id.nav_heartrate:
                                 if (currentState != MenuStates.HEARTRATE) {
                                     ChangeFragment(new HeartRateFragment());
                                     currentState = MenuStates.HEARTRATE;
+                                }
+                                break;
+                            case R.id.nav_recordvideo:
+                                if (currentState != MenuStates.RECORD_VIDEO) {
+                                    ChangeFragment(new RecordVideoFragment());
+                                    currentState = MenuStates.RECORD_VIDEO;
                                 }
                                 break;
                             case R.id.nav_sendfile:
@@ -173,12 +194,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     ChangeFragment(new MapFragment());
                                     currentState = MenuStates.NAVIGATION_MAP;
-                                }
-                                break;
-                            case R.id.nav_settings:
-                                if (currentState != MenuStates.SETTINGS) {
-                                    ChangeFragment(new SettingsFragment());
-                                    currentState = MenuStates.SETTINGS;
                                 }
                                 break;
                             case R.id.logout:
@@ -224,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.fragment_container, new PatientInformationFragment());
         ft.commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -231,18 +247,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
-    /**
-        Using this at the moment to stop the activity being recreated on orientation change
-        This is needed as otherwise it will overlay any fragment with the patient info fragment
-    **/
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Log.d(TAG, "Providers: " + FirebaseAuth.getInstance().getCurrentUser().getProviders().toString());
-    }
-
-
 
     /**
      * Called when one of the items in the toolbar was clicked, in this case, the menu button.
@@ -266,8 +270,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(newTitle);
     }
 
+
     /**
      * This function allows to change the content of the Fragment holder
+     *
      * @param fragment The fragment to be displayed
      */
     private void ChangeFragment(Fragment fragment) {
@@ -279,9 +285,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
-        }else{
+        } else {
             this.finishAffinity();
         }
     }
@@ -290,8 +296,12 @@ public class MainActivity extends AppCompatActivity {
         reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else
+                    textView.setText(dataSnapshot.getValue().toString());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -302,8 +312,12 @@ public class MainActivity extends AppCompatActivity {
         reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else
+                    textView.setText(dataSnapshot.getValue().toString());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }

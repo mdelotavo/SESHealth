@@ -1,22 +1,26 @@
 package team7.seshealthpatient.Fragments;
 
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import team7.seshealthpatient.Activities.EditInfoActivity;
 import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
 
@@ -29,10 +33,11 @@ import team7.seshealthpatient.R;
  * This fragment's job will be that to display patients information, and be able to edit that
  * information (either edit it in this fragment or a new fragment, up to you!)
  * <p>
-
  */
 public class PatientInformationFragment extends Fragment {
-    private FirebaseUser mUser;
+
+    private TextView[] textViews;
+    private String[] children;
 
     @BindView(R.id.nameTV)
     TextView nameTV;
@@ -52,6 +57,12 @@ public class PatientInformationFragment extends Fragment {
     @BindView(R.id.genderTV)
     TextView genderTV;
 
+    @BindView(R.id.weightTV)
+    TextView weightTV;
+
+    @BindView(R.id.heightTV)
+    TextView heightTV;
+
     public PatientInformationFragment() {
     }
 
@@ -60,7 +71,7 @@ public class PatientInformationFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Note the use of getActivity() to reference the Activity holding this fragment
-        getActivity().setTitle("Patient Information");
+        getActivity().setTitle("Welcome User");
     }
 
     @Override
@@ -71,14 +82,15 @@ public class PatientInformationFragment extends Fragment {
 
         ButterKnife.bind(this, v);
 
-        TextView[] textViewsProfile = {nameTV, phoneTV, dobTV, genderTV};
-        TextView[] textViews = {allergiesTV, medicationTV};
+        setHasOptionsMenu(true);
 
-        String[] childrenProfile = {"name", "phoneNO", "DOB", "gender"};
-        String[] children = {"allergies", "medication"};
+        textViews = new TextView[]{nameTV, phoneTV, dobTV, genderTV, weightTV,
+                heightTV, allergiesTV, medicationTV};
 
-        setTVValuesProfile(textViewsProfile, childrenProfile);
-        setTVValues(textViews, children);
+        children = new String[]{"name", "phoneNO", "DOB", "gender", "weight",
+                "height", "allergies", "medication"};
+
+        setValuesInit();
 
         // Note how we are telling butter knife to bind during the on create view method
         ButterKnife.bind(this, v);
@@ -86,6 +98,11 @@ public class PatientInformationFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTVValues(textViews,children);
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -93,13 +110,28 @@ public class PatientInformationFragment extends Fragment {
         // Now that the view has been created, we can use butter knife functionality
     }
 
-    public void setTVValuesProfile(TextView[] textViews, String[] children) {
-        for (int i = 0; i < textViews.length; i++)
-            ((MainActivity)getActivity()).setTVValuesProfile(textViews[i], children[i]);
-    }
-
     public void setTVValues(TextView[] textViews, String[] children) {
         for (int i = 0; i < textViews.length; i++)
-        ((MainActivity)getActivity()).setTVValues(textViews[i], children[i]);
+            if (i < 6)
+                ((MainActivity) getActivity()).setTVValuesProfile(textViews[i], children[i]);
+            else
+                ((MainActivity) getActivity()).setTVValues(textViews[i], children[i]);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_info, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        startActivity(new Intent(getContext(), EditInfoActivity.class));
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setValuesInit() {
+        setTVValues(textViews, children);
     }
 }

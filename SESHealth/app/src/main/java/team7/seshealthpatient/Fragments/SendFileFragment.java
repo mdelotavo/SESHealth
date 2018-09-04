@@ -13,21 +13,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.health.TimerStat;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.Continuation;
@@ -61,8 +49,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -118,20 +104,6 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetMobileCheck)
     CheckBox packetMobileCheck;
 
-    @BindView(R.id.packetHeightCheck)
-    CheckBox packetHeightCheck;
-
-    @BindView(R.id.packetWeightCheck)
-    CheckBox packetWeightCheck;
-
-    @BindView(R.id.packetMedicalCheck)
-    CheckBox packetMedicalCheck;
-
-    @BindView(R.id.packetAllergiesCheck)
-    CheckBox packetAllergiesCheck;
-
-    @BindView(R.id.packetGPSCheck)
-    CheckBox packetGPSCheck;
 
     public SendFileFragment() {
         // Required empty public constructor
@@ -155,50 +127,8 @@ public class SendFileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_send_file, container, false);
-        ButterKnife.bind(this, v);
-
-        TextView[] textViewsProfile = {packetNameTV, packetDateOfBirthTV, packetGenderTV, packetMobileTV};
-        TextView[] textViews = {packetAllergiesTV, packetMedicalTV};
-
-        String[] childrenProfile = {"name", "DOB", "gender", "phoneNO"};
-        String[] children = {"allergies", "medication"};
-
-        setTVValuesProfile(textViewsProfile, childrenProfile);
-        setTVValues(textViews, children);
-
         // Inflate the layout for this fragment
-        return v;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // Now that the view has been created, we can use butter knife functionality
-    }
-
-    public void setTVValuesProfile(TextView[] textViews, String[] children) {
-        for (int i = 0; i < textViews.length; i++)
-            ((MainActivity)getActivity()).setTVValuesProfile(textViews[i], children[i]);
-    }
-
-    public void setTVValues(TextView[] textViews, String[] children) {
-        for (int i = 0; i < textViews.length; i++)
-            ((MainActivity)getActivity()).setTVValues(textViews[i], children[i]);
-    }
-
-    // During onClick event, the camera application will open up allowing users to record video
-    @OnClick(R.id.packetCameraBtn)
-    public void cameraOnClick() {
-        if(checkPermissions(CAMERA_PERMISSION[0]) && checkPermissions(CAMERA_PERMISSION[1])){
-            Log.d(TAG, "onClick: starting camera");
-            Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
-            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);// change the quality of the video
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_LONG).show();
-        }
+        return inflater.inflate(R.layout.fragment_send_file, container, false);
     }
 
     // This is triggered when the user presses 'ok' after recording video

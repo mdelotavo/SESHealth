@@ -1,0 +1,22 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="team7.seshealthpatient.Fragments.RecordVideoFragment">
+
+
+    <VideoView
+        android:id="@+id/cameraVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/cameraBtn"
+        android:layout_gravity="bottom"
+        android:text="Capture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+
+</FrameLayout>

@@ -3,17 +3,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp">
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/nameET"
@@ -66,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Height (required)"
+            android:hint="Height(cm) (required)"
             android:inputType="numberDecimal" />
 
         <EditText
@@ -74,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Weight (required)"
+            android:hint="Weight(kg) (required)"
             android:inputType="numberDecimal" />
 
         <EditText
