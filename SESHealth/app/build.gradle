@@ -32,14 +32,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
     implementation 'com.google.firebase:firebase-database:16.0.1'
-
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-places:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation "com.google.android.gms:play-services-location:15.0.1"
-
-
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.0'
     
@@ -49,7 +46,6 @@ dependencies {
     */
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.0.0'
     
-  
     /**
      * NOTE: Whenever you reference to an external library, please add a link to where you took the library from
      * Below is the Butter Knife library, it will help you access the UI elements easily without much work (examples on its
