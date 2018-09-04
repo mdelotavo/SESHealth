@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,7 +32,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import team7.seshealthpatient.Fragments.DataPacketFragment;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseDatabase database;
     private DatabaseReference reference;
+    private Location userLocation;
 
 
     /**
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
+        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
     }
 
     /**
@@ -154,12 +155,6 @@ public class MainActivity extends AppCompatActivity {
                                     // change the fragment to the new fragment
                                     ChangeFragment(new PatientInformationFragment());
                                     currentState = MenuStates.PATIENT_INFO;
-                                }
-                                break;
-                            case R.id.nav_data_packet:
-                                if (currentState != MenuStates.DATA_PACKET) {
-                                    ChangeFragment(new DataPacketFragment());
-                                    currentState = MenuStates.DATA_PACKET;
                                 }
                                 break;
                             case R.id.nav_heartrate:
@@ -313,6 +308,14 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    public void setUserLocation(Location location) {
+        this.userLocation = location;
+    }
+
+    public Location getUserLocation() {
+        return this.userLocation;
     }
 
     public FirebaseAuth getFirebaseAuth() {

@@ -7,6 +7,8 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -72,10 +75,9 @@ public class SendFileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private ProgressDialog progressDialog;
-    private Uri videoUri = null;
     private FirebaseDatabase database;
     private DatabaseReference reference;
-
+    private Uri videoUri = null;
 
     private static final String[] CAMERA_PERMISSION = {
             Manifest.permission.CAMERA,
@@ -109,7 +111,6 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
 
-
     // Checkboxes
     @BindView(R.id.packetGenderCheck)
     CheckBox packetGenderCheck;
@@ -129,6 +130,9 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetAllergiesCheck)
     CheckBox packetAllergiesCheck;
 
+    @BindView(R.id.packetGPSCheck)
+    CheckBox packetGPSCheck;
+
     public SendFileFragment() {
         // Required empty public constructor
     }
@@ -139,7 +143,6 @@ public class SendFileFragment extends Fragment {
         mAuth = ((MainActivity)getActivity()).getFirebaseAuth();
         mUser = mAuth.getCurrentUser();
 
-
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Send file");
         progressDialog = new ProgressDialog(getActivity());
@@ -147,7 +150,6 @@ public class SendFileFragment extends Fragment {
         storageRef = storage.getReference();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(mUser.getUid());
-
     }
 
     @Override
@@ -208,8 +210,6 @@ public class SendFileFragment extends Fragment {
             progressDialog.show();
             Uri videoUri = data.getData();
             Log.d(TAG, "onActivityResult: done taking a video");
-//            mVideoView.setVideoURI(videoUri);
-//            mVideoView.start();
 
             String uri = getRealPathFromURI(videoUri);
             InputStream stream = null;
@@ -219,21 +219,21 @@ public class SendFileFragment extends Fragment {
                 Log.d(TAG, e.toString());
                 progressDialog.dismiss();
             }
-            // FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("Profile");
+
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            // Gets the filename which is added to Firebase
             String[] uriPath = uri.split("/[a-zA-z0-9]");
             String uriString = uriPath[uriPath.length-1];
 
             final StorageReference ref = storageRef.child("Users/" + userId + "/videos/" + uriString);
             UploadTask uploadTask = ref.putStream(stream);
             uploadToFirebase(ref, uploadTask);
-             // videoUri = urlTask;
-            // Log.d(TAG, "Video uri: " + videoUri);
         }
     }
 
     private void uploadToFirebase(final StorageReference ref, UploadTask uploadTask) {
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
@@ -306,6 +306,7 @@ public class SendFileFragment extends Fragment {
         userProfile.put("name", name);
         userProfile.put("DOB", DOB);
 
+        // TODO: This should be a loop if possible
         if(packetGenderCheck.isChecked())
             userProfile.put("gender", gender);
         else
@@ -336,8 +337,14 @@ public class SendFileFragment extends Fragment {
         else
             userProfile.put("medication", "");
 
+        if(packetGPSCheck.isChecked())
+            userProfile.put("coordinates", getLocation(true));
+        else
+            userProfile.put("coordinates", getLocation(false));
+
         userProfile.put("message", message);
 
+        // Sets an empty string if videoURI has not been set
         try {
             userProfile.put("videoURI", videoUri.toString());
         } catch(Exception e) {
@@ -345,7 +352,27 @@ public class SendFileFragment extends Fragment {
 
         }
 
+        // Creates a database reference with a unique ID and provides it with the data packet
         DatabaseReference ref = reference.child("Packets").push();
         ref.setValue(userProfile);
+
+    }
+
+    private Map getLocation(boolean isChecked) {
+        Location userLocation = ((MainActivity)getActivity()).getUserLocation();
+        Map coordinates = new HashMap();
+        if(isChecked) {
+            try {
+                coordinates.put("latitude", userLocation.getLatitude());
+                coordinates.put("longitude", userLocation.getLongitude());
+            } catch(Exception e) {
+                coordinates.put("latitude", 0);
+                coordinates.put("longitude", 0);
+            }
+        } else {
+            coordinates.put("latitude", 0);
+            coordinates.put("longitude", 0);
+        }
+        return coordinates;
     }
 }

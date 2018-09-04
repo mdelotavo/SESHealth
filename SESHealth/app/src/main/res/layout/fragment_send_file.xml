@@ -224,12 +224,29 @@
             
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/packetCheckboxLockup3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_below="@+id/packetCheckboxLockup2"
+            android:gravity="center_horizontal">
+
+            <CheckBox
+                android:id="@+id/packetGPSCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="GPS" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/packetSubmitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Submit"
-            android:layout_below="@+id/packetCheckboxLockup2"
+            android:layout_below="@+id/packetCheckboxLockup3"
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"/>
 
