@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import butterknife.BindView;
 import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
@@ -97,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
      * The current fragment being displayed.
      */
     private MenuStates currentState;
+
+    @BindView(R.id.nav_patient_info)
+    MenuItem patientInfoMenuItem;
 
 
     @Override
@@ -224,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.fragment_container, new PatientInformationFragment());
         ft.commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -290,7 +295,10 @@ public class MainActivity extends AppCompatActivity {
         reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else
+                    textView.setText(dataSnapshot.getValue().toString());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -302,7 +310,10 @@ public class MainActivity extends AppCompatActivity {
         reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else
+                    textView.setText(dataSnapshot.getValue().toString());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

@@ -222,6 +222,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
 
     private String getUrl(String nearbyPlace) {
         StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        if (mLastKnownLocation != null)
         googlePlaceUrl.append("location=" + mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude());
         googlePlaceUrl.append("&radius="+ PROXIMITY_RADIUS);
         googlePlaceUrl.append("&type="+ nearbyPlace);

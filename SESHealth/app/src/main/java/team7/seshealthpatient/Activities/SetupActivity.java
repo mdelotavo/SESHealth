@@ -47,13 +47,6 @@ public class SetupActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseAuth mAuth;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private String name;
-    private RadioButton radioButton;
-    private String date;
-    private String gender;
-    private String phoneNO;
-    private String allergies;
-    private String medication;
 
     @BindView(R.id.nameET)
     EditText nameET;
@@ -138,18 +131,22 @@ public class SetupActivity extends AppCompatActivity {
     @OnClick(R.id.setupMain)
     public void setUserInfo() {
         if (checkPassed()) {
-            name = nameET.getText().toString().trim();
-            radioButton = findViewById(genderRG.getCheckedRadioButtonId());
-            gender = radioButton.getText().toString().trim();
-            date = setupDOBDateTV.getText().toString().trim();
-            phoneNO = phoneET.getText().toString().trim();
-            allergies = allergiesET.getText().toString().trim();
-            medication = medicationET.getText().toString().trim();
+            String name = nameET.getText().toString().trim();
+            RadioButton radioButton = findViewById(genderRG.getCheckedRadioButtonId());
+            String gender = radioButton.getText().toString().trim();
+            String date = setupDOBDateTV.getText().toString().trim();
+            String weight = weightET.getText().toString().trim();
+            String height = heightET.getText().toString().trim();
+            String phoneNO = phoneET.getText().toString().trim();
+            String allergies = allergiesET.getText().toString().trim();
+            String medication = medicationET.getText().toString().trim();
 
             reference.child("Profile").child("name").setValue(name);
             reference.child("Profile").child("phoneNO").setValue(phoneNO);
             reference.child("Profile").child("DOB").setValue(date);
             reference.child("Profile").child("gender").setValue(gender);
+            reference.child("Profile").child("weight").setValue(weight);
+            reference.child("Profile").child("weight").setValue(height);
 
             reference.child("allergies").setValue(allergies);
             reference.child("medication").setValue(medication);
