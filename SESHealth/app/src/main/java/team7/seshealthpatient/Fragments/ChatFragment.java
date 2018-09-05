@@ -20,6 +20,8 @@ public class ChatFragment extends Fragment {
 
     FirebaseUser user;
     String uid;
+    FloatingActionButton fab;
+    EditText input;
 
     public ChatFragment() {
 
@@ -41,8 +43,8 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        FloatingActionButton fab = v.findViewById(R.id.fab);
-        final EditText input = v.findViewById(R.id.input);
+        fab = v.findViewById(R.id.fab);
+        input = v.findViewById(R.id.input);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
