@@ -11,9 +11,8 @@
         android:id="@+id/createAccount_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:titleTextColor="#eee" />
+        app:titleTextColor="#eee"
+        android:theme="@style/toolbarStyle"/>
 
     <ScrollView
         android:layout_width="match_parent"

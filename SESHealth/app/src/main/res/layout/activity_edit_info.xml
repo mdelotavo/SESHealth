@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="team7.seshealthpatient.Activities.EditInfoActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/editInfo_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/toolbarStyle"
+        app:titleTextColor="#eee" />
+
+    <EditText
+        android:id="@+id/editPhoneET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="250dp"
+        android:hint="A"
+        android:inputType="phone"/>
+
+    <EditText
+        android:id="@+id/editWeightET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editPhoneET"
+        android:layout_alignEnd="@+id/editPhoneET"
+        android:layout_below="@+id/editPhoneET"
+        android:hint="A"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/editHeightET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editWeightET"
+        android:layout_alignEnd="@+id/editPhoneET"
+        android:layout_below="@+id/editWeightET"
+        android:hint="A"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/editAllergiesET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editHeightET"
+        android:layout_alignEnd="@+id/editPhoneET"
+        android:layout_below="@+id/editHeightET"
+        android:hint="A"
+        android:inputType="textMultiLine"/>
+
+    <EditText
+        android:id="@+id/editMedicationET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editAllergiesET"
+        android:layout_alignEnd="@+id/editPhoneET"
+        android:layout_below="@+id/editAllergiesET"
+        android:hint="AAAAAAAAAAAAAAaaaaaaaaaaaa"
+        android:inputType="textMultiLine"/>
+
+</RelativeLayout>

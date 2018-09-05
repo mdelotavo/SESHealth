@@ -48,6 +48,7 @@
         <activity android:name=".Activities.MainActivity"
             android:configChanges="orientation|screenSize" />
         <activity android:name=".Activities.SetupActivity" />
+        <activity android:name=".Activities.EditInfoActivity"/>
         <activity
             android:name=".Activities.CreateAccountActivity"
             android:label=".Activities.CreateAccountActivity"
