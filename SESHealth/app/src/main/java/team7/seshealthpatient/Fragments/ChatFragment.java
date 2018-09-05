@@ -18,6 +18,9 @@ import team7.seshealthpatient.R;
 
 public class ChatFragment extends Fragment {
 
+    FirebaseUser user;
+    String uid;
+
     public ChatFragment() {
 
     }
@@ -28,6 +31,8 @@ public class ChatFragment extends Fragment {
 
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Chat");
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user.getUid();
     }
 
     @Override
@@ -38,9 +43,6 @@ public class ChatFragment extends Fragment {
 
         FloatingActionButton fab = v.findViewById(R.id.fab);
         final EditText input = v.findViewById(R.id.input);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String uid = user.getUid();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
