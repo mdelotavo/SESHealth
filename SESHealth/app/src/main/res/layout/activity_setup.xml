@@ -4,82 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_login_bg"
     android:scrollbars="none">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
         android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp">
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/nameET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/loginEditTexts"
+            android:background="@drawable/edit_text_top"
             android:ems="10"
             android:hint="Full Name (required)"
             android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/phoneET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/loginEditTexts"
+            android:background="@drawable/edit_text_middle"
             android:ems="10"
-            android:hint="Mobile Phone No. (required)"
+            android:hint="Mobile No. (required)"
             android:inputType="phone" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="25dp">
-
-            <TextView
-                android:id="@+id/setupDOBTV"
-                style="@style/LoginStyles"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Date of Birth: " />
-
-            <TextView
-                android:id="@+id/setupDOBDateTV"
-                style="@style/LoginStyles"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Select Date" />
-        </LinearLayout>
+        <EditText
+            android:id="@+id/setupDOBDateET"
+            style="@style/loginEditTexts"
+            android:background="@drawable/edit_text_middle"
+            android:hint="Select Date (required)"
+            android:focusable="false"/>
 
         <EditText
             android:id="@+id/heightET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/loginEditTexts"
+            android:background="@drawable/edit_text_middle"
             android:ems="10"
             android:hint="Height(cm) (required)"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/weightET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/loginEditTexts"
+            android:background="@drawable/edit_text_middle"
             android:ems="10"
             android:hint="Weight(kg) (required)"
             android:inputType="numberDecimal" />
 
         <EditText
             android:id="@+id/allergiesET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/loginEditTexts"
+            android:background="@drawable/edit_text_middle"
             android:ems="10"
             android:hint="Allergies"
             android:inputType="textMultiLine" />
 
         <EditText
             android:id="@+id/medicationET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/loginEditTexts"
+            android:background="@drawable/edit_text_bottom"
             android:ems="10"
             android:hint="Current Medication"
             android:inputType="textMultiLine" />
@@ -88,7 +76,8 @@
             android:id="@+id/genderRG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/textView"
@@ -114,17 +103,27 @@
 
         <Button
             android:id="@+id/setupMain"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Continue"
-            tools:layout_editor_absoluteX="210dp"
-            tools:layout_editor_absoluteY="345dp" />
+            android:textSize="20sp"
+            android:textColor="#eee"
+            android:background="@drawable/gradient_login_btn"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="20dp"/>
 
         <Button
             android:id="@+id/setupLogOutBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log Out" />
+            android:text="Log Out"
+            android:textSize="20sp"
+            android:textColor="#eee"
+            android:background="@drawable/gradient_login_btn"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="70dp"
+            android:layout_marginTop="20dp"/>
 
     </LinearLayout>
 

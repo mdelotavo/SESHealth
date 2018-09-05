@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.lang3.StringUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import team7.seshealthpatient.R;
@@ -85,8 +87,12 @@ public class EditInfoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_menu_save:
+                if (!editPhoneET.getText().toString().isEmpty())
+                    if (!isValidPhoneNumber(editPhoneET)) {
+                        Toast.makeText(this, "Please enter a valid mobile number", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
                 updateValues();
-                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.edit_menu_cancel:
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
@@ -153,11 +159,14 @@ public class EditInfoActivity extends AppCompatActivity {
     public void updateValues() {
         for (int i = 0; i < editTexts.length; i++) {
             if (!editTexts[i].getText().toString().trim().isEmpty())
-                if (i < 3)
+                if (i == 0)
                     reference.child("Profile").child(children[i]).setValue(editTexts[i].getText().toString().trim());
+                else if (i < 3)
+                    reference.child("Profile").child(children[i]).setValue(Double.parseDouble(editTexts[i].getText().toString().trim()));
                 else
                     reference.child(children[i]).setValue(editTexts[i].getText().toString().trim());
         }
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -165,5 +174,10 @@ public class EditInfoActivity extends AppCompatActivity {
         super.onBackPressed();
         Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    public boolean isValidPhoneNumber(EditText editText) {
+        return (editText.getText().toString().replaceAll(" ", "").length() == 10 &&
+                StringUtils.isNumericSpace(editText.getText().toString()));
     }
 }

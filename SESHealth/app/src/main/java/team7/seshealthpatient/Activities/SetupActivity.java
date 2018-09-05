@@ -35,6 +35,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -54,8 +56,8 @@ public class SetupActivity extends AppCompatActivity {
     @BindView(R.id.phoneET)
     EditText phoneET;
 
-    @BindView(R.id.setupDOBDateTV)
-    TextView setupDOBDateTV;
+    @BindView(R.id.setupDOBDateET)
+    TextView setupDOBDateET;
 
     @BindView(R.id.heightET)
     EditText heightET;
@@ -89,7 +91,7 @@ public class SetupActivity extends AppCompatActivity {
         textChangedListeners();
 
         // Listener for the Date Picker
-        setupDOBDateTV.setOnClickListener(new View.OnClickListener() {
+        setupDOBDateET.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar cal = Calendar.getInstance();
@@ -123,7 +125,7 @@ public class SetupActivity extends AppCompatActivity {
 
                 String currentDateString = dayString + "/" + monthString + "/" + year;
                 Log.d(TAG, "Logged date as: " + currentDateString);
-                setupDOBDateTV.setText(currentDateString);
+                setupDOBDateET.setText(currentDateString);
             }
         };
     }
@@ -134,9 +136,9 @@ public class SetupActivity extends AppCompatActivity {
             String name = nameET.getText().toString().trim();
             RadioButton radioButton = findViewById(genderRG.getCheckedRadioButtonId());
             String gender = radioButton.getText().toString().trim();
-            String date = setupDOBDateTV.getText().toString().trim();
-            String weight = weightET.getText().toString().trim();
-            String height = heightET.getText().toString().trim();
+            String date = setupDOBDateET.getText().toString().trim();
+            Double weight = Double.parseDouble(weightET.getText().toString().trim());
+            Double height = Double.parseDouble(heightET.getText().toString().trim());
             String phoneNO = phoneET.getText().toString().trim();
             String allergies = allergiesET.getText().toString().trim();
             String medication = medicationET.getText().toString().trim();
@@ -146,7 +148,7 @@ public class SetupActivity extends AppCompatActivity {
             reference.child("Profile").child("DOB").setValue(date);
             reference.child("Profile").child("gender").setValue(gender);
             reference.child("Profile").child("weight").setValue(weight);
-            reference.child("Profile").child("weight").setValue(height);
+            reference.child("Profile").child("height").setValue(height);
 
             reference.child("allergies").setValue(allergies);
             reference.child("medication").setValue(medication);
@@ -162,15 +164,15 @@ public class SetupActivity extends AppCompatActivity {
 
     public boolean checkPassed() {
         Log.d(TAG, "Check all fields being called");
-        if (nameET.getText().toString().trim().isEmpty()) {
+        if (nameET.getText().toString().trim().isEmpty() || !StringUtils.isAlphaSpace(nameET.getText().toString())) {
             Toast.makeText(this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (phoneET.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+        if (phoneET.getText().toString().replaceAll(" ", "").length() != 10 || !StringUtils.isNumericSpace(phoneET.getText().toString())) {
+            Toast.makeText(this, "Please enter a mobile number following the 04XX XXX XXX format", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (setupDOBDateTV.getText().toString().trim().isEmpty()) {
+        if (setupDOBDateET.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, R.string.dateOfBirthCheckLength_toast, Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -187,7 +189,7 @@ public class SetupActivity extends AppCompatActivity {
             return false;
         }
         if (genderRG.getCheckedRadioButtonId() == -1) {
-            Toast.makeText(this, "Please enter your gender", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select your gender", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (allergiesET.getText().toString().trim().isEmpty()) {
@@ -201,7 +203,7 @@ public class SetupActivity extends AppCompatActivity {
 
     private boolean isValidDOB() {
         Calendar cal = Calendar.getInstance();
-        String date = setupDOBDateTV.getText().toString().trim();
+        String date = setupDOBDateET.getText().toString().trim();
         if (date.length() == 0) {
             return false;
         }
@@ -247,5 +249,14 @@ public class SetupActivity extends AppCompatActivity {
     public void logOut() {
         mAuth.signOut();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mAuth.signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
     }
 }
