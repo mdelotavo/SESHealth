@@ -288,10 +288,13 @@ public class SetupActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        mAuth.signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
+        if (currentPage == 1) {
+            mAuth.signOut();
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        }
+        else if (currentPage == 2)
+            toPreviousPage();
     }
 
     @Override
