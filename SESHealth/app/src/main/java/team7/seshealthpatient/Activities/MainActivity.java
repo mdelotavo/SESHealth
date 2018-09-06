@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() == null) {
+                if (firebaseAuth.getCurrentUser() == null) {
                     finish();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
@@ -236,17 +236,17 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+
     /**
-        Using this at the moment to stop the activity being recreated on orientation change
-        This is needed as otherwise it will overlay any fragment with the patient info fragment
-    **/
+     * Using this at the moment to stop the activity being recreated on orientation change
+     * This is needed as otherwise it will overlay any fragment with the patient info fragment
+     **/
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Log.d(TAG, "Providers: " + FirebaseAuth.getInstance().getCurrentUser().getProviders().toString());
     }
-
 
 
     /**
@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function allows to change the content of the Fragment holder
+     *
      * @param fragment The fragment to be displayed
      */
     private void ChangeFragment(Fragment fragment) {
@@ -284,9 +285,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
-        }else{
+        } else {
             this.finishAffinity();
         }
     }
@@ -300,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     textView.setText(dataSnapshot.getValue().toString());
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -312,9 +314,14 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null)
                     textView.setText("null");
-                else
-                    textView.setText(dataSnapshot.getValue().toString());
+                else {
+                    textView.setText("");
+                    for (String value : dataSnapshot.getValue().toString().split(","))
+                        textView.append("- " + value.trim() + "\n");
+                    textView.setText(textView.getText().toString().trim());
+                }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }

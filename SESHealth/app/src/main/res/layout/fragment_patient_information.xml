@@ -10,239 +10,316 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context="team7.seshealthpatient.Fragments.PatientInformationFragment">
 
         <android.support.v7.widget.CardView
+            android:id="@+id/nameCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
 
-            <TextView
-                android:id="@+id/nameLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="Name: " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/nameTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/nameLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Name " />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/nameTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="A" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/genderCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/genderLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="Gender: " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/genderTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/genderLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Gender" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/genderTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="A" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/dobCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/dobLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="DoB: " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/dobTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/dobLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="DoB" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/dobTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="A" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/phoneCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/phoneLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="Phone No: " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/phoneTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/phoneLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Phone No" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/phoneTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="A" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/weightCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/weightLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="Weight (kg): " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/weightTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/weightLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Weight (kg)" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/weightTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="A" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/heightCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/heightLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="Height (cm): " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/heightTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/heightLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Height (cm)" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/heightTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="A" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/allergiesCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/allergiesLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="Allergies: " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/allergiesTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/allergiesLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Allergies" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/allergiesTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="" />
+
+            </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
+
+
         <android.support.v7.widget.CardView
+            android:id="@+id/medicationCard"
             style="@style/cardViewInfoStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
 
-            <TextView
-                android:id="@+id/medicationLabelTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:text="Medication: " />
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/medicationTV"
-                style="@style/patientInfoTVSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="210dp"
-                android:layout_marginTop="30dp"
-                android:text="A" />
+                <TextView
+                    android:id="@+id/medicationLabelTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Medication" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#aaa"/>
+
+                <TextView
+                    android:id="@+id/medicationTV"
+                    style="@style/patientInfoTVSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="25sp"
+                    android:text="" />
+
+            </LinearLayout>
+
         </android.support.v7.widget.CardView>
 
     </LinearLayout>
