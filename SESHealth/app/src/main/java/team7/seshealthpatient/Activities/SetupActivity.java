@@ -2,9 +2,11 @@ package team7.seshealthpatient.Activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +52,8 @@ public class SetupActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseAuth mAuth;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+    private boolean animated = false;
+    private int currentPage = 1;
 
     @BindView(R.id.nameET)
     EditText nameET;
@@ -57,7 +62,7 @@ public class SetupActivity extends AppCompatActivity {
     EditText phoneET;
 
     @BindView(R.id.setupDOBDateET)
-    TextView setupDOBDateET;
+    EditText setupDOBDateET;
 
     @BindView(R.id.heightET)
     EditText heightET;
@@ -74,6 +79,15 @@ public class SetupActivity extends AppCompatActivity {
     @BindView(R.id.genderRG)
     RadioGroup genderRG;
 
+    @BindView(R.id.introSetupTV)
+    TextView introSetupTV;
+
+    @BindView(R.id.setupFirstSV)
+    ScrollView setupFirstSV;
+
+    @BindView(R.id.setupSecondSV)
+    ScrollView setupSecondSV;
+
     private static String TAG = "SetupActivity";
 
     @Override
@@ -89,11 +103,27 @@ public class SetupActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         addListeners();
+
+        animateWelcome();
     }
 
-    @OnClick(R.id.setupMain)
+    @OnClick(R.id.setupNext)
+    public void toNextPage() {
+        if (checkPassedFirst()) {
+            setupFirstSV.setVisibility(View.GONE);
+            currentPage = 2;
+        }
+    }
+
+    @OnClick(R.id.setupPrevious)
+    public void toPreviousPage() {
+        setupFirstSV.setVisibility(View.VISIBLE);
+        currentPage = 1;
+    }
+
+    @OnClick(R.id.setupFinish)
     public void setUserInfo() {
-        if (checkPassed()) {
+        if (checkPassedSecond()) {
             String name = nameET.getText().toString().trim();
             RadioButton radioButton = findViewById(genderRG.getCheckedRadioButtonId());
             String gender = radioButton.getText().toString().trim();
@@ -122,8 +152,7 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
-
-    public boolean checkPassed() {
+    public boolean checkPassedFirst() {
         Log.d(TAG, "Check all fields being called");
         if (nameET.getText().toString().trim().isEmpty() || !StringUtils.isAlphaSpace(nameET.getText().toString())) {
             Toast.makeText(this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
@@ -153,6 +182,11 @@ public class SetupActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select your gender", Toast.LENGTH_SHORT).show();
             return false;
         }
+        return true;
+    }
+
+    public boolean checkPassedSecond() {
+        Log.d(TAG, "Check all fields being called");
         if (allergiesET.getText().toString().trim().isEmpty()) {
             allergiesET.setText("N/A");
         }
@@ -245,7 +279,7 @@ public class SetupActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick(R.id.setupLogOutBtn)
+    @OnClick({R.id.setupLogOutBtn, R.id.setupLogOutSecondBtn})
     public void logOut() {
         mAuth.signOut();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -258,5 +292,34 @@ public class SetupActivity extends AppCompatActivity {
         mAuth.signOut();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            animated = true;
+        }
+    }
+
+    public void animateWelcome() {
+        if (!animated && currentPage == 1) {
+            introSetupTV.setVisibility(View.INVISIBLE);
+
+            introSetupTV.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    introSetupTV.setVisibility(View.VISIBLE);
+                }
+            }, 750);
+
+            introSetupTV.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    introSetupTV.setVisibility(View.GONE);
+                }
+            }, 2000);
+            animated = true;
+        }
     }
 }
