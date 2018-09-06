@@ -275,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:textSize="25sp"
-                    android:text="A" />
+                    android:text="" />
 
             </LinearLayout>
 
@@ -316,7 +316,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:textSize="25sp"
-                    android:text="A" />
+                    android:text="" />
 
             </LinearLayout>
 
