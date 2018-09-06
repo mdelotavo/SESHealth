@@ -13,22 +13,32 @@
         android:theme="@style/toolbarStyle"
         app:titleTextColor="#eee" />
 
-    <EditText
-        android:id="@+id/editPhoneET"
+    <TextView
+        android:id="@+id/editInfoDescTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="110dp"
+        android:text="Enter the information that you would like to edit into the fields below"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:id="@+id/editPhoneET"
+        style="@style/loginEditTexts"
+        android:background="@drawable/edit_text_top"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/editInfoDescTV"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="40dp"
         android:hint="A"
         android:inputType="phone"/>
 
     <EditText
         android:id="@+id/editWeightET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/loginEditTexts"
+        android:background="@drawable/edit_text_middle"
         android:layout_alignStart="@+id/editPhoneET"
         android:layout_alignEnd="@+id/editPhoneET"
         android:layout_below="@+id/editPhoneET"
@@ -37,8 +47,8 @@
 
     <EditText
         android:id="@+id/editHeightET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/loginEditTexts"
+        android:background="@drawable/edit_text_middle"
         android:layout_alignStart="@+id/editWeightET"
         android:layout_alignEnd="@+id/editPhoneET"
         android:layout_below="@+id/editWeightET"
@@ -47,8 +57,8 @@
 
     <EditText
         android:id="@+id/editAllergiesET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/loginEditTexts"
+        android:background="@drawable/edit_text_middle"
         android:layout_alignStart="@+id/editHeightET"
         android:layout_alignEnd="@+id/editPhoneET"
         android:layout_below="@+id/editHeightET"
@@ -57,12 +67,12 @@
 
     <EditText
         android:id="@+id/editMedicationET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/loginEditTexts"
+        android:background="@drawable/edit_text_bottom"
         android:layout_alignStart="@+id/editAllergiesET"
         android:layout_alignEnd="@+id/editPhoneET"
         android:layout_below="@+id/editAllergiesET"
-        android:hint="AAAAAAAAAAAAAAaaaaaaaaaaaa"
+        android:hint="AAAAAAAAAAAAAA"
         android:inputType="textMultiLine"/>
 
 </RelativeLayout>

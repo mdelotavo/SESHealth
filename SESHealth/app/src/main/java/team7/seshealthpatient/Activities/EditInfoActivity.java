@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -68,6 +70,29 @@ public class EditInfoActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         initializeArrays();
+
+        editPhoneET.addTextChangedListener(new TextWatcher() {
+            int previousLength = 0;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                previousLength = editPhoneET.getText().length();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = editPhoneET.getText().toString();
+                int currentLength = input.length();
+
+                if ((previousLength < currentLength) && (currentLength == 4 || currentLength == 8))
+                    editPhoneET.append(" ");
+            }
+        });
 
         for (int i = 0; i < editTexts.length; i++)
             if (i < 3)

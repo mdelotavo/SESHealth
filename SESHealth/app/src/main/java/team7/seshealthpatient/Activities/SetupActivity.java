@@ -88,46 +88,7 @@ public class SetupActivity extends AppCompatActivity {
         reference = database.getReference("Users").child(user.getUid());
 
         ButterKnife.bind(this);
-        textChangedListeners();
-
-        // Listener for the Date Picker
-        setupDOBDateET.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int day, month, year;
-                day = 1;
-                month = 0;
-                year = cal.get(Calendar.YEAR);
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        SetupActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        mDateSetListener,
-                        year, month, day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
-        });
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month++;
-                String dayString = day + "";
-                String monthString = month + "";
-                // Do this to keep the format consistent
-                if (dayString.length() == 1) {
-                    dayString = "0" + dayString;
-                }
-                if (monthString.length() == 1) {
-                    monthString = "0" + monthString;
-                }
-
-                String currentDateString = dayString + "/" + monthString + "/" + year;
-                Log.d(TAG, "Logged date as: " + currentDateString);
-                setupDOBDateET.setText(currentDateString);
-            }
-        };
+        addListeners();
     }
 
     @OnClick(R.id.setupMain)
@@ -220,7 +181,46 @@ public class SetupActivity extends AppCompatActivity {
         return false;
     }
 
-    public void textChangedListeners() {
+    public void addListeners() {
+        // Listener for the Date Picker
+        setupDOBDateET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                int day, month, year;
+                day = 1;
+                month = 0;
+                year = cal.get(Calendar.YEAR);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        SetupActivity.this,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        mDateSetListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month++;
+                String dayString = day + "";
+                String monthString = month + "";
+                // Do this to keep the format consistent
+                if (dayString.length() == 1) {
+                    dayString = "0" + dayString;
+                }
+                if (monthString.length() == 1) {
+                    monthString = "0" + monthString;
+                }
+
+                String currentDateString = dayString + "/" + monthString + "/" + year;
+                Log.d(TAG, "Logged date as: " + currentDateString);
+                setupDOBDateET.setText(currentDateString);
+            }
+        };
+
         phoneET.addTextChangedListener(new TextWatcher() {
             int previousLength = 0;
 
