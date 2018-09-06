@@ -159,12 +159,21 @@
             android:layout_below="@+id/packetMessageET"
             android:layout_centerHorizontal="true"/>
 
+        <Button
+            android:id="@+id/packetHeartBeatBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get your Heartbeat"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/packetCameraBtn"
+            android:layout_centerHorizontal="true"/>
+
         <LinearLayout
             android:id="@+id/packetCheckboxLockup3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_below="@+id/packetCameraBtn"
+            android:layout_below="@+id/packetHeartBeatBtn"
             android:gravity="center_horizontal">
 
             <CheckBox

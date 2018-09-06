@@ -60,6 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import team7.seshealthpatient.Activities.MainActivity;
+import team7.seshealthpatient.HeartBeat.HeartRateMonitor;
 import team7.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -268,6 +269,12 @@ public class SendFileFragment extends Fragment {
             Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
             return true;
         }
+    }
+
+    @OnClick(R.id.packetHeartBeatBtn)
+    public void heartBeatClicked() {
+        Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.packetSubmitBtn)
