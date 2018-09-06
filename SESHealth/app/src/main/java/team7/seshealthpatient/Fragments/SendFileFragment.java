@@ -112,24 +112,6 @@ public class SendFileFragment extends Fragment {
     EditText packetMessageET;
 
     // Checkboxes
-    @BindView(R.id.packetGenderCheck)
-    CheckBox packetGenderCheck;
-
-    @BindView(R.id.packetMobileCheck)
-    CheckBox packetMobileCheck;
-
-    @BindView(R.id.packetHeightCheck)
-    CheckBox packetHeightCheck;
-
-    @BindView(R.id.packetWeightCheck)
-    CheckBox packetWeightCheck;
-
-    @BindView(R.id.packetMedicalCheck)
-    CheckBox packetMedicalCheck;
-
-    @BindView(R.id.packetAllergiesCheck)
-    CheckBox packetAllergiesCheck;
-
     @BindView(R.id.packetGPSCheck)
     CheckBox packetGPSCheck;
 
@@ -158,10 +140,10 @@ public class SendFileFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_send_file, container, false);
         ButterKnife.bind(this, v);
 
-        TextView[] textViewsProfile = {packetNameTV, packetDateOfBirthTV, packetGenderTV, packetMobileTV};
+        TextView[] textViewsProfile = {packetNameTV, packetDateOfBirthTV, packetGenderTV, packetMobileTV, packetHeightTV, packetWeightTV};
         TextView[] textViews = {packetAllergiesTV, packetMedicalTV};
 
-        String[] childrenProfile = {"name", "DOB", "gender", "phoneNO"};
+        String[] childrenProfile = {"name", "DOB", "gender", "phoneNO", "height", "weight"};
         String[] children = {"allergies", "medication"};
 
         setTVValuesProfile(textViewsProfile, childrenProfile);
@@ -305,37 +287,12 @@ public class SendFileFragment extends Fragment {
         userProfile.put("Timestamp", currentTimestamp.toString());
         userProfile.put("name", name);
         userProfile.put("DOB", DOB);
-
-        // TODO: This should be a loop if possible
-        if(packetGenderCheck.isChecked())
-            userProfile.put("gender", gender);
-        else
-            userProfile.put("gender", "");
-
-        if(packetMobileCheck.isChecked())
-            userProfile.put("mobile", mobile);
-        else
-            userProfile.put("mobile", "");
-
-        if(packetHeightCheck.isChecked())
-            userProfile.put("height", height);
-        else
-            userProfile.put("height", "");
-
-        if(packetWeightCheck.isChecked())
-            userProfile.put("weight", weight);
-        else
-            userProfile.put("weight", "");
-
-        if(packetAllergiesCheck.isChecked())
-            userProfile.put("allergies", allergies);
-        else
-            userProfile.put("allergies", "");
-
-        if(packetMedicalCheck.isChecked())
-            userProfile.put("medication", medication);
-        else
-            userProfile.put("medication", "");
+        userProfile.put("gender", gender);
+        userProfile.put("mobile", mobile);
+        userProfile.put("height", height);
+        userProfile.put("weight", weight);
+        userProfile.put("allergies", allergies);
+        userProfile.put("medication", medication);
 
         if(packetGPSCheck.isChecked())
             userProfile.put("coordinates", getLocation(true));
@@ -349,13 +306,11 @@ public class SendFileFragment extends Fragment {
             userProfile.put("videoURI", videoUri.toString());
         } catch(Exception e) {
             userProfile.put("videoURI", "");
-
         }
 
         // Creates a database reference with a unique ID and provides it with the data packet
         DatabaseReference ref = reference.child("Packets").push();
         ref.setValue(userProfile);
-
     }
 
     private Map getLocation(boolean isChecked) {

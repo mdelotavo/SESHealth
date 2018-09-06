@@ -160,76 +160,11 @@
             android:layout_centerHorizontal="true"/>
 
         <LinearLayout
-            android:id="@+id/packetCheckboxLockup1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/packetCameraBtn"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/packetGenderCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Gender"
-                />
-
-            <CheckBox
-                android:id="@+id/packetMobileCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Mobile" />
-
-            <CheckBox
-                android:id="@+id/packetHeightCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Height" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/packetCheckboxLockup2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/packetCheckboxLockup1"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/packetWeightCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Weight"
-                />
-
-            <CheckBox
-                android:id="@+id/packetMedicalCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Medical" />
-
-            <CheckBox
-                android:id="@+id/packetAllergiesCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Allergies" />
-            
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/packetCheckboxLockup3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_below="@+id/packetCheckboxLockup2"
+            android:layout_below="@+id/packetCameraBtn"
             android:gravity="center_horizontal">
 
             <CheckBox

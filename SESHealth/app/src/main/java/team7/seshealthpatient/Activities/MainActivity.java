@@ -296,10 +296,12 @@ public class MainActivity extends AppCompatActivity {
         reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null)
+                if (dataSnapshot.getValue() == null) {
                     textView.setText("null");
-                else
-                    textView.setText(dataSnapshot.getValue().toString());
+                } else {
+                    // Added (+ """) to make our Long values Strings so that we could set appropriate text values 
+                    textView.setText((dataSnapshot.getValue() + "").toString());
+                }
             }
 
             @Override
