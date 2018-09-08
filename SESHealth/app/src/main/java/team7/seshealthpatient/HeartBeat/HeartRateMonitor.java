@@ -2,6 +2,7 @@ package team7.seshealthpatient.HeartBeat;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -11,9 +12,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
 
 /**
@@ -32,6 +37,7 @@ public class HeartRateMonitor extends Activity {
     private static Camera camera = null;
     private static View image = null;
     private static TextView text = null;
+    private static Timer timer = new Timer();
 
     private static PowerManager.WakeLock wakeLock = null;
 
@@ -54,6 +60,7 @@ public class HeartRateMonitor extends Activity {
     private static final int[] beatsArray = new int[beatsArraySize];
     private static double beats = 0;
     private static long startTime = 0;
+    private static int beatsAvg = 0;
 
     /**
      * {@inheritDoc}
@@ -73,6 +80,13 @@ public class HeartRateMonitor extends Activity {
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                finish();
+                startActivity(this, )
+            }
+        }, 10000);
     }
 
     /**
@@ -178,9 +192,6 @@ public class HeartRateMonitor extends Activity {
                     return;
                 }
 
-                // Log.d(TAG,
-                // "totalTimeInSecs="+totalTimeInSecs+" beats="+beats);
-
                 if (beatsIndex == beatsArraySize) beatsIndex = 0;
                 beatsArray[beatsIndex] = dpm;
                 beatsIndex++;
@@ -193,7 +204,7 @@ public class HeartRateMonitor extends Activity {
                         beatsArrayCnt++;
                     }
                 }
-                int beatsAvg = (beatsArrayAvg / beatsArrayCnt);
+                beatsAvg = (beatsArrayAvg / beatsArrayCnt);
                 text.setText(String.valueOf(beatsAvg));
                 startTime = System.currentTimeMillis();
                 beats = 0;
@@ -203,7 +214,6 @@ public class HeartRateMonitor extends Activity {
     };
 
     private static SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
-
         /**
          * {@inheritDoc}
          */
@@ -213,7 +223,7 @@ public class HeartRateMonitor extends Activity {
                 camera.setPreviewDisplay(previewHolder);
                 camera.setPreviewCallback(previewCallback);
             } catch (Throwable t) {
-                // Log.e("PreviewDemo-surfaceCallback", "Exception in setPreviewDisplay()", t);
+                Log.e(TAG,"Exception in setPreviewDisplay()" + t);
             }
         }
 
