@@ -33,7 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
-import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.SendFileFragment;
@@ -65,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private Location userLocation;
 
-
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
      * build a menu from this site:
@@ -81,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private FragmentManager fragmentManager;
 
-    /**
-     * TAG to use
-     */
     private static String TAG = "MainActivity";
 
     /**
@@ -91,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
+        PATIENT_INFO, SEND_FILE, NAVIGATION_MAP, SETTINGS, LOGOUT
     }
 
     /**
@@ -101,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.nav_patient_info)
     MenuItem patientInfoMenuItem;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,12 +153,6 @@ public class MainActivity extends AppCompatActivity {
                                     // change the fragment to the new fragment
                                     ChangeFragment(new PatientInformationFragment());
                                     currentState = MenuStates.PATIENT_INFO;
-                                }
-                                break;
-                            case R.id.nav_heartrate:
-                                if (currentState != MenuStates.HEARTRATE) {
-                                    ChangeFragment(new HeartRateFragment());
-                                    currentState = MenuStates.HEARTRATE;
                                 }
                                 break;
                             case R.id.nav_sendfile:
@@ -296,10 +284,12 @@ public class MainActivity extends AppCompatActivity {
         reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null)
+                if (dataSnapshot.getValue() == null) {
                     textView.setText("null");
-                else
-                    textView.setText(dataSnapshot.getValue().toString());
+                } else {
+                    // Added (+ """) to make our Long values Strings so that we could set appropriate text values
+                    textView.setText((dataSnapshot.getValue() + "").toString());
+                }
             }
 
             @Override

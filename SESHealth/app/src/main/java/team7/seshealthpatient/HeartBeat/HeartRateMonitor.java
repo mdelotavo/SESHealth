@@ -1,7 +1,11 @@
 package team7.seshealthpatient.HeartBeat;
 
 import android.app.Activity;
+
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -10,11 +14,17 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Timer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import team7.seshealthpatient.Activities.MainActivity;
+import team7.seshealthpatient.Fragments.SendFileFragment;
 import team7.seshealthpatient.R;
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * This class extends Activity to handle a picture preview, process the preview
@@ -32,6 +42,8 @@ public class HeartRateMonitor extends Activity {
     private static Camera camera = null;
     private static View image = null;
     private static TextView text = null;
+    private static Button heartBeatBtn;
+    private static Timer timer = new Timer();
 
     private static PowerManager.WakeLock wakeLock = null;
 
@@ -54,6 +66,8 @@ public class HeartRateMonitor extends Activity {
     private static final int[] beatsArray = new int[beatsArraySize];
     private static double beats = 0;
     private static long startTime = 0;
+    private static int beatsAvg = 0;
+
 
     /**
      * {@inheritDoc}
@@ -68,11 +82,21 @@ public class HeartRateMonitor extends Activity {
         previewHolder.addCallback(surfaceCallback);
         previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        image = findViewById(R.id.image);
-        text = (TextView) findViewById(R.id.text);
+        image = findViewById(R.id.heartBeatImage);
+        text = (TextView) findViewById(R.id.heartBeatText);
+        heartBeatBtn = (Button) findViewById(R.id.heartbeatBtn);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
+        heartBeatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), SendFileFragment.class);
+                intent.putExtra("heartBeatAvg", beatsAvg + "");
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
     }
 
     /**
@@ -178,9 +202,6 @@ public class HeartRateMonitor extends Activity {
                     return;
                 }
 
-                // Log.d(TAG,
-                // "totalTimeInSecs="+totalTimeInSecs+" beats="+beats);
-
                 if (beatsIndex == beatsArraySize) beatsIndex = 0;
                 beatsArray[beatsIndex] = dpm;
                 beatsIndex++;
@@ -193,7 +214,7 @@ public class HeartRateMonitor extends Activity {
                         beatsArrayCnt++;
                     }
                 }
-                int beatsAvg = (beatsArrayAvg / beatsArrayCnt);
+                beatsAvg = (beatsArrayAvg / beatsArrayCnt);
                 text.setText(String.valueOf(beatsAvg));
                 startTime = System.currentTimeMillis();
                 beats = 0;
@@ -203,7 +224,6 @@ public class HeartRateMonitor extends Activity {
     };
 
     private static SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
-
         /**
          * {@inheritDoc}
          */
@@ -213,7 +233,7 @@ public class HeartRateMonitor extends Activity {
                 camera.setPreviewDisplay(previewHolder);
                 camera.setPreviewCallback(previewCallback);
             } catch (Throwable t) {
-                // Log.e("PreviewDemo-surfaceCallback", "Exception in setPreviewDisplay()", t);
+                Log.e(TAG,"Exception in setPreviewDisplay()" + t);
             }
         }
 

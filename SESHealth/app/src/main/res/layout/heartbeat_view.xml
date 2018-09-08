@@ -10,9 +10,14 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="50dp">
-        <TextView android:id="@+id/text"
+        <Button
+            android:id="@+id/heartbeatBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select" />
+        <TextView android:id="@+id/heartBeatText"
             android:text="@string/heartbeat_view"
-            android:textSize="32dp"
+            android:textSize="25sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </TextView>
@@ -21,7 +26,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <team7.seshealthpatient.HeartBeat.HeartbeatView
-                android:id="@+id/image"
+                android:id="@+id/heartBeatImage"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
