@@ -1,6 +1,9 @@
 package team7.seshealthpatient.HeartBeat;
 
 import android.app.Activity;
+
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -12,14 +15,15 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import team7.seshealthpatient.Activities.MainActivity;
+import team7.seshealthpatient.Fragments.SendFileFragment;
 import team7.seshealthpatient.R;
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * This class extends Activity to handle a picture preview, process the preview
@@ -62,6 +66,7 @@ public class HeartRateMonitor extends Activity {
     private static long startTime = 0;
     private static int beatsAvg = 0;
 
+
     /**
      * {@inheritDoc}
      */
@@ -80,13 +85,15 @@ public class HeartRateMonitor extends Activity {
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
-        timer.schedule(new TimerTask() {
+        text.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), SendFileFragment.class);
+                intent.putExtra("heartBeatAvg", beatsAvg + "");
+                setResult(RESULT_OK, intent);
                 finish();
-                startActivity(this, )
             }
-        }, 10000);
+        });
     }
 
     /**

@@ -2,18 +2,16 @@ package team7.seshealthpatient.Fragments;
 
 
 import android.Manifest;
+
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.health.TimerStat;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,12 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.Continuation;
@@ -49,10 +45,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,6 +65,7 @@ import static android.app.Activity.RESULT_OK;
 public class SendFileFragment extends Fragment {
     private static String TAG = "SendFileFragment";
     private static final int  CAMERA_REQUEST_CODE = 5;
+    private static final int HEARTBEAT_REQUEST_CODE= 6;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private FirebaseAuth mAuth;
@@ -79,6 +74,7 @@ public class SendFileFragment extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private Uri videoUri = null;
+    private int heartBeatAvg = 0;
 
     private static final String[] CAMERA_PERMISSION = {
             Manifest.permission.CAMERA,
@@ -184,7 +180,6 @@ public class SendFileFragment extends Fragment {
         }
     }
 
-    // This is triggered when the user presses 'ok' after recording video
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -212,6 +207,13 @@ public class SendFileFragment extends Fragment {
             final StorageReference ref = storageRef.child("Users/" + userId + "/videos/" + uriString);
             UploadTask uploadTask = ref.putStream(stream);
             uploadToFirebase(ref, uploadTask);
+        } else if(requestCode == HEARTBEAT_REQUEST_CODE) {
+            Log.d(TAG, "Back from heartbeat");
+            if (resultCode == RESULT_OK) {
+                heartBeatAvg = Integer.parseInt(data.getStringExtra("heartBeatAvg"));
+            } else {
+                Log.d(TAG, "An error occurred when getting the heartbeat");
+            }
         }
     }
 
@@ -271,10 +273,14 @@ public class SendFileFragment extends Fragment {
         }
     }
 
+    public void setHeartbeat(int heartBeatAvg) {
+      this.heartBeatAvg = heartBeatAvg;
+    }
+
     @OnClick(R.id.packetHeartBeatBtn)
     public void heartBeatClicked() {
         Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
-        startActivity(intent);
+        startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
     }
 
     @OnClick(R.id.packetSubmitBtn)
