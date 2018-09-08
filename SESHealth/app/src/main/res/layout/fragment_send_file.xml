@@ -140,6 +140,22 @@
             android:layout_below="@+id/packetMedicalTV"
             android:text="Not set" />
 
+        <TextView
+            android:id="@+id/packetHeartBeatLabelTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetAllergiesLabelTV"
+            android:layout_below="@+id/packetAllergiesLabelTV"
+            android:text="Heart Beat:" />
+
+        <TextView
+            android:id="@+id/packetHeartBeatTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/packetAllergiesTV"
+            android:layout_below="@+id/packetAllergiesTV"
+            android:text="Not set" />
+
 
         <EditText
             android:id="@+id/packetMessageET"
@@ -147,7 +163,7 @@
             android:layout_height="match_parent"
             android:hint="Add a message"
             android:layout_marginTop="20dp"
-            android:layout_below="@id/packetAllergiesLabelTV"
+            android:layout_below="@id/packetHeartBeatLabelTV"
             android:layout_centerHorizontal="true" />
 
         <Button

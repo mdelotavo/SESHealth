@@ -105,6 +105,9 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetAllergiesTV)
     TextView packetAllergiesTV;
 
+    @BindView(R.id.packetHeartBeatTV)
+    TextView packetHeartBeatTV;
+
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
 
@@ -176,7 +179,7 @@ public class SendFileFragment extends Fragment {
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         } else {
-            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -211,6 +214,7 @@ public class SendFileFragment extends Fragment {
             Log.d(TAG, "Back from heartbeat");
             if (resultCode == RESULT_OK) {
                 heartBeatAvg = Integer.parseInt(data.getStringExtra("heartBeatAvg"));
+                packetHeartBeatTV.setText(heartBeatAvg + "BPM");
             } else {
                 Log.d(TAG, "An error occurred when getting the heartbeat");
             }
@@ -273,14 +277,14 @@ public class SendFileFragment extends Fragment {
         }
     }
 
-    public void setHeartbeat(int heartBeatAvg) {
-      this.heartBeatAvg = heartBeatAvg;
-    }
-
     @OnClick(R.id.packetHeartBeatBtn)
     public void heartBeatClicked() {
-        Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
-        startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
+        if(checkPermissions(CAMERA_PERMISSION[0])) {
+            Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
+            startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.packetSubmitBtn)
@@ -306,6 +310,7 @@ public class SendFileFragment extends Fragment {
         userProfile.put("weight", weight);
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
+        userProfile.put("heartBeat", heartBeatAvg);
 
         if(packetGPSCheck.isChecked())
             userProfile.put("coordinates", getLocation(true));

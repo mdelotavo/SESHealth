@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -41,6 +42,7 @@ public class HeartRateMonitor extends Activity {
     private static Camera camera = null;
     private static View image = null;
     private static TextView text = null;
+    private static Button heartBeatBtn;
     private static Timer timer = new Timer();
 
     private static PowerManager.WakeLock wakeLock = null;
@@ -80,12 +82,13 @@ public class HeartRateMonitor extends Activity {
         previewHolder.addCallback(surfaceCallback);
         previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        image = findViewById(R.id.image);
-        text = (TextView) findViewById(R.id.text);
+        image = findViewById(R.id.heartBeatImage);
+        text = (TextView) findViewById(R.id.heartBeatText);
+        heartBeatBtn = (Button) findViewById(R.id.heartbeatBtn);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
-        text.setOnClickListener(new View.OnClickListener() {
+        heartBeatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), SendFileFragment.class);

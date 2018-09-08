@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private Location userLocation;
 
-
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
      * build a menu from this site:
@@ -80,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private FragmentManager fragmentManager;
 
-    /**
-     * TAG to use
-     */
     private static String TAG = "MainActivity";
 
     /**
