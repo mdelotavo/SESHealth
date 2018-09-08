@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:id="@+id/editUserInfoPreference"
+        android:key="editUserInfoPreference"
+        android:title="Change your profile information"/>
+
+    <team7.seshealthpatient.ChangePasswordDialog
+        android:id="@+id/changePasswordPreference"
+        android:key="changePasswordPreference"
+        android:title="Change your password" />
+
+    <Preference
+        android:id="@+id/logOutPreference"
+        android:key="logOutPreference"
+        android:title="Log out"/>
+
+    <Preference
+        android:id="@+id/aboutPreference"
+        android:key="aboutPreference"
+        android:title="About"/>
+
+</PreferenceScreen>
