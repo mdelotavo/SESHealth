@@ -3,16 +3,20 @@ package team7.seshealthpatient.Fragments;
 
 import android.Manifest;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -46,6 +50,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.Format;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,14 +63,16 @@ import team7.seshealthpatient.HeartBeat.HeartRateMonitor;
 import team7.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.LOCATION_SERVICE;
+import static org.apache.commons.lang3.time.DateUtils.round;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SendFileFragment extends Fragment {
     private static String TAG = "SendFileFragment";
-    private static final int  CAMERA_REQUEST_CODE = 5;
-    private static final int HEARTBEAT_REQUEST_CODE= 6;
+    private static final int CAMERA_REQUEST_CODE = 5;
+    private static final int HEARTBEAT_REQUEST_CODE = 6;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private FirebaseAuth mAuth;
@@ -73,6 +80,11 @@ public class SendFileFragment extends Fragment {
     private ProgressDialog progressDialog;
     private FirebaseDatabase database;
     private DatabaseReference reference;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private Location mLocation = null;
+
     private Uri videoUri = null;
     private int heartBeatAvg = 0;
 
@@ -108,6 +120,9 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetHeartBeatTV)
     TextView packetHeartBeatTV;
 
+    @BindView(R.id.packetGPSTV)
+    TextView packetGPSTV;
+
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
 
@@ -122,9 +137,8 @@ public class SendFileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = ((MainActivity)getActivity()).getFirebaseAuth();
+        mAuth = ((MainActivity) getActivity()).getFirebaseAuth();
         mUser = mAuth.getCurrentUser();
-
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Send file");
         progressDialog = new ProgressDialog(getActivity());
@@ -180,6 +194,74 @@ public class SendFileFragment extends Fragment {
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         } else {
             Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @OnClick(R.id.packetHeartBeatBtn)
+    public void heartBeatClicked() {
+        if(checkPermissions(CAMERA_PERMISSION[0])) {
+            Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
+            startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
+        } else {
+            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @OnClick(R.id.packetGPSCheck)
+    public void coordinatesClick() {
+        if(packetGPSCheck.isChecked()) {
+            locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d(TAG, "Latitude: " + location.getLatitude() + "\tLongitude: " + location.getLongitude());
+                    mLocation = location;
+                    String latitude = location.getLatitude() + "";
+                    String longitude = location.getLongitude() + "";
+                    String coordinates = latitude + " " + longitude;
+                    packetGPSTV.setText(coordinates);
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+                    progressDialog.dismiss();
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+
+                }
+
+            };
+
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+                }, 10);
+                return;
+            }
+            locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+            progressDialog.setMessage("Getting current location...");
+            progressDialog.show();
+        } else {
+            locationManager.removeUpdates(locationListener);
+        }
+    }
+
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 10:
+                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    return;
         }
     }
 
@@ -277,16 +359,6 @@ public class SendFileFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.packetHeartBeatBtn)
-    public void heartBeatClicked() {
-        if(checkPermissions(CAMERA_PERMISSION[0])) {
-            Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
-            startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @OnClick(R.id.packetSubmitBtn)
     public void sendPacket() {
         String name = packetNameTV.getText().toString();
@@ -332,12 +404,11 @@ public class SendFileFragment extends Fragment {
     }
 
     private Map getLocation(boolean isChecked) {
-        Location userLocation = ((MainActivity)getActivity()).getUserLocation();
         Map coordinates = new HashMap();
         if(isChecked) {
             try {
-                coordinates.put("latitude", userLocation.getLatitude());
-                coordinates.put("longitude", userLocation.getLongitude());
+                coordinates.put("latitude", mLocation.getLatitude());
+                coordinates.put("longitude", mLocation.getLongitude());
             } catch(Exception e) {
                 coordinates.put("latitude", 0);
                 coordinates.put("longitude", 0);
