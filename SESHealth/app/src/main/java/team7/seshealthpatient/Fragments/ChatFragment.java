@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -22,6 +25,7 @@ public class ChatFragment extends Fragment {
     String uid;
     FloatingActionButton fab;
     EditText input;
+    ListView listOfMessages;
 
     public ChatFragment() {
 
@@ -62,6 +66,20 @@ public class ChatFragment extends Fragment {
                 input.setText("");
             }
         });
+
+        listOfMessages = v.findViewById(R.id.list_of_messages);
+
+        FirebaseListAdapter<ChatMessage> adapter = new FirebaseListAdapter<ChatMessage>(getActivity(),
+                ChatMessage.class, android.R.layout.simple_list_item_1, FirebaseDatabase
+                    .getInstance().getReference().child("Users").child(uid).child("chat")) {
+            @Override
+            protected void populateView(View v, ChatMessage model, int position) {
+                TextView messageText = v.findViewById(android.R.id.text1);
+                messageText.setText(model.getMessageText());
+            }
+        };
+
+        listOfMessages.setAdapter(adapter);
 
         return v;
     }
