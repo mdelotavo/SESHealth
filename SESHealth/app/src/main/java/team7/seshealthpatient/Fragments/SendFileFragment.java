@@ -54,6 +54,8 @@ import java.text.Format;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -208,61 +210,57 @@ public class SendFileFragment extends Fragment {
     }
 
     @OnClick(R.id.packetGPSCheck)
-    public void coordinatesClick() {
-        if(packetGPSCheck.isChecked()) {
-            locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-            locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    Log.d(TAG, "Latitude: " + location.getLatitude() + "\tLongitude: " + location.getLongitude());
-                    mLocation = location;
-                    String latitude = location.getLatitude() + "";
-                    String longitude = location.getLongitude() + "";
-                    String coordinates = latitude + " " + longitude;
-                    packetGPSTV.setText(coordinates);
-                    progressDialog.dismiss();
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-                    progressDialog.dismiss();
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-
-                }
-
-            };
-
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[] {
-                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
-                }, 10);
-                return;
-            }
-            locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
-            progressDialog.setMessage("Getting current location...");
-            progressDialog.show();
-        } else {
+    public void coordinatesClicked() {
+        boolean checked = packetGPSCheck.isChecked();
+        packetGPSCheck.setChecked(false);
+        if(checked)
+            getCurrentLocation();
+        else
             locationManager.removeUpdates(locationListener);
-        }
     }
 
-    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 10:
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    return;
+    private void getCurrentLocation() {
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        final boolean locationCaptured = false;
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.d(TAG, "Latitude: " + location.getLatitude() + "\tLongitude: " + location.getLongitude());
+                mLocation = location;
+                String latitude = location.getLatitude() + "";
+                String longitude = location.getLongitude() + "";
+                String coordinates = latitude + " " + longitude;
+                packetGPSTV.setText(coordinates);
+                packetGPSCheck.setChecked(true);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+                Log.d(TAG, "Provider enabled: " + s);
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+                Log.d(TAG, "Provider disabled: " + s);
+            }
+
+        };
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+            }, 10);
+            return;
         }
+        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+        progressDialog.setMessage("Getting current location...");
+        progressDialog.show();
     }
 
     @Override
@@ -345,20 +343,6 @@ public class SendFileFragment extends Fragment {
         return result;
     }
 
-    // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access.
-    public boolean checkPermissions(String permission){
-        Log.d(TAG, "checkPermissions: checking permission: " + permission);
-        int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
-        if(permissionRequest != PackageManager.PERMISSION_GRANTED){
-            Log.d(TAG, "checkPermissions: \n Permission was not granted for: " + permission);
-            return false;
-        }
-        else{
-            Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
-            return true;
-        }
-    }
-
     @OnClick(R.id.packetSubmitBtn)
     public void sendPacket() {
         String name = packetNameTV.getText().toString();
@@ -385,9 +369,9 @@ public class SendFileFragment extends Fragment {
         userProfile.put("heartBeat", heartBeatAvg);
 
         if(packetGPSCheck.isChecked())
-            userProfile.put("coordinates", getLocation(true));
+            userProfile.put("coordinates", setCoordinates(true));
         else
-            userProfile.put("coordinates", getLocation(false));
+            userProfile.put("coordinates", setCoordinates(false));
 
         userProfile.put("message", message);
 
@@ -403,7 +387,7 @@ public class SendFileFragment extends Fragment {
         ref.setValue(userProfile);
     }
 
-    private Map getLocation(boolean isChecked) {
+    private Map setCoordinates(boolean isChecked) {
         Map coordinates = new HashMap();
         if(isChecked) {
             try {
@@ -418,5 +402,31 @@ public class SendFileFragment extends Fragment {
             coordinates.put("longitude", 0);
         }
         return coordinates;
+    }
+
+    // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access.
+    public boolean checkPermissions(String permission){
+        Log.d(TAG, "checkPermissions: checking permission: " + permission);
+        int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
+        if(permissionRequest != PackageManager.PERMISSION_GRANTED){
+            Log.d(TAG, "checkPermissions: \n Permission was not granted for: " + permission);
+            return false;
+        }
+        else{
+            Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
+            return true;
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 10:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getCurrentLocation();
+                    return;
+                } else {
+                    Toast.makeText(getActivity(), "Please allow this application to access your device's location to save your current location", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 }
