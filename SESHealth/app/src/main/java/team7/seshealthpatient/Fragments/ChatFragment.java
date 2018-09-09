@@ -88,12 +88,20 @@ public class ChatFragment extends Fragment {
 
         FirebaseListAdapter<ChatMessage> adapter = new FirebaseListAdapter<ChatMessage>(
                 getActivity(),
-                ChatMessage.class, android.R.layout.simple_list_item_1,
+                ChatMessage.class, android.R.layout.simple_list_item_2,
                 FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("chat")) {
             @Override
             protected void populateView(View v, ChatMessage model, int position) {
                 TextView messageText = v.findViewById(android.R.id.text1);
                 messageText.setText(model.getMessageText());
+
+                final android.text.format.DateFormat df = new android.text.format.DateFormat();
+
+                TextView messageInfo = v.findViewById(android.R.id.text2);
+                messageInfo.setText(
+                        df.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()).toString()
+                        + " " + model.getMessageUser()
+                );
             }
         };
 
