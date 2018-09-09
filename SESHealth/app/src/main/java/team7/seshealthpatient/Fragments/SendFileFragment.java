@@ -75,6 +75,9 @@ public class SendFileFragment extends Fragment {
     private static String TAG = "SendFileFragment";
     private static final int CAMERA_REQUEST_CODE = 5;
     private static final int HEARTBEAT_REQUEST_CODE = 6;
+    private static final int RECORD_VIDEO_REQUEST_PERMISSIONS = 10;
+    private static final int HEART_BEAT_REQUEST_PERMISSIONS = 11;
+    private static final int LOCATION_REQUEST_PERMISSIONS = 12;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private FirebaseAuth mAuth;
@@ -192,7 +195,7 @@ public class SendFileFragment extends Fragment {
             requestPermissions(new String[] {
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
-            }, 12);
+            }, RECORD_VIDEO_REQUEST_PERMISSIONS);
         } else {
             Log.d(TAG, "onClick: starting camera");
             Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -203,11 +206,11 @@ public class SendFileFragment extends Fragment {
     }
 
     @OnClick(R.id.packetHeartBeatBtn)
-    public void heartBeatClicked() {
+    public void heartBeatOnClick() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[] {
                     Manifest.permission.CAMERA
-            }, 11);
+            }, HEART_BEAT_REQUEST_PERMISSIONS);
         } else {
             Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
             startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
@@ -260,7 +263,7 @@ public class SendFileFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[] {
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
-            }, 10);
+            }, LOCATION_REQUEST_PERMISSIONS);
             return;
         }
         locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
@@ -425,7 +428,21 @@ public class SendFileFragment extends Fragment {
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case 10:
+            case RECORD_VIDEO_REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    cameraOnClick();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case HEART_BEAT_REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    heartBeatOnClick();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case LOCATION_REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getCurrentLocation();
                     return;
@@ -433,19 +450,6 @@ public class SendFileFragment extends Fragment {
                     Toast.makeText(getActivity(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case 11:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    heartBeatClicked();
-                } else {
-                    Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case 12:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    cameraOnClick();
-                } else {
-                    Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
-                }
         }
     }
 }
