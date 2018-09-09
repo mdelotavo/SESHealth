@@ -2,6 +2,7 @@ package team7.seshealthpatient.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
@@ -15,14 +16,17 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import team7.seshealthpatient.R;
 
 public class ChatFragment extends Fragment {
 
     FirebaseUser user;
-    String uid;
+    String uid, name;
     FloatingActionButton fab;
     EditText input;
     ListView listOfMessages;
@@ -39,6 +43,20 @@ public class ChatFragment extends Fragment {
         getActivity().setTitle("Chat");
         user = FirebaseAuth.getInstance().getCurrentUser();
         uid = user.getUid();
+
+        FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Profile").child("name")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        name = (String) dataSnapshot.getValue();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
     @Override
@@ -59,8 +77,7 @@ public class ChatFragment extends Fragment {
                         .child(uid)
                         .child("chat")
                         .push()
-                        .setValue(new ChatMessage(input.getText().toString(),
-                                FirebaseAuth.getInstance().getCurrentUser().getDisplayName())
+                        .setValue(new ChatMessage(input.getText().toString(), name)
                         );
                 toastMessage("Sent");
                 input.setText("");
