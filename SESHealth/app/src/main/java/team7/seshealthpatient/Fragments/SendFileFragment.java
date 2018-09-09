@@ -188,24 +188,29 @@ public class SendFileFragment extends Fragment {
     // During onClick event, the camera application will open up allowing users to record video
     @OnClick(R.id.packetCameraBtn)
     public void cameraOnClick() {
-        if(checkPermissions(CAMERA_PERMISSION[0]) && checkPermissions(CAMERA_PERMISSION[1])){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, 12);
+        } else {
             Log.d(TAG, "onClick: starting camera");
             Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_LONG).show();
         }
     }
 
     @OnClick(R.id.packetHeartBeatBtn)
     public void heartBeatClicked() {
-        if(checkPermissions(CAMERA_PERMISSION[0])) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                    Manifest.permission.CAMERA
+            }, 11);
+        } else {
             Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
             startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -213,7 +218,7 @@ public class SendFileFragment extends Fragment {
     public void coordinatesClicked() {
         boolean checked = packetGPSCheck.isChecked();
         packetGPSCheck.setChecked(false);
-        if(checked)
+        if (checked)
             getCurrentLocation();
         else
             locationManager.removeUpdates(locationListener);
@@ -425,7 +430,21 @@ public class SendFileFragment extends Fragment {
                     getCurrentLocation();
                     return;
                 } else {
-                    Toast.makeText(getActivity(), "Please allow this application to access your device's location to save your current location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 11:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    heartBeatClicked();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 12:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    cameraOnClick();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
                 }
         }
     }
