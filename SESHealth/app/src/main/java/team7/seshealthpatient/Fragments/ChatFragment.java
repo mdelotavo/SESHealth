@@ -77,8 +77,7 @@ public class ChatFragment extends Fragment {
                         .child(uid)
                         .child("chat")
                         .push()
-                        .setValue(new ChatMessage(input.getText().toString(), name)
-                        );
+                        .setValue(new ChatMessage(input.getText().toString(), name));
                 toastMessage("Sent");
                 input.setText("");
             }
