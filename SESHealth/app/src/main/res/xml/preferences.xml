@@ -12,13 +12,13 @@
         android:title="Change your password" />
 
     <Preference
-        android:id="@+id/logOutPreference"
-        android:key="logOutPreference"
-        android:title="Log out"/>
-
-    <Preference
         android:id="@+id/aboutPreference"
         android:key="aboutPreference"
         android:title="About"/>
+
+    <Preference
+        android:id="@+id/logOutPreference"
+        android:key="logOutPreference"
+        android:title="Log out"/>
 
 </PreferenceScreen>
