@@ -3,16 +3,20 @@ package team7.seshealthpatient.Fragments;
 
 import android.Manifest;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -46,9 +50,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.Format;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,14 +65,19 @@ import team7.seshealthpatient.HeartBeat.HeartRateMonitor;
 import team7.seshealthpatient.R;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.LOCATION_SERVICE;
+import static org.apache.commons.lang3.time.DateUtils.round;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SendFileFragment extends Fragment {
     private static String TAG = "SendFileFragment";
-    private static final int  CAMERA_REQUEST_CODE = 5;
-    private static final int HEARTBEAT_REQUEST_CODE= 6;
+    private static final int CAMERA_REQUEST_CODE = 5;
+    private static final int HEARTBEAT_REQUEST_CODE = 6;
+    private static final int RECORD_VIDEO_REQUEST_PERMISSIONS = 10;
+    private static final int HEART_BEAT_REQUEST_PERMISSIONS = 11;
+    private static final int LOCATION_REQUEST_PERMISSIONS = 12;
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private FirebaseAuth mAuth;
@@ -73,6 +85,11 @@ public class SendFileFragment extends Fragment {
     private ProgressDialog progressDialog;
     private FirebaseDatabase database;
     private DatabaseReference reference;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private Location mLocation = null;
+
     private Uri videoUri = null;
     private int heartBeatAvg = 0;
 
@@ -108,6 +125,9 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetHeartBeatTV)
     TextView packetHeartBeatTV;
 
+    @BindView(R.id.packetGPSTV)
+    TextView packetGPSTV;
+
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
 
@@ -122,9 +142,8 @@ public class SendFileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = ((MainActivity)getActivity()).getFirebaseAuth();
+        mAuth = ((MainActivity) getActivity()).getFirebaseAuth();
         mUser = mAuth.getCurrentUser();
-
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Send file");
         progressDialog = new ProgressDialog(getActivity());
@@ -172,15 +191,86 @@ public class SendFileFragment extends Fragment {
     // During onClick event, the camera application will open up allowing users to record video
     @OnClick(R.id.packetCameraBtn)
     public void cameraOnClick() {
-        if(checkPermissions(CAMERA_PERMISSION[0]) && checkPermissions(CAMERA_PERMISSION[1])){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, RECORD_VIDEO_REQUEST_PERMISSIONS);
+        } else {
             Log.d(TAG, "onClick: starting camera");
             Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_LONG).show();
         }
+    }
+
+    @OnClick(R.id.packetHeartBeatBtn)
+    public void heartBeatOnClick() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                    Manifest.permission.CAMERA
+            }, HEART_BEAT_REQUEST_PERMISSIONS);
+        } else {
+            Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
+            startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
+        }
+    }
+
+    @OnClick(R.id.packetGPSCheck)
+    public void coordinatesClicked() {
+        boolean checked = packetGPSCheck.isChecked();
+        packetGPSCheck.setChecked(false);
+        if (checked)
+            getCurrentLocation();
+        else
+            locationManager.removeUpdates(locationListener);
+    }
+
+    private void getCurrentLocation() {
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        final boolean locationCaptured = false;
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.d(TAG, "Latitude: " + location.getLatitude() + "\tLongitude: " + location.getLongitude());
+                mLocation = location;
+                String latitude = location.getLatitude() + "";
+                String longitude = location.getLongitude() + "";
+                String coordinates = latitude + " " + longitude;
+                packetGPSTV.setText(coordinates);
+                packetGPSCheck.setChecked(true);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+                Log.d(TAG, "Provider enabled");
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+                Toast.makeText(getActivity(), "Please turn on your location", Toast.LENGTH_SHORT).show();
+                packetGPSCheck.setChecked(false);
+                progressDialog.dismiss();
+            }
+
+        };
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+            }, LOCATION_REQUEST_PERMISSIONS);
+            return;
+        }
+        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+        progressDialog.setMessage("Getting current location...");
+        progressDialog.show();
     }
 
     @Override
@@ -263,30 +353,6 @@ public class SendFileFragment extends Fragment {
         return result;
     }
 
-    // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access.
-    public boolean checkPermissions(String permission){
-        Log.d(TAG, "checkPermissions: checking permission: " + permission);
-        int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
-        if(permissionRequest != PackageManager.PERMISSION_GRANTED){
-            Log.d(TAG, "checkPermissions: \n Permission was not granted for: " + permission);
-            return false;
-        }
-        else{
-            Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
-            return true;
-        }
-    }
-
-    @OnClick(R.id.packetHeartBeatBtn)
-    public void heartBeatClicked() {
-        if(checkPermissions(CAMERA_PERMISSION[0])) {
-            Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
-            startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
-        } else {
-            Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @OnClick(R.id.packetSubmitBtn)
     public void sendPacket() {
         String name = packetNameTV.getText().toString();
@@ -313,9 +379,9 @@ public class SendFileFragment extends Fragment {
         userProfile.put("heartBeat", heartBeatAvg);
 
         if(packetGPSCheck.isChecked())
-            userProfile.put("coordinates", getLocation(true));
+            userProfile.put("coordinates", setCoordinates(true));
         else
-            userProfile.put("coordinates", getLocation(false));
+            userProfile.put("coordinates", setCoordinates(false));
 
         userProfile.put("message", message);
 
@@ -331,13 +397,12 @@ public class SendFileFragment extends Fragment {
         ref.setValue(userProfile);
     }
 
-    private Map getLocation(boolean isChecked) {
-        Location userLocation = ((MainActivity)getActivity()).getUserLocation();
+    private Map setCoordinates(boolean isChecked) {
         Map coordinates = new HashMap();
         if(isChecked) {
             try {
-                coordinates.put("latitude", userLocation.getLatitude());
-                coordinates.put("longitude", userLocation.getLongitude());
+                coordinates.put("latitude", mLocation.getLatitude());
+                coordinates.put("longitude", mLocation.getLongitude());
             } catch(Exception e) {
                 coordinates.put("latitude", 0);
                 coordinates.put("longitude", 0);
@@ -347,5 +412,46 @@ public class SendFileFragment extends Fragment {
             coordinates.put("longitude", 0);
         }
         return coordinates;
+    }
+
+    // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access.
+    public boolean checkPermissions(String permission){
+        Log.d(TAG, "checkPermissions: checking permission: " + permission);
+        int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
+        if(permissionRequest != PackageManager.PERMISSION_GRANTED){
+            Log.d(TAG, "checkPermissions: \n Permission was not granted for: " + permission);
+            return false;
+        }
+        else{
+            Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
+            return true;
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case RECORD_VIDEO_REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    cameraOnClick();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case HEART_BEAT_REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    heartBeatOnClick();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case LOCATION_REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getCurrentLocation();
+                    return;
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 }

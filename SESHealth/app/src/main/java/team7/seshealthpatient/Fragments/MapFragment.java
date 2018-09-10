@@ -322,7 +322,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                ((MainActivity) getActivity()).setUserLocation(mLastKnownLocation);
                             }
                         } else {
                             mGoogleMap.moveCamera(CameraUpdateFactory
