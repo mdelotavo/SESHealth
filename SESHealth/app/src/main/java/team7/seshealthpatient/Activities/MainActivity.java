@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private Location userLocation;
+    private Fragment fragment;
 
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
@@ -106,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         fireBaseUser = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(fireBaseUser.getUid());
+
+        fragment = new PatientInformationFragment();
 
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
@@ -151,25 +154,25 @@ public class MainActivity extends AppCompatActivity {
                                 // If the user clicked on a different item than the current item
                                 if (currentState != MenuStates.PATIENT_INFO) {
                                     // change the fragment to the new fragment
-                                    ChangeFragment(new PatientInformationFragment());
+                                    fragment = new PatientInformationFragment();
                                     currentState = MenuStates.PATIENT_INFO;
                                 }
                                 break;
                             case R.id.nav_sendfile:
                                 if (currentState != MenuStates.SEND_FILE) {
-                                    ChangeFragment(new SendFileFragment());
+                                    fragment = new SendFileFragment();
                                     currentState = MenuStates.SEND_FILE;
                                 }
                                 break;
                             case R.id.nav_map:
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
-                                    ChangeFragment(new MapFragment());
+                                    fragment = new MapFragment();
                                     currentState = MenuStates.NAVIGATION_MAP;
                                 }
                                 break;
                             case R.id.nav_settings:
                                 if (currentState != MenuStates.SETTINGS) {
-                                    ChangeFragment(new SettingsFragment());
+                                    fragment = new SettingsFragment();
                                     currentState = MenuStates.SETTINGS;
                                 }
                                 break;
@@ -200,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerClosed(View drawerView) {
                         // Respond when the drawer is closed
+                        ChangeFragment(fragment);
                     }
 
                     @Override
@@ -262,11 +266,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This function allows to change the content of the Fragment holder
      *
-     * @param fragment The fragment to be displayed
+     * @param selectedFragment The fragment to be displayed
      */
-    private void ChangeFragment(Fragment fragment) {
+    private void ChangeFragment(Fragment selectedFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_container, selectedFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
