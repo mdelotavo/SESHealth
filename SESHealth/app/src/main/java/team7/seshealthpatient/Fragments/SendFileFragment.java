@@ -250,12 +250,14 @@ public class SendFileFragment extends Fragment {
 
             @Override
             public void onProviderEnabled(String s) {
-                Log.d(TAG, "Provider enabled: " + s);
+                Log.d(TAG, "Provider enabled");
             }
 
             @Override
             public void onProviderDisabled(String s) {
-                Log.d(TAG, "Provider disabled: " + s);
+                Toast.makeText(getActivity(), "Please turn on your location", Toast.LENGTH_SHORT).show();
+                packetGPSCheck.setChecked(false);
+                progressDialog.dismiss();
             }
 
         };
