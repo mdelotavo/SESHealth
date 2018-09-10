@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,8 +32,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import butterknife.BindView;
+
 import team7.seshealthpatient.Fragments.ChatFragment;
-import team7.seshealthpatient.Fragments.HeartRateFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.SendFileFragment;
@@ -62,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private FirebaseDatabase database;
     private DatabaseReference reference;
-
+    private Location userLocation;
+    private Fragment fragment;
 
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
@@ -79,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private FragmentManager fragmentManager;
 
-    /**
-     * TAG to use
-     */
     private static String TAG = "MainActivity";
 
     /**
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, HEARTRATE, SEND_FILE, NAVIGATION_MAP, CHAT, SETTINGS, LOGOUT
+        PATIENT_INFO, SEND_FILE, NAVIGATION_MAP, CHAT, SETTINGS, LOGOUT
     }
 
     /**
@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private MenuStates currentState;
 
+    @BindView(R.id.nav_patient_info)
+    MenuItem patientInfoMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(fireBaseUser.getUid());
 
+        fragment = new PatientInformationFragment();
+
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
 
@@ -117,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() == null) {
+                if (firebaseAuth.getCurrentUser() == null) {
                     finish();
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
@@ -152,37 +156,31 @@ public class MainActivity extends AppCompatActivity {
                                 // If the user clicked on a different item than the current item
                                 if (currentState != MenuStates.PATIENT_INFO) {
                                     // change the fragment to the new fragment
-                                    ChangeFragment(new PatientInformationFragment());
+                                    fragment = new PatientInformationFragment();
                                     currentState = MenuStates.PATIENT_INFO;
-                                }
-                                break;
-                            case R.id.nav_heartrate:
-                                if (currentState != MenuStates.HEARTRATE) {
-                                    ChangeFragment(new HeartRateFragment());
-                                    currentState = MenuStates.HEARTRATE;
                                 }
                                 break;
                             case R.id.nav_sendfile:
                                 if (currentState != MenuStates.SEND_FILE) {
-                                    ChangeFragment(new SendFileFragment());
+                                    fragment = new SendFileFragment();
                                     currentState = MenuStates.SEND_FILE;
                                 }
                                 break;
                             case R.id.nav_map:
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
-                                    ChangeFragment(new MapFragment());
+                                    fragment = new MapFragment();
                                     currentState = MenuStates.NAVIGATION_MAP;
                                 }
                                 break;
                             case R.id.nav_chat:
                                 if (currentState != MenuStates.CHAT) {
-                                    ChangeFragment(new ChatFragment());
+                                    fragment = new ChatFragment();
                                     currentState = MenuStates.CHAT;
                                 }
                                 break;
                             case R.id.nav_settings:
                                 if (currentState != MenuStates.SETTINGS) {
-                                    ChangeFragment(new SettingsFragment());
+                                    fragment = new SettingsFragment();
                                     currentState = MenuStates.SETTINGS;
                                 }
                                 break;
@@ -213,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerClosed(View drawerView) {
                         // Respond when the drawer is closed
+                        ChangeFragment(fragment);
                     }
 
                     @Override
@@ -229,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.fragment_container, new PatientInformationFragment());
         ft.commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -236,17 +236,17 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+
     /**
-        Using this at the moment to stop the activity being recreated on orientation change
-        This is needed as otherwise it will overlay any fragment with the patient info fragment
-    **/
+     * Using this at the moment to stop the activity being recreated on orientation change
+     * This is needed as otherwise it will overlay any fragment with the patient info fragment
+     **/
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Log.d(TAG, "Providers: " + FirebaseAuth.getInstance().getCurrentUser().getProviders().toString());
     }
-
 
 
     /**
@@ -273,20 +273,21 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function allows to change the content of the Fragment holder
-     * @param fragment The fragment to be displayed
+     *
+     * @param selectedFragment The fragment to be displayed
      */
-    private void ChangeFragment(Fragment fragment) {
+    private void ChangeFragment(Fragment selectedFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_container, selectedFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     @Override
     public void onBackPressed() {
-        if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
-        }else{
+        } else {
             this.finishAffinity();
         }
     }
@@ -295,8 +296,14 @@ public class MainActivity extends AppCompatActivity {
         reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null) {
+                    textView.setText("null");
+                } else {
+                    // Added (+ """) to make our Long values Strings so that we could set appropriate text values
+                    textView.setText((dataSnapshot.getValue() + "").toString());
+                }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -307,12 +314,28 @@ public class MainActivity extends AppCompatActivity {
         reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                textView.setText(dataSnapshot.getValue().toString());
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else {
+                    textView.setText("");
+                    for (String value : dataSnapshot.getValue().toString().split(","))
+                        textView.append("- " + value.trim() + "\n");
+                    textView.setText(textView.getText().toString().trim());
+                }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+    }
+
+    public void setUserLocation(Location location) {
+        this.userLocation = location;
+    }
+
+    public Location getUserLocation() {
+        return this.userLocation;
     }
 
     public FirebaseAuth getFirebaseAuth() {

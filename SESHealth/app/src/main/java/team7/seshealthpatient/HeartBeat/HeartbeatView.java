@@ -1,4 +1,4 @@
-package team7.seshealthpatient.Activities;
+package team7.seshealthpatient.HeartBeat;
 
 import android.content.Context;
 import android.graphics.Bitmap;

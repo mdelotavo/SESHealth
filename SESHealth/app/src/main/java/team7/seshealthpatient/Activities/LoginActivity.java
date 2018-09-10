@@ -135,8 +135,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null && isUserVerified()) {
-                    progressDialog.setMessage(getString(R.string.login_progressDialog));
-                    progressDialog.show();
+                    if (!LoginActivity.this.isFinishing()) {
+                        progressDialog.setMessage(getString(R.string.login_progressDialog));
+                        progressDialog.show();
+                    }
                     mAuth.removeAuthStateListener(mAuthStateListener);
                     setupCompletedCheck();
                 }

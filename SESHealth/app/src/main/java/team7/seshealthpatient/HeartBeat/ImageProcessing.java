@@ -1,4 +1,4 @@
-package team7.seshealthpatient.Activities;
+package team7.seshealthpatient.HeartBeat;
 
 /**
  * This abstract class is used to process images.

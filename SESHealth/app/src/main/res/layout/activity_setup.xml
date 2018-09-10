@@ -1,140 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none">
+    android:animateLayoutChanges="true"
+    android:background="@drawable/gradient_login_bg"
+    android:orientation="horizontal">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <TextView
+        android:id="@+id/introSetupTV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp">
+        android:gravity="center"
+        android:text="Welcome to SESHealth"
+        android:textSize="50sp" />
 
-        <EditText
-            android:id="@+id/nameET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Full Name (required)"
-            android:inputType="textPersonName" />
+    <ScrollView
+        android:id="@+id/setupFirstSV"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <EditText
-            android:id="@+id/phoneET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Mobile Phone No. (required)"
-            android:inputType="phone" />
-
-        <LinearLayout
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="25dp">
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:paddingTop="25dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/setupDOBTV"
-                style="@style/LoginStyles"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Date of Birth: " />
+                android:text="Setup"
+                android:textColor="#444"
+                android:textSize="40sp" />
 
             <TextView
-                android:id="@+id/setupDOBDateTV"
-                style="@style/LoginStyles"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Select Date" />
+                android:layout_marginTop="30dp"
+                android:text="Please complete the required fields below to continue setting up your profile"
+                android:textSize="25sp" />
+
+            <EditText
+                android:id="@+id/nameET"
+                style="@style/loginEditTexts"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/edit_text_top"
+                android:ems="10"
+                android:hint="Full Name (required)"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/phoneET"
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_middle"
+                android:ems="10"
+                android:hint="Mobile No. (required)"
+                android:inputType="phone" />
+
+            <EditText
+                android:id="@+id/setupDOBDateET"
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_middle"
+                android:focusable="false"
+                android:hint="Date of Birth (required)" />
+
+            <EditText
+                android:id="@+id/heightET"
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_middle"
+                android:ems="10"
+                android:hint="Height(cm) (required)"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/weightET"
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_bottom"
+                android:ems="10"
+                android:hint="Weight(kg) (required)"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionDone"/>
+
+            <RadioGroup
+                android:id="@+id/genderRG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Gender"
+                    android:textSize="25sp" />
+
+                <RadioButton
+                    android:id="@+id/maleRB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Male"
+                    android:textColor="#666"
+                    android:textSize="25sp" />
+
+                <RadioButton
+                    android:id="@+id/femaleRB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Female"
+                    android:textColor="#666"
+                    android:textSize="25sp" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/setupNext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="50dp"
+                android:background="@drawable/gradient_login_btn"
+                android:text="Next"
+                android:textColor="#eee"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/setupLogOutBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginStart="80dp"
+                android:background="@drawable/gradient_login_btn"
+                android:text="Log Out"
+                android:textColor="#eee"
+                android:textSize="20sp" />
+
         </LinearLayout>
 
-        <!-- <EditText
-            android:id="@+id/bDET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Birth Date (DD/MM/YYYY) (required)"
-            android:inputType="date"
-            android:maxLength="10" /> -->
+    </ScrollView>
 
-        <EditText
-            android:id="@+id/heightET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Height (required)"
-            android:inputType="numberDecimal" />
+    <ScrollView
+        android:id="@+id/setupSecondSV"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <EditText
-            android:id="@+id/weightET"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Weight (required)"
-            android:inputType="numberDecimal" />
-
-        <EditText
-            android:id="@+id/allergiesET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Allergies"
-            android:inputType="textMultiLine" />
-
-        <EditText
-            android:id="@+id/medicationET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Current Medication"
-            android:inputType="textMultiLine" />
-
-        <RadioGroup
-            android:id="@+id/genderRG"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:paddingTop="25dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Gender" />
+                android:text="Setup"
+                android:textColor="#444"
+                android:textSize="40sp" />
 
-            <RadioButton
-                android:id="@+id/maleRB"
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Male" />
+                android:layout_marginTop="30dp"
+                android:text="The fields below are optional and can be left blank. Please seperate each allergy or medication with a comma (,) for multiple values"
+                android:textSize="25sp" />
 
-            <RadioButton
-                android:id="@+id/femaleRB"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/allergiesET"
+                style="@style/loginEditTexts"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/edit_text_top"
+                android:ems="10"
+                android:hint="Allergies"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                android:id="@+id/medicationET"
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_bottom"
+                android:ems="10"
+                android:hint="Current Medication"
+                android:inputType="textMultiLine" />
+
+            <Button
+                android:id="@+id/setupFinish"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Female" />
-        </RadioGroup>
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="50dp"
+                android:background="@drawable/gradient_login_btn"
+                android:text="Finish"
+                android:textColor="#eee"
+                android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/setupMain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Continue"
-            tools:layout_editor_absoluteX="210dp"
-            tools:layout_editor_absoluteY="345dp" />
+            <Button
+                android:id="@+id/setupPrevious"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="65dp"
+                android:layout_marginStart="65dp"
+                android:background="@drawable/gradient_login_btn"
+                android:text="Previous"
+                android:textColor="#eee"
+                android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/setupLogOutBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Log Out" />
+            <Button
+                android:id="@+id/setupLogOutSecondBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="80dp"
+                android:layout_marginStart="80dp"
+                android:background="@drawable/gradient_login_btn"
+                android:text="Log Out"
+                android:textColor="#eee"
+                android:textSize="20sp" />
 
-    </LinearLayout>
+        </LinearLayout>
 
-</ScrollView>
+    </ScrollView>
+</LinearLayout>
