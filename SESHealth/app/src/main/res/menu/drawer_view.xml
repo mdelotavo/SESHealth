@@ -11,6 +11,9 @@
             android:id="@+id/nav_map"
             android:title="@string/facilities_map" />
         <item
+            android:id="@+id/nav_chat"
+            android:title="@string/chat" />
+        <item
             android:id="@+id/nav_settings"
             android:title="@string/settings" />
         <item
