@@ -87,9 +87,7 @@ public class MainActivity extends AppCompatActivity {
      * I am using this enum to know which is the current fragment being displayed, you will see
      * what I mean with this later in this code.
      */
-    private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, SETTINGS, LOGOUT
-    }
+    private enum MenuStates {PATIENT_INFO, NAVIGATION_MAP, CHAT, SETTINGS, LOGOUT};
 
     /**
      * The current fragment being displayed.

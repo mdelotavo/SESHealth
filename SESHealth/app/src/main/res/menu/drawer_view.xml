@@ -14,6 +14,9 @@
             android:icon="@drawable/ic_chat_outline"
             android:title="@string/chat" />
         <item
+            android:id="@+id/nav_profile"
+            android:title="@string/profile" />
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_outline"
             android:title="@string/settings" />
