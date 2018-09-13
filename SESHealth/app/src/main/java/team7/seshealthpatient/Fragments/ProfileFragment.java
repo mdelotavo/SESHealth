@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +43,35 @@ import team7.seshealthpatient.R;
 public class ProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+
+    @BindView(R.id.profileNameTV)
+    TextView profileNameTV;
+
+    @BindView(R.id.profileEmailTV)
+    TextView profileEmailTV;
+
+    @BindView(R.id.profileMobileTV)
+    TextView profileMobileTV;
+
+    @BindView(R.id.profileDateOfBirthTV)
+    TextView profileDateOfBirthTV;
+
+    @BindView(R.id.profileGenderTV)
+    TextView profileGenderTV;
+
+    @BindView(R.id.profileHeightTV)
+    TextView profileHeightTV;
+
+    @BindView(R.id.profileWeightTV)
+    TextView profileWeightTV;
+
+    @BindView(R.id.profileMedicalTV)
+    TextView profileMedicalTV;
+
+    @BindView(R.id.profileAllergiesTV)
+    TextView profileAllergiesTV;
 
     public ProfileFragment() {
     }
@@ -52,6 +83,8 @@ public class ProfileFragment extends Fragment {
         mUser = mAuth.getCurrentUser();
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Profile");
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(mUser.getUid());
     }
 
     @Override
@@ -62,6 +95,15 @@ public class ProfileFragment extends Fragment {
 
         // Note how we are telling butter knife to bind during the on create view method
         ButterKnife.bind(this, v);
+        TextView[] textViewsProfile = {profileNameTV, profileMobileTV, profileDateOfBirthTV, profileGenderTV, profileHeightTV, profileWeightTV};
+        TextView[] textViews = {profileAllergiesTV, profileMedicalTV};
+
+        String[] childrenProfile = {"name", "phoneNO", "DOB", "gender", "height", "weight"};
+        setTVValuesProfile(textViewsProfile, childrenProfile);
+        String[] children = {"allergies", "medication"};
+
+        setTVValues(textViews, children);
+        profileEmailTV.setText(mUser.getEmail());
 
         return v;
     }
@@ -82,6 +124,17 @@ public class ProfileFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_info, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    // Put this in a utility class
+    public void setTVValuesProfile(TextView[] textViews, String[] children) {
+        for (int i = 0; i < textViews.length; i++)
+            ((MainActivity)getActivity()).setTVValuesProfile(textViews[i], children[i]);
+    }
+
+    public void setTVValues(TextView[] textViews, String[] children) {
+        for (int i = 0; i < textViews.length; i++)
+            ((MainActivity)getActivity()).setTVValues(textViews[i], children[i]);
     }
 
 }

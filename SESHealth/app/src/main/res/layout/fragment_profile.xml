@@ -8,27 +8,90 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp">
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
         <TextView
             android:id="@+id/profileNameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:text="Name Goes Here" />
+            android:text="Name: " />
 
         <TextView
             android:id="@+id/profileEmailTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
             android:layout_below="@+id/profileNameTV"
-            android:layout_marginTop="25dp"
-            android:text="Email goes here" />
+            android:layout_centerHorizontal="true"
+            android:text="Email: " />
+
+        <TextView
+            android:id="@+id/profileMobileTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileEmailTV"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="Mobile:" />
 
 
+        <TextView
+            android:id="@+id/profileDateOfBirthTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileMobileTV"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="DOB"/>
+
+        <TextView
+            android:id="@+id/profileGenderTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileDateOfBirthTV"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="Gender:" />
+
+        <TextView
+            android:id="@+id/profileHeightTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileGenderTV"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="Height:" />
+
+        <TextView
+            android:id="@+id/profileWeightTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileHeightTV"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="Weight:"/>
+
+        <TextView
+            android:id="@+id/profileMedicalTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileWeightTV"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="Medical:"/>
+
+        <TextView
+            android:id="@+id/profileAllergiesTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileMedicalTV"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="Alergies:" />
 
     </RelativeLayout>
 
