@@ -46,6 +46,7 @@
     <string name="settings">Settings</string>
 
     <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
 
     <string-array name="genders">
         <item>Male</item>
