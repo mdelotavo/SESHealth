@@ -57,7 +57,7 @@ public class EditInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_info);
         ButterKnife.bind(this);
 
-        toolbar = findViewById(R.id.editInfo_toolbar);
+        toolbar = findViewById(R.id.editInfoToolbar);
         toolbar.setTitle("Edit Info");
 
         mAuth = FirebaseAuth.getInstance();

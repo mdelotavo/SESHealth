@@ -25,6 +25,7 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import team7.seshealthpatient.Activities.EditInfoActivity;
 import team7.seshealthpatient.Activities.MainActivity;
+import team7.seshealthpatient.Activities.SendFileActivity;
 import team7.seshealthpatient.R;
 
 /**
@@ -43,6 +44,7 @@ public class PatientInformationFragment extends Fragment {
     private TextView[] textViews;
     private String[] children;
     private FirebaseUser mUser;
+    private String[] userValues;
 
     @BindView(R.id.nameTV)
     TextView nameTV;
@@ -132,7 +134,14 @@ public class PatientInformationFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivity(new Intent(getContext(), EditInfoActivity.class));
+        if (item.getItemId() == R.id.edit_menu_edit)
+            startActivity(new Intent(getContext(), EditInfoActivity.class));
+        else if (item.getItemId() == R.id.send_file_info) {
+            userValues = new String[8];
+            for (int i = 0; i < textViews.length; i++)
+                userValues[i] = textViews[i].getText().toString().trim();
+            startActivity(new Intent(getContext(), SendFileActivity.class).putExtra("userValues", userValues));
+        }
         return super.onOptionsItemSelected(item);
     }
 
