@@ -21,7 +21,7 @@ import java.util.Timer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import team7.seshealthpatient.Activities.MainActivity;
-import team7.seshealthpatient.Fragments.SendFileFragment;
+import team7.seshealthpatient.Activities.SendFileActivity;
 import team7.seshealthpatient.R;
 import static android.app.Activity.RESULT_OK;
 
@@ -91,7 +91,7 @@ public class HeartRateMonitor extends Activity {
         heartBeatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SendFileFragment.class);
+                Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
                 intent.putExtra("heartBeatAvg", beatsAvg + "");
                 setResult(RESULT_OK, intent);
                 finish();

@@ -5,9 +5,6 @@
             android:id="@+id/nav_patient_info"
             android:title="@string/patient_information" />
         <item
-            android:id="@+id/nav_sendfile"
-            android:title="@string/send_local_file" />
-        <item
             android:id="@+id/nav_map"
             android:title="@string/facilities_map" />
         <item

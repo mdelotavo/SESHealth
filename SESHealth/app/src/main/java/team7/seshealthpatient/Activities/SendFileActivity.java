@@ -1,11 +1,12 @@
-package team7.seshealthpatient.Fragments;
+package team7.seshealthpatient.Activities;
 
 
 import android.Manifest;
 
-import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -16,10 +17,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +32,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,19 +43,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.text.Format;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,15 +59,13 @@ import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.HeartBeat.HeartRateMonitor;
 import team7.seshealthpatient.R;
 
-import static android.app.Activity.RESULT_OK;
-import static android.content.Context.LOCATION_SERVICE;
 import static org.apache.commons.lang3.time.DateUtils.round;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SendFileFragment extends Fragment {
-    private static String TAG = "SendFileFragment";
+public class SendFileActivity extends AppCompatActivity {
+    private static String TAG = "SendFileActivity";
     private static final int CAMERA_REQUEST_CODE = 5;
     private static final int HEARTBEAT_REQUEST_CODE = 6;
     private static final int RECORD_VIDEO_REQUEST_PERMISSIONS = 10;
@@ -85,6 +78,8 @@ public class SendFileFragment extends Fragment {
     private ProgressDialog progressDialog;
     private FirebaseDatabase database;
     private DatabaseReference reference;
+    private Toolbar toolbar;
+    private String[] userValues;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -97,30 +92,6 @@ public class SendFileFragment extends Fragment {
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-
-    @BindView(R.id.packetNameTV)
-    TextView packetNameTV;
-
-    @BindView(R.id.packetDateOfBirthTV)
-    TextView packetDateOfBirthTV;
-
-    @BindView(R.id.packetGenderTV)
-    TextView packetGenderTV;
-
-    @BindView(R.id.packetMobileTV)
-    TextView packetMobileTV;
-
-    @BindView(R.id.packetHeightTV)
-    TextView packetHeightTV;
-
-    @BindView(R.id.packetWeightTV)
-    TextView packetWeightTV;
-
-    @BindView(R.id.packetMedicalTV)
-    TextView packetMedicalTV;
-
-    @BindView(R.id.packetAllergiesTV)
-    TextView packetAllergiesTV;
 
     @BindView(R.id.packetHeartBeatTV)
     TextView packetHeartBeatTV;
@@ -135,64 +106,43 @@ public class SendFileFragment extends Fragment {
     @BindView(R.id.packetGPSCheck)
     CheckBox packetGPSCheck;
 
-    public SendFileFragment() {
-        // Required empty public constructor
-    }
+    @BindView(R.id.packetHeartBeatCheck)
+    CheckBox packetHeartBeatCheck;
+
+    @BindView(R.id.packetCameraCheck)
+    CheckBox packetCameraCheck;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = ((MainActivity) getActivity()).getFirebaseAuth();
+        setContentView(R.layout.activity_send_file);
+        ButterKnife.bind(this);
+
+        Bundle extra = getIntent().getExtras();
+        userValues = extra.getStringArray("userValues");
+
+        mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         // Note the use of getActivity() to reference the Activity holding this fragment
-        getActivity().setTitle("Send file");
-        progressDialog = new ProgressDialog(getActivity());
+
+        toolbar = findViewById(R.id.sendFileToolbar);
+        toolbar.setTitle("Send File");
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        progressDialog = new ProgressDialog(this);
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(mUser.getUid());
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_send_file, container, false);
-        ButterKnife.bind(this, v);
-
-        TextView[] textViewsProfile = {packetNameTV, packetDateOfBirthTV, packetGenderTV, packetMobileTV, packetHeightTV, packetWeightTV};
-        TextView[] textViews = {packetAllergiesTV, packetMedicalTV};
-
-        String[] childrenProfile = {"name", "DOB", "gender", "phoneNO", "height", "weight"};
-        String[] children = {"allergies", "medication"};
-
-        setTVValuesProfile(textViewsProfile, childrenProfile);
-        setTVValues(textViews, children);
-
-        // Inflate the layout for this fragment
-        return v;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // Now that the view has been created, we can use butter knife functionality
-    }
-
-    public void setTVValuesProfile(TextView[] textViews, String[] children) {
-        for (int i = 0; i < textViews.length; i++)
-            ((MainActivity)getActivity()).setTVValuesProfile(textViews[i], children[i]);
-    }
-
-    public void setTVValues(TextView[] textViews, String[] children) {
-        for (int i = 0; i < textViews.length; i++)
-            ((MainActivity)getActivity()).setTVValues(textViews[i], children[i]);
-    }
-
     // During onClick event, the camera application will open up allowing users to record video
-    @OnClick(R.id.packetCameraBtn)
-    public void cameraOnClick() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {
+    public void recordVideo() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
                     Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, RECORD_VIDEO_REQUEST_PERMISSIONS);
@@ -200,20 +150,41 @@ public class SendFileFragment extends Fragment {
             Log.d(TAG, "onClick: starting camera");
             Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
-            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);// change the quality of the video
+            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         }
     }
 
-    @OnClick(R.id.packetHeartBeatBtn)
-    public void heartBeatOnClick() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {
+    public void getHeartRate() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
                     Manifest.permission.CAMERA
             }, HEART_BEAT_REQUEST_PERMISSIONS);
         } else {
-            Intent intent = new Intent(getActivity(), HeartRateMonitor.class);
-            startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
+            AlertDialog.Builder heartRateAlertBuilder = new AlertDialog.Builder(this);
+            heartRateAlertBuilder.setMessage("Launching the heart rate scanner will turn your flash on. Would you like to continue?");
+            heartRateAlertBuilder.setCancelable(true);
+
+            heartRateAlertBuilder.setPositiveButton(
+                    "Yes",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), HeartRateMonitor.class);
+                            startActivityForResult(intent, HEARTBEAT_REQUEST_CODE);
+                        }
+                    });
+
+            heartRateAlertBuilder.setNegativeButton(
+                    "No",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+            heartRateAlertBuilder.show();
         }
     }
 
@@ -227,8 +198,24 @@ public class SendFileFragment extends Fragment {
             locationManager.removeUpdates(locationListener);
     }
 
+    @OnClick(R.id.packetHeartBeatCheck)
+    public void heartBeatOnClick() {
+        boolean checked = packetHeartBeatCheck.isChecked();
+        packetHeartBeatCheck.setChecked(false);
+        if (checked)
+            getHeartRate();
+    }
+
+    @OnClick(R.id.packetCameraCheck)
+    public void cameraOnClick() {
+        boolean checked = packetCameraCheck.isChecked();
+        packetCameraCheck.setChecked(false);
+        if (checked)
+            recordVideo();
+    }
+
     private void getCurrentLocation() {
-        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         final boolean locationCaptured = false;
         locationListener = new LocationListener() {
             @Override
@@ -255,15 +242,15 @@ public class SendFileFragment extends Fragment {
 
             @Override
             public void onProviderDisabled(String s) {
-                Toast.makeText(getActivity(), "Please turn on your location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please turn on your location", Toast.LENGTH_SHORT).show();
                 packetGPSCheck.setChecked(false);
                 progressDialog.dismiss();
             }
 
         };
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
             }, LOCATION_REQUEST_PERMISSIONS);
             return;
@@ -276,7 +263,7 @@ public class SendFileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             progressDialog.setMessage("Uploading video, please wait...");
             progressDialog.show();
             Uri videoUri = data.getData();
@@ -295,16 +282,17 @@ public class SendFileFragment extends Fragment {
 
             // Gets the filename which is added to Firebase
             String[] uriPath = uri.split("/[a-zA-z0-9]");
-            String uriString = uriPath[uriPath.length-1];
+            String uriString = uriPath[uriPath.length - 1];
 
             final StorageReference ref = storageRef.child("Users/" + userId + "/videos/" + uriString);
             UploadTask uploadTask = ref.putStream(stream);
             uploadToFirebase(ref, uploadTask);
-        } else if(requestCode == HEARTBEAT_REQUEST_CODE) {
+        } else if (requestCode == HEARTBEAT_REQUEST_CODE) {
             Log.d(TAG, "Back from heartbeat");
             if (resultCode == RESULT_OK) {
                 heartBeatAvg = Integer.parseInt(data.getStringExtra("heartBeatAvg"));
                 packetHeartBeatTV.setText(heartBeatAvg + "BPM");
+                packetHeartBeatCheck.setChecked(true);
             } else {
                 Log.d(TAG, "An error occurred when getting the heartbeat");
             }
@@ -317,7 +305,7 @@ public class SendFileFragment extends Fragment {
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
                     Log.d(TAG, "An error occurred when uploading the video: " + task.getException());
-                    Toast.makeText(getActivity(), "An error occurred when uploading the video", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "An error occurred when uploading the video", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                     throw task.getException();
                 }
@@ -332,10 +320,11 @@ public class SendFileFragment extends Fragment {
                     Uri downloadUri = task.getResult();
                     videoUri = downloadUri;
                     progressDialog.dismiss();
+                    packetCameraCheck.setChecked(true);
                 } else {
                     Log.d(TAG, "An error occurred when uploading the video: " + task.getException());
                     progressDialog.dismiss();
-                    Toast.makeText(getActivity(), "An error occurred when uploading the video", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "An error occurred when uploading the video", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -343,8 +332,8 @@ public class SendFileFragment extends Fragment {
 
     // Gets the path from the URI so the video captured can be uploaded to Firebase Storage
     private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        CursorLoader loader = new CursorLoader(getActivity(), contentUri, proj, null, null, null);
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
@@ -355,14 +344,14 @@ public class SendFileFragment extends Fragment {
 
     @OnClick(R.id.packetSubmitBtn)
     public void sendPacket() {
-        String name = packetNameTV.getText().toString();
-        String DOB = packetDateOfBirthTV.getText().toString();
-        String gender = packetGenderTV.getText().toString();
-        String mobile = packetMobileTV.getText().toString();
-        String height = packetHeightTV.getText().toString();
-        String weight = packetWeightTV.getText().toString();
-        String medication = packetMedicalTV.getText().toString();
-        String allergies = packetAllergiesTV.getText().toString();
+        String name = userValues[0];
+        String mobile = userValues[1];
+        String DOB = userValues[2];
+        String gender = userValues[3];
+        double weight = Double.parseDouble(userValues[4]);
+        double height = Double.parseDouble(userValues[5]);
+        String allergies = userValues[6];
+        String medication = userValues[7];
         String message = packetMessageET.getText().toString();
 
         Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
@@ -376,34 +365,44 @@ public class SendFileFragment extends Fragment {
         userProfile.put("weight", weight);
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
-        userProfile.put("heartBeat", heartBeatAvg);
 
-        if(packetGPSCheck.isChecked())
+        if (packetGPSCheck.isChecked())
             userProfile.put("coordinates", setCoordinates(true));
         else
             userProfile.put("coordinates", setCoordinates(false));
 
+        if (packetHeartBeatCheck.isChecked())
+            userProfile.put("heartBeat", heartBeatAvg);
+        else
+            userProfile.put("heartBeat", "Not included");
+
         userProfile.put("message", message);
 
         // Sets an empty string if videoURI has not been set
-        try {
-            userProfile.put("videoURI", videoUri.toString());
-        } catch(Exception e) {
+        if (packetCameraCheck.isChecked())
+            try {
+                userProfile.put("videoURI", videoUri.toString());
+            } catch (Exception e) {
+                userProfile.put("videoURI", "");
+            }
+        else
             userProfile.put("videoURI", "");
-        }
 
         // Creates a database reference with a unique ID and provides it with the data packet
         DatabaseReference ref = reference.child("Packets").push();
         ref.setValue(userProfile);
+
+        Toast.makeText(this, "Your information has uploaded successfully", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private Map setCoordinates(boolean isChecked) {
         Map coordinates = new HashMap();
-        if(isChecked) {
+        if (isChecked) {
             try {
                 coordinates.put("latitude", mLocation.getLatitude());
                 coordinates.put("longitude", mLocation.getLongitude());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 coordinates.put("latitude", 0);
                 coordinates.put("longitude", 0);
             }
@@ -415,14 +414,13 @@ public class SendFileFragment extends Fragment {
     }
 
     // Checks camera permissions when using the camera to ensure the application doesn't crash if they do not allow access.
-    public boolean checkPermissions(String permission){
+    public boolean checkPermissions(String permission) {
         Log.d(TAG, "checkPermissions: checking permission: " + permission);
-        int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
-        if(permissionRequest != PackageManager.PERMISSION_GRANTED){
+        int permissionRequest = ActivityCompat.checkSelfPermission(this, permission);
+        if (permissionRequest != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "checkPermissions: \n Permission was not granted for: " + permission);
             return false;
-        }
-        else{
+        } else {
             Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
             return true;
         }
@@ -434,14 +432,14 @@ public class SendFileFragment extends Fragment {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     cameraOnClick();
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case HEART_BEAT_REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     heartBeatOnClick();
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.cameraPermissionException), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case LOCATION_REQUEST_PERMISSIONS:
@@ -449,9 +447,22 @@ public class SendFileFragment extends Fragment {
                     getCurrentLocation();
                     return;
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }
