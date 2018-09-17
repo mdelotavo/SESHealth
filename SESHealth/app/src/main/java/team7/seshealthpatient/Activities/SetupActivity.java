@@ -1,22 +1,28 @@
 package team7.seshealthpatient.Activities;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
@@ -54,6 +60,9 @@ public class SetupActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private boolean animated = false;
     private int currentPage = 1;
+    private boolean isPatient = false;
+    private String doctorKey = "1234";
+    private boolean isValidInput = false;
 
     @BindView(R.id.nameET)
     EditText nameET;
@@ -82,11 +91,20 @@ public class SetupActivity extends AppCompatActivity {
     @BindView(R.id.introSetupTV)
     TextView introSetupTV;
 
-    @BindView(R.id.setupFirstSV)
-    ScrollView setupFirstSV;
+    @BindView(R.id.setupFirstPatientSV)
+    ScrollView setupFirstPatientSV;
 
-    @BindView(R.id.setupSecondSV)
-    ScrollView setupSecondSV;
+    @BindView(R.id.setupSecondPatientSV)
+    ScrollView setupSecondPatientSV;
+
+    @BindView(R.id.setupFirstDoctorSV)
+    ScrollView setupFirstDoctorSV;
+
+    @BindView(R.id.setupSecondDoctorSV)
+    ScrollView setupSecondDoctorSV;
+
+    @BindView(R.id.selectSetupLL)
+    LinearLayout selectSetupLL;
 
     private static String TAG = "SetupActivity";
 
@@ -107,23 +125,64 @@ public class SetupActivity extends AppCompatActivity {
         animateWelcome();
     }
 
-    @OnClick(R.id.setupNext)
-    public void toNextPage() {
-        if (checkPassedFirst()) {
-            setupFirstSV.setVisibility(View.GONE);
-            currentPage = 2;
-        }
+    public void doctorSetupInit() {
+        isPatient = false;
+        selectSetupLL.setVisibility(View.GONE);
+        setupFirstPatientSV.setVisibility(View.GONE);
+        setupSecondPatientSV.setVisibility(View.GONE);
+        currentPage = 2;
     }
 
-    @OnClick(R.id.setupPrevious)
-    public void toPreviousPage() {
-        setupFirstSV.setVisibility(View.VISIBLE);
+    @OnClick(R.id.selectPatientTV)
+    public void patientSetupInit() {
+        isPatient = true;
+        selectSetupLL.setVisibility(View.GONE);
+        setupFirstDoctorSV.setVisibility(View.GONE);
+        setupSecondDoctorSV.setVisibility(View.GONE);
+        currentPage = 2;
+    }
+
+    @OnClick({R.id.setupInitDoctor, R.id.setupInitPatient})
+    public void returnToInit() {
+        selectSetupLL.setVisibility(View.VISIBLE);
+        setupFirstDoctorSV.setVisibility(View.VISIBLE);
+        setupSecondDoctorSV.setVisibility(View.VISIBLE);
+        setupFirstPatientSV.setVisibility(View.VISIBLE);
+        setupSecondPatientSV.setVisibility(View.VISIBLE);
         currentPage = 1;
     }
 
-    @OnClick(R.id.setupFinish)
+    @OnClick(R.id.setupNextPatient)
+    public void toNextPagePatient() {
+        if (checkPassedFirstPatient()) {
+            setupFirstPatientSV.setVisibility(View.GONE);
+            currentPage = 3;
+        }
+    }
+
+    @OnClick(R.id.setupBackPatient)
+    public void toPreviousPagePatient() {
+        setupFirstPatientSV.setVisibility(View.VISIBLE);
+        currentPage = 2;
+    }
+
+    @OnClick(R.id.setupNextDoctor)
+    public void toNextPageDoctor() {
+        //if (checkPassedFirst()) {
+        setupFirstDoctorSV.setVisibility(View.GONE);
+        currentPage = 3;
+        //}
+    }
+
+    @OnClick(R.id.setupBackDoctorSecond)
+    public void toPreviousPageDoctor() {
+        setupFirstDoctorSV.setVisibility(View.VISIBLE);
+        currentPage = 2;
+    }
+
+    @OnClick(R.id.setupFinishPatient)
     public void setUserInfo() {
-        if (checkPassedSecond()) {
+        if (checkPassedSecondPatient()) {
             String name = nameET.getText().toString().trim();
             RadioButton radioButton = findViewById(genderRG.getCheckedRadioButtonId());
             String gender = radioButton.getText().toString().trim();
@@ -152,7 +211,7 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
-    public boolean checkPassedFirst() {
+    public boolean checkPassedFirstPatient() {
         Log.d(TAG, "Check all fields being called");
         if (nameET.getText().toString().trim().isEmpty() || !StringUtils.isAlphaSpace(nameET.getText().toString())) {
             Toast.makeText(this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
@@ -185,7 +244,7 @@ public class SetupActivity extends AppCompatActivity {
         return true;
     }
 
-    public boolean checkPassedSecond() {
+    public boolean checkPassedSecondPatient() {
         Log.d(TAG, "Check all fields being called");
         if (allergiesET.getText().toString().trim().isEmpty()) {
             allergiesET.setText("N/A");
@@ -279,22 +338,16 @@ public class SetupActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick({R.id.setupLogOutBtn, R.id.setupLogOutSecondBtn})
-    public void logOut() {
-        mAuth.signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
-    }
-
     @Override
     public void onBackPressed() {
-        if (currentPage == 1) {
-            mAuth.signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
-        }
+        if (currentPage == 1)
+            logOut();
         else if (currentPage == 2)
-            toPreviousPage();
+            returnToInit();
+        else if (currentPage == 3 && isPatient)
+            toPreviousPagePatient();
+        else if (currentPage == 3 && !isPatient)
+            toPreviousPageDoctor();
     }
 
     @Override
@@ -324,5 +377,44 @@ public class SetupActivity extends AppCompatActivity {
             }, 2000);
             animated = true;
         }
+    }
+
+    public void logOut() {
+        mAuth.signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+    }
+
+    @OnClick(R.id.selectDoctorTV)
+    public void requestDoctorKey() {
+        AlertDialog.Builder getKeyBuilder = new AlertDialog.Builder(this);
+        getKeyBuilder.setTitle("Doctor Key");
+        getKeyBuilder.setMessage("Please enter the key you have been provided to register as a doctor");
+        View dialogView = (SetupActivity.this.getLayoutInflater()).inflate(R.layout.dialog_doctor_key, null);
+        final EditText doctorKeyET = dialogView.findViewById(R.id.doctorKeyET);
+        getKeyBuilder.setView(dialogView);
+
+        getKeyBuilder.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (doctorKeyET.getText().toString().trim().equals(doctorKey))
+                            doctorSetupInit();
+                        else
+                            Toast.makeText(SetupActivity.this, "The entered key is incorrect", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        getKeyBuilder.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        getKeyBuilder.show();
     }
 }

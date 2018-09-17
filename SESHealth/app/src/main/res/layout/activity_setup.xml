@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -13,47 +12,80 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="Welcome to SESHealth"
-        android:textSize="50sp" />
+        android:text="@string/welcome_setup"
+        android:textSize="50sp"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/selectSetupLL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/selectDoctorTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_border"
+            android:text="@string/doctor_selection_setup"
+            android:textColor="#154c40"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/selectPatientTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/button_border"
+            android:text="@string/patient_selection_setup"
+            android:textColor="#154c40"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
 
     <ScrollView
-        android:id="@+id/setupFirstSV"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/setupFirstPatientSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:scrollbars="none">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:paddingTop="25dp"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="25dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Setup"
-                android:textColor="#444"
-                android:textSize="40sp" />
+                android:text="@string/patient_setup_title"
+                android:textColor="#222"
+                android:textSize="37sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Please complete the required fields below to continue setting up your profile"
-                android:textSize="25sp" />
+                android:text="@string/patient_setup_first"
+                android:textSize="23sp"
+                android:textColor="#555"/>
 
             <EditText
                 android:id="@+id/nameET"
                 style="@style/loginEditTexts"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/edit_text_top"
                 android:ems="10"
-                android:hint="Full Name (required)"
+                android:hint="@string/name_et_hint"
                 android:inputType="textPersonName" />
 
             <EditText
@@ -61,7 +93,7 @@
                 style="@style/loginEditTexts"
                 android:background="@drawable/edit_text_middle"
                 android:ems="10"
-                android:hint="Mobile No. (required)"
+                android:hint="@string/number_et_hint"
                 android:inputType="phone" />
 
             <EditText
@@ -69,14 +101,15 @@
                 style="@style/loginEditTexts"
                 android:background="@drawable/edit_text_middle"
                 android:focusable="false"
-                android:hint="Date of Birth (required)" />
+                android:hint="@string/dob_et_hint"
+                android:inputType="date"/>
 
             <EditText
                 android:id="@+id/heightET"
                 style="@style/loginEditTexts"
                 android:background="@drawable/edit_text_middle"
                 android:ems="10"
-                android:hint="Height(cm) (required)"
+                android:hint="@string/height_et_hint"
                 android:inputType="numberDecimal" />
 
             <EditText
@@ -84,9 +117,9 @@
                 style="@style/loginEditTexts"
                 android:background="@drawable/edit_text_bottom"
                 android:ems="10"
-                android:hint="Weight(kg) (required)"
-                android:inputType="numberDecimal"
-                android:imeOptions="actionDone"/>
+                android:hint="@string/weight_et_hint"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal" />
 
             <RadioGroup
                 android:id="@+id/genderRG"
@@ -100,59 +133,72 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Gender"
-                    android:textSize="25sp" />
+                    android:text="@string/gender_rg_title"
+                    android:textSize="23sp" />
 
                 <RadioButton
                     android:id="@+id/maleRB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Male"
+                    android:text="@string/male_rb"
                     android:textColor="#666"
-                    android:textSize="25sp" />
+                    android:textSize="23sp" />
 
                 <RadioButton
                     android:id="@+id/femaleRB"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Female"
+                    android:text="@string/female_rb"
                     android:textColor="#666"
-                    android:textSize="25sp" />
+                    android:textSize="23sp" />
             </RadioGroup>
 
-            <Button
-                android:id="@+id/setupNext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginStart="50dp"
-                android:background="@drawable/gradient_login_btn"
-                android:text="Next"
-                android:textColor="#eee"
-                android:textSize="20sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/setupLogOutBtn"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginEnd="80dp"
-                android:layout_marginStart="80dp"
-                android:background="@drawable/gradient_login_btn"
-                android:text="Log Out"
-                android:textColor="#eee"
-                android:textSize="20sp" />
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/setupInitPatient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/back_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/setupNextPatient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/next_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
 
-    <ScrollView
-        android:id="@+id/setupSecondSV"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/setupSecondPatientSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -160,26 +206,27 @@
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:paddingTop="25dp"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="25dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Setup"
-                android:textColor="#444"
-                android:textSize="40sp" />
+                android:text="@string/patient_setup_title"
+                android:textColor="#222"
+                android:textSize="37sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="The fields below are optional and can be left blank. Please seperate each allergy or medication with a comma (,) for multiple values"
-                android:textSize="25sp" />
+                android:text="@string/patient_setup_second"
+                android:textSize="25sp"
+                android:textColor="#555"/>
 
             <EditText
                 android:id="@+id/allergiesET"
@@ -198,44 +245,220 @@
                 android:hint="Current Medication"
                 android:inputType="textMultiLine" />
 
-            <Button
-                android:id="@+id/setupFinish"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="50dp"
-                android:layout_marginStart="50dp"
-                android:background="@drawable/gradient_login_btn"
-                android:text="Finish"
-                android:textColor="#eee"
-                android:textSize="20sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/setupPrevious"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="65dp"
-                android:layout_marginStart="65dp"
-                android:background="@drawable/gradient_login_btn"
-                android:text="Previous"
-                android:textColor="#eee"
-                android:textSize="20sp" />
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
 
-            <Button
-                android:id="@+id/setupLogOutSecondBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginEnd="80dp"
-                android:layout_marginStart="80dp"
-                android:background="@drawable/gradient_login_btn"
-                android:text="Log Out"
-                android:textColor="#eee"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/setupBackPatient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/back_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/setupFinishPatient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/finish_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+    </ScrollView>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/setupFirstDoctorSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="25dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/doctor_setup"
+                android:textColor="#222"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="The fields below are optional and can be left blank. Please seperate each allergy or medication with a comma (,) for multiple values"
+                android:textSize="25sp"
+                android:textColor="#555"/>
+
+            <EditText
+                style="@style/loginEditTexts"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/edit_text_top"
+                android:ems="10"
+                android:hint="Allergies"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_bottom"
+                android:ems="10"
+                android:hint="Current Medication"
+                android:inputType="textMultiLine" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/setupInitDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/back_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/setupNextDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/next_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/setupSecondDoctorSV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="25dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/doctor_setup"
+                android:textColor="#222"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="The fields below are optional and can be left blank. Please seperate each allergy or medication with a comma (,) for multiple values"
+                android:textSize="25sp"
+                android:textColor="#555"/>
+
+            <EditText
+                style="@style/loginEditTexts"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/edit_text_top"
+                android:ems="10"
+                android:hint="Allergies"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_bottom"
+                android:ems="10"
+                android:hint="Current Medication"
+                android:inputType="textMultiLine" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:id="@+id/setupBackDoctorSecond"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/back_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/setupNextDoctorSecond"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#0000"
+                    android:text="@string/next_setup"
+                    android:textColor="#154c40"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>
