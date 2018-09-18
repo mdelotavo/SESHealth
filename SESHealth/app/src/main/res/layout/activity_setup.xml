@@ -122,7 +122,7 @@
                 android:inputType="numberDecimal" />
 
             <RadioGroup
-                android:id="@+id/genderRG"
+                android:id="@+id/genderRGPatient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -137,7 +137,7 @@
                     android:textSize="23sp" />
 
                 <RadioButton
-                    android:id="@+id/maleRB"
+                    android:id="@+id/maleRBPatient"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -146,7 +146,7 @@
                     android:textSize="23sp" />
 
                 <RadioButton
-                    android:id="@+id/femaleRB"
+                    android:id="@+id/femaleRBPatient"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/female_rb"
@@ -234,7 +234,7 @@
                 android:layout_marginTop="50dp"
                 android:background="@drawable/edit_text_top"
                 android:ems="10"
-                android:hint="Allergies"
+                android:hint="@string/allergies_hint"
                 android:inputType="textMultiLine" />
 
             <EditText
@@ -242,7 +242,7 @@
                 style="@style/loginEditTexts"
                 android:background="@drawable/edit_text_bottom"
                 android:ems="10"
-                android:hint="Current Medication"
+                android:hint="@string/medication_hint"
                 android:inputType="textMultiLine" />
 
             <View
@@ -315,24 +315,66 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="The fields below are optional and can be left blank. Please seperate each allergy or medication with a comma (,) for multiple values"
+                android:text="@string/setup_doctor_desc"
                 android:textSize="25sp"
                 android:textColor="#555"/>
 
             <EditText
+                android:id="@+id/nameETDoctor"
                 style="@style/loginEditTexts"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/edit_text_top"
                 android:ems="10"
-                android:hint="Allergies"
-                android:inputType="textMultiLine" />
+                android:hint="@string/name_hint"
+                android:inputType="textPersonName" />
 
             <EditText
+                android:id="@+id/occupationETDoctor"
+                style="@style/loginEditTexts"
+                android:background="@drawable/edit_text_middle"
+                android:ems="10"
+                android:hint="@string/occupation_hint"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/expETDoctor"
                 style="@style/loginEditTexts"
                 android:background="@drawable/edit_text_bottom"
                 android:ems="10"
-                android:hint="Current Medication"
+                android:hint="@string/experience_hint"
                 android:inputType="textMultiLine" />
+
+            <RadioGroup
+                android:id="@+id/genderRGDoctor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/gender_rg_title"
+                    android:textSize="23sp" />
+
+                <RadioButton
+                    android:id="@+id/maleRBDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/male_rb"
+                    android:textColor="#666"
+                    android:textSize="23sp" />
+
+                <RadioButton
+                    android:id="@+id/femaleRBDoctor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/female_rb"
+                    android:textColor="#666"
+                    android:textSize="23sp" />
+            </RadioGroup>
 
             <View
                 android:layout_width="0dp"
@@ -362,98 +404,11 @@
                     android:layout_weight="1" />
 
                 <TextView
-                    android:id="@+id/setupNextDoctor"
+                    android:id="@+id/setupFinishDoctor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#0000"
-                    android:text="@string/next_setup"
-                    android:textColor="#154c40"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/setupSecondDoctorSV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none">
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:paddingTop="25dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/doctor_setup"
-                android:textColor="#222"
-                android:textSize="40sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="The fields below are optional and can be left blank. Please seperate each allergy or medication with a comma (,) for multiple values"
-                android:textSize="25sp"
-                android:textColor="#555"/>
-
-            <EditText
-                style="@style/loginEditTexts"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/edit_text_top"
-                android:ems="10"
-                android:hint="Allergies"
-                android:inputType="textMultiLine" />
-
-            <EditText
-                style="@style/loginEditTexts"
-                android:background="@drawable/edit_text_bottom"
-                android:ems="10"
-                android:hint="Current Medication"
-                android:inputType="textMultiLine" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal"
-                android:paddingBottom="10dp">
-
-                <TextView
-                    android:id="@+id/setupBackDoctorSecond"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#0000"
-                    android:text="@string/back_setup"
-                    android:textColor="#154c40"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:id="@+id/setupNextDoctorSecond"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#0000"
-                    android:text="@string/next_setup"
+                    android:text="@string/finish_setup"
                     android:textColor="#154c40"
                     android:textSize="25sp"
                     android:textStyle="bold" />
