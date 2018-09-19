@@ -70,7 +70,7 @@
     <string name="name_hint">Full Name</string>
     <string name="occupation_hint">Current Occupation</string>
     <string name="experience_hint">Past Experience (optional)</string>
-    <string name="clinic_location">Your Clinic\'s Location</string>
+    <string name="clinic_location">Your Clinic\'s Address</string>
 
     <string-array name="genders">
         <item>Male</item>
