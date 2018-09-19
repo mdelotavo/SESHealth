@@ -97,8 +97,8 @@ public class SetupActivity extends AppCompatActivity {
     @BindView(R.id.occupationETDoctor)
     EditText occupationETDoctor;
 
-    @BindView(R.id.expETDoctor)
-    EditText expETDoctor;
+    @BindView(R.id.locationETDoctor)
+    EditText locationETDoctor;
 
     @BindView(R.id.genderRGDoctor)
     RadioGroup genderRGDoctor;
@@ -275,12 +275,12 @@ public class SetupActivity extends AppCompatActivity {
             RadioButton radioButton = findViewById(genderRGDoctor.getCheckedRadioButtonId());
             String gender = radioButton.getText().toString().trim();
             String occupation = occupationETDoctor.getText().toString().trim();
-            String experience = expETDoctor.getText().toString().trim();
+            String location = locationETDoctor.getText().toString().trim();
 
             reference.child("Profile").child("name").setValue(name);
-            reference.child("Profile").child("phoneNO").setValue(gender);
-            reference.child("Profile").child("DOB").setValue(occupation);
-            reference.child("Profile").child("gender").setValue(experience);
+            reference.child("Profile").child("gender").setValue(gender);
+            reference.child("Profile").child("occupation").setValue(occupation);
+            reference.child("Profile").child("location").setValue(location);
 
             reference.child("setupComplete").setValue(true);
             reference.child("accountType").setValue("doctor");
@@ -305,8 +305,10 @@ public class SetupActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select your gender", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (expETDoctor.getText().toString().trim().isEmpty())
-            expETDoctor.setText("N/A");
+        if (locationETDoctor.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter your clinic's location", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 

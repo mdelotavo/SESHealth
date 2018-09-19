@@ -337,12 +337,12 @@
                 android:inputType="text" />
 
             <EditText
-                android:id="@+id/expETDoctor"
+                android:id="@+id/locationETDoctor"
                 style="@style/loginEditTexts"
                 android:background="@drawable/edit_text_bottom"
                 android:ems="10"
-                android:hint="@string/experience_hint"
-                android:inputType="textMultiLine" />
+                android:hint="@string/clinic_location"
+                android:inputType="textPostalAddress" />
 
             <RadioGroup
                 android:id="@+id/genderRGDoctor"
