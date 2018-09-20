@@ -1,42 +1,33 @@
 package team7.seshealthpatient.Activities;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -54,6 +45,9 @@ public class SetupActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private boolean animated = false;
     private int currentPage = 1;
+    private boolean isPatient = false;
+    private String doctorKey = "1234";
+    private boolean isValidInput = false;
 
     @BindView(R.id.nameET)
     EditText nameET;
@@ -76,17 +70,35 @@ public class SetupActivity extends AppCompatActivity {
     @BindView(R.id.medicationET)
     EditText medicationET;
 
-    @BindView(R.id.genderRG)
-    RadioGroup genderRG;
+    @BindView(R.id.genderRGPatient)
+    RadioGroup genderRGPatient;
 
     @BindView(R.id.introSetupTV)
     TextView introSetupTV;
 
-    @BindView(R.id.setupFirstSV)
-    ScrollView setupFirstSV;
+    @BindView(R.id.nameETDoctor)
+    EditText nameETDoctor;
 
-    @BindView(R.id.setupSecondSV)
-    ScrollView setupSecondSV;
+    @BindView(R.id.occupationETDoctor)
+    EditText occupationETDoctor;
+
+    @BindView(R.id.locationETDoctor)
+    EditText locationETDoctor;
+
+    @BindView(R.id.genderRGDoctor)
+    RadioGroup genderRGDoctor;
+
+    @BindView(R.id.setupFirstPatientSV)
+    ScrollView setupFirstPatientSV;
+
+    @BindView(R.id.setupSecondPatientSV)
+    ScrollView setupSecondPatientSV;
+
+    @BindView(R.id.setupFirstDoctorSV)
+    ScrollView setupFirstDoctorSV;
+
+    @BindView(R.id.selectSetupLL)
+    LinearLayout selectSetupLL;
 
     private static String TAG = "SetupActivity";
 
@@ -107,25 +119,50 @@ public class SetupActivity extends AppCompatActivity {
         animateWelcome();
     }
 
-    @OnClick(R.id.setupNext)
-    public void toNextPage() {
-        if (checkPassedFirst()) {
-            setupFirstSV.setVisibility(View.GONE);
-            currentPage = 2;
-        }
+    public void doctorSetupInit() {
+        isPatient = false;
+        selectSetupLL.setVisibility(View.GONE);
+        setupFirstPatientSV.setVisibility(View.GONE);
+        setupSecondPatientSV.setVisibility(View.GONE);
+        currentPage = 2;
     }
 
-    @OnClick(R.id.setupPrevious)
-    public void toPreviousPage() {
-        setupFirstSV.setVisibility(View.VISIBLE);
+    @OnClick(R.id.selectPatientTV)
+    public void patientSetupInit() {
+        isPatient = true;
+        selectSetupLL.setVisibility(View.GONE);
+        setupFirstDoctorSV.setVisibility(View.GONE);
+        currentPage = 2;
+    }
+
+    @OnClick({R.id.setupInitDoctor, R.id.setupInitPatient})
+    public void returnToInit() {
+        selectSetupLL.setVisibility(View.VISIBLE);
+        setupFirstDoctorSV.setVisibility(View.VISIBLE);
+        setupFirstPatientSV.setVisibility(View.VISIBLE);
+        setupSecondPatientSV.setVisibility(View.VISIBLE);
         currentPage = 1;
     }
 
-    @OnClick(R.id.setupFinish)
-    public void setUserInfo() {
-        if (checkPassedSecond()) {
+    @OnClick(R.id.setupNextPatient)
+    public void toNextPagePatient() {
+        if (checkPassedFirstPatient()) {
+            setupFirstPatientSV.setVisibility(View.GONE);
+            currentPage = 3;
+        }
+    }
+
+    @OnClick(R.id.setupBackPatient)
+    public void toPreviousPagePatient() {
+        setupFirstPatientSV.setVisibility(View.VISIBLE);
+        currentPage = 2;
+    }
+
+    @OnClick(R.id.setupFinishPatient)
+    public void setPatientInfo() {
+        if (checkPassedSecondPatient()) {
             String name = nameET.getText().toString().trim();
-            RadioButton radioButton = findViewById(genderRG.getCheckedRadioButtonId());
+            RadioButton radioButton = findViewById(genderRGPatient.getCheckedRadioButtonId());
             String gender = radioButton.getText().toString().trim();
             String date = setupDOBDateET.getText().toString().trim();
             Double weight = Double.parseDouble(weightET.getText().toString().trim());
@@ -145,6 +182,7 @@ public class SetupActivity extends AppCompatActivity {
             reference.child("medication").setValue(medication);
 
             reference.child("setupComplete").setValue(true);
+            reference.child("accountType").setValue("patient");
 
             Intent intent = new Intent(SetupActivity.this, MainActivity.class);
             startActivity(intent);
@@ -152,7 +190,7 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 
-    public boolean checkPassedFirst() {
+    public boolean checkPassedFirstPatient() {
         Log.d(TAG, "Check all fields being called");
         if (nameET.getText().toString().trim().isEmpty() || !StringUtils.isAlphaSpace(nameET.getText().toString())) {
             Toast.makeText(this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
@@ -178,14 +216,14 @@ public class SetupActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter your weight", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (genderRG.getCheckedRadioButtonId() == -1) {
+        if (genderRGPatient.getCheckedRadioButtonId() == -1) {
             Toast.makeText(this, "Please select your gender", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
 
-    public boolean checkPassedSecond() {
+    public boolean checkPassedSecondPatient() {
         Log.d(TAG, "Check all fields being called");
         if (allergiesET.getText().toString().trim().isEmpty()) {
             allergiesET.setText("N/A");
@@ -213,6 +251,50 @@ public class SetupActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    @OnClick(R.id.setupFinishDoctor)
+    public void setDoctorInfo() {
+        if (checkPassedDoctor()) {
+            String name = nameETDoctor.getText().toString().trim();
+            RadioButton radioButton = findViewById(genderRGDoctor.getCheckedRadioButtonId());
+            String gender = radioButton.getText().toString().trim();
+            String occupation = occupationETDoctor.getText().toString().trim();
+            String location = locationETDoctor.getText().toString().trim();
+
+            reference.child("Profile").child("name").setValue(name);
+            reference.child("Profile").child("gender").setValue(gender);
+            reference.child("Profile").child("occupation").setValue(occupation);
+            reference.child("Profile").child("location").setValue(location);
+
+            reference.child("setupComplete").setValue(true);
+            reference.child("accountType").setValue("doctor");
+
+            Intent intent = new Intent(SetupActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    public boolean checkPassedDoctor() {
+        Log.d(TAG, "Check all fields being called");
+        if (nameETDoctor.getText().toString().trim().isEmpty() || !StringUtils.isAlphaSpace(nameETDoctor.getText().toString())) {
+            Toast.makeText(this, "Please enter a valid name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (occupationETDoctor.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter a valid occupation", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (genderRGDoctor.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(this, "Please select your gender", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (locationETDoctor.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter your clinic's address", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     public void addListeners() {
@@ -279,22 +361,14 @@ public class SetupActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick({R.id.setupLogOutBtn, R.id.setupLogOutSecondBtn})
-    public void logOut() {
-        mAuth.signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
-    }
-
     @Override
     public void onBackPressed() {
-        if (currentPage == 1) {
-            mAuth.signOut();
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-            finish();
-        }
+        if (currentPage == 1)
+            logOut();
         else if (currentPage == 2)
-            toPreviousPage();
+            returnToInit();
+        else if (currentPage == 3 && isPatient)
+            toPreviousPagePatient();
     }
 
     @Override
@@ -324,5 +398,44 @@ public class SetupActivity extends AppCompatActivity {
             }, 2000);
             animated = true;
         }
+    }
+
+    public void logOut() {
+        mAuth.signOut();
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+    }
+
+    @OnClick(R.id.selectDoctorTV)
+    public void requestDoctorKey() {
+        AlertDialog.Builder getKeyBuilder = new AlertDialog.Builder(this);
+        getKeyBuilder.setTitle("Doctor Key");
+        getKeyBuilder.setMessage("Please enter the key you have been provided to register as a doctor");
+        View dialogView = (SetupActivity.this.getLayoutInflater()).inflate(R.layout.dialog_doctor_key, null);
+        final EditText doctorKeyET = dialogView.findViewById(R.id.doctorKeyET);
+        getKeyBuilder.setView(dialogView);
+
+        getKeyBuilder.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (doctorKeyET.getText().toString().trim().equals(doctorKey))
+                            doctorSetupInit();
+                        else
+                            Toast.makeText(getApplicationContext(), "The entered key is incorrect", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        getKeyBuilder.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        getKeyBuilder.show();
     }
 }
