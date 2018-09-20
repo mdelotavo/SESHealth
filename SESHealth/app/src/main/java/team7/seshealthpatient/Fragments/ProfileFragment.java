@@ -104,6 +104,7 @@ public class ProfileFragment extends Fragment {
 
         setTVValues(textViews, children);
         profileEmailTV.setText(mUser.getEmail());
+        profileEmailTV.setVisibility(0);
 
         return v;
     }
