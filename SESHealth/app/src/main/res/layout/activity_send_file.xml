@@ -8,6 +8,36 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+
+        <Button
+            android:id="@+id/selectFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/upload"
+            android:layout_marginStart="250dp"
+            android:text="Choose a file" />
+        <TextView
+            android:id="@+id/notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="101dp"
+            android:layout_marginStart="27dp"
+            android:text="No file is selected" />
+        <Button
+            android:id="@+id/upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="27dp"
+            android:layout_marginEnd="26dp"
+            android:text="UPLOAD" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/sendFileToolbar"
