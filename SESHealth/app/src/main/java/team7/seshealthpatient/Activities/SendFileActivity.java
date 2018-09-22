@@ -78,7 +78,7 @@ public class SendFileActivity extends AppCompatActivity {
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation = null;
-    
+
     private Uri videoUri = null;
     private int heartBeatAvg = 0;
 
@@ -199,7 +199,6 @@ public class SendFileActivity extends AppCompatActivity {
         } else {
             mLastKnownLocation = null;
             packetGPSTV.setText("Not Set");
-
         }
     }
 
@@ -237,7 +236,6 @@ public class SendFileActivity extends AppCompatActivity {
                             String coordinates = latitude + " " + longitude;
                             packetGPSTV.setText(coordinates);
                             packetGPSCheck.setChecked(true);
-
                         }
                     }
                 }
