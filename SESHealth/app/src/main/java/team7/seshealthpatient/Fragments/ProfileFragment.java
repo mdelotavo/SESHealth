@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ import team7.seshealthpatient.R;
 public class ProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+
 //    private FirebaseDatabase database;
 //    private DatabaseReference reference;
 
@@ -53,6 +55,8 @@ public class ProfileFragment extends Fragment {
 
     @BindView(R.id.profileLinearLayout)
     LinearLayout profileLinearLayout;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
 
     @BindView(R.id.profileNameTV)
     TextView profileNameTV;
@@ -70,6 +74,10 @@ public class ProfileFragment extends Fragment {
         mUser = mAuth.getCurrentUser();
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Profile");
+//
+//        database = FirebaseDatabase.getInstance();
+//        reference = database.getReference("Users").child(mUser.getUid());
+
     }
 
     @Override
@@ -83,6 +91,11 @@ public class ProfileFragment extends Fragment {
         TextView[] textViewsProfile = {profileNameTV, profileEmailTV};
         String[] childrenProfile = {"name", "phoneNO"};
         setTVValues(textViewsProfile, childrenProfile);
+
+
+
+        setTVValues(textViewsProfile, childrenProfile);
+        profileEmailTV.setText(mUser.getEmail());
         return v;
     }
 
@@ -144,7 +157,5 @@ public class ProfileFragment extends Fragment {
     private void setDoctorView() {
 
     }
-
-
 
 }
