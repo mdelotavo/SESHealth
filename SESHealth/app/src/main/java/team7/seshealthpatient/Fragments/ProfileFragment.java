@@ -116,7 +116,6 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "An error occurred when connecting with the database", Toast.LENGTH_SHORT).show();
             }
         });
-
         return v;
     }
 
