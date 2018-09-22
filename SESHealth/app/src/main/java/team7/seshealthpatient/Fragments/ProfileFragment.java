@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,35 +46,19 @@ import team7.seshealthpatient.R;
 public class ProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    private FirebaseDatabase database;
-    private DatabaseReference reference;
+//    private FirebaseDatabase database;
+//    private DatabaseReference reference;
+
+    private final static String TAG = "ProfileFragment";
+
+    @BindView(R.id.profileLinearLayout)
+    LinearLayout profileLinearLayout;
 
     @BindView(R.id.profileNameTV)
     TextView profileNameTV;
 
     @BindView(R.id.profileEmailTV)
     TextView profileEmailTV;
-
-    @BindView(R.id.profileMobileTV)
-    TextView profileMobileTV;
-
-    @BindView(R.id.profileDateOfBirthTV)
-    TextView profileDateOfBirthTV;
-
-    @BindView(R.id.profileGenderTV)
-    TextView profileGenderTV;
-
-    @BindView(R.id.profileHeightTV)
-    TextView profileHeightTV;
-
-    @BindView(R.id.profileWeightTV)
-    TextView profileWeightTV;
-
-    @BindView(R.id.profileMedicalTV)
-    TextView profileMedicalTV;
-
-    @BindView(R.id.profileAllergiesTV)
-    TextView profileAllergiesTV;
 
     public ProfileFragment() {
     }
@@ -83,8 +70,6 @@ public class ProfileFragment extends Fragment {
         mUser = mAuth.getCurrentUser();
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Profile");
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("Users").child(mUser.getUid());
     }
 
     @Override
@@ -95,17 +80,9 @@ public class ProfileFragment extends Fragment {
 
         // Note how we are telling butter knife to bind during the on create view method
         ButterKnife.bind(this, v);
-        TextView[] textViewsProfile = {profileNameTV, profileMobileTV, profileDateOfBirthTV, profileGenderTV, profileHeightTV, profileWeightTV};
-        TextView[] textViews = {profileAllergiesTV, profileMedicalTV};
-
-        String[] childrenProfile = {"name", "phoneNO", "DOB", "gender", "height", "weight"};
-        setTVValuesProfile(textViewsProfile, childrenProfile);
-        String[] children = {"allergies", "medication"};
-
-        setTVValues(textViews, children);
-        profileEmailTV.setText(mUser.getEmail());
-        profileEmailTV.setVisibility(0);
-
+        TextView[] textViewsProfile = {profileNameTV, profileEmailTV};
+        String[] childrenProfile = {"name", "phoneNO"};
+        setTVValues(textViewsProfile, childrenProfile);
         return v;
     }
 
@@ -137,5 +114,37 @@ public class ProfileFragment extends Fragment {
         for (int i = 0; i < textViews.length; i++)
             ((MainActivity)getActivity()).setTVValues(textViews[i], children[i]);
     }
+
+    @OnClick(R.id.profileSubmitBtn)
+    public void onClick() {
+        setPatientView();
+    }
+
+    private void setPatientView() {
+        TextView mobileTV = new TextView(getActivity());
+        TextView dobTV = new TextView(getActivity());
+        TextView genderTV = new TextView(getActivity());
+        TextView heightTV = new TextView(getActivity());
+        TextView weightTV = new TextView(getActivity());
+        TextView allergiesTV = new TextView(getActivity());
+        TextView medicalTV = new TextView(getActivity());
+
+        TextView[] textViewsProfile = { mobileTV, dobTV, genderTV, heightTV, weightTV};
+        String[] childrenProfile = {"phoneNO", "DOB", "gender", "height", "weight"};
+
+        TextView[] textViews = { allergiesTV, medicalTV};
+        String[] childrenViews = { "allergies", "medication"};
+        setTVValues(textViewsProfile, childrenProfile);
+        for(int i = 0; i < textViewsProfile.length; i++) {
+            profileLinearLayout.addView(textViewsProfile[i]);
+        }
+
+    }
+
+    private void setDoctorView() {
+
+    }
+
+
 
 }

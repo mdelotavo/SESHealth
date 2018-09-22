@@ -71,6 +71,7 @@
     <string name="occupation_hint">Current Occupation</string>
     <string name="experience_hint">Past Experience (optional)</string>
     <string name="clinic_location">Your Clinic\'s Address</string>
+    <string name="profile">Profile</string>
 
     <string-array name="genders">
         <item>Male</item>
