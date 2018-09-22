@@ -77,10 +77,8 @@ public class SendFileActivity extends AppCompatActivity {
     private String[] userValues;
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Location mLastKnownLocation;
-
-
-
+    private Location mLastKnownLocation = null;
+    
     private Uri videoUri = null;
     private int heartBeatAvg = 0;
 
@@ -355,11 +353,8 @@ public class SendFileActivity extends AppCompatActivity {
         userProfile.put("weight", weight);
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
+        userProfile.put("coordinates", setCoordinates());
 
-        if (packetGPSCheck.isChecked())
-            userProfile.put("coordinates", setCoordinates(true));
-        else
-            userProfile.put("coordinates", setCoordinates(false));
 
         if (packetHeartBeatCheck.isChecked())
             userProfile.put("heartBeat", heartBeatAvg);
@@ -386,16 +381,11 @@ public class SendFileActivity extends AppCompatActivity {
         finish();
     }
 
-    private Map setCoordinates(boolean isChecked) {
+    private Map setCoordinates() {
         Map coordinates = new HashMap();
-        if (isChecked) {
-            try {
-                coordinates.put("latitude", mLastKnownLocation.getLatitude());
-                coordinates.put("longitude", mLastKnownLocation.getLongitude());
-            } catch (Exception e) {
-                coordinates.put("latitude", 0);
-                coordinates.put("longitude", 0);
-            }
+        if (mLastKnownLocation != null) {
+            coordinates.put("latitude", mLastKnownLocation.getLatitude());
+            coordinates.put("longitude", mLastKnownLocation.getLongitude());
         } else {
             coordinates.put("latitude", 0);
             coordinates.put("longitude", 0);
