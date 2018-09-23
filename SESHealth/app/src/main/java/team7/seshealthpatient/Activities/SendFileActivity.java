@@ -46,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -145,7 +146,7 @@ public class SendFileActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "onClick: starting camera");
             Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
+            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8); // Sets video duration to 8 seconds max
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         }
@@ -224,15 +225,15 @@ public class SendFileActivity extends AppCompatActivity {
             locationResult.addOnCompleteListener(SendFileActivity.this, new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
-
                     if (task.isSuccessful()) {
                         mLastKnownLocation = task.getResult();
                         if (mLastKnownLocation == null) {
                             Toast.makeText(getApplicationContext(), "Could not get your current location, make sure your location settings are enabled", Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.d(TAG, "your latitude is: " +mLastKnownLocation.getLatitude() + "\tYour longitude is: " + mLastKnownLocation.getLongitude());
-                            String latitude = mLastKnownLocation.getLatitude() + "";
-                            String longitude = mLastKnownLocation.getLongitude() + "";
+                            Log.d(TAG, "your latitude is: " + mLastKnownLocation.getLatitude() + "\tYour longitude is: " + mLastKnownLocation.getLongitude());
+                            DecimalFormat f = new DecimalFormat("##0.000");
+                            String latitude = f.format(mLastKnownLocation.getLatitude());
+                            String longitude = f.format(mLastKnownLocation.getLongitude());
                             String coordinates = latitude + " " + longitude;
                             packetGPSTV.setText(coordinates);
                             packetGPSCheck.setChecked(true);
