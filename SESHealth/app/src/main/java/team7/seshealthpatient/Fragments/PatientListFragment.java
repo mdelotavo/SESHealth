@@ -68,6 +68,7 @@ public class PatientListFragment extends Fragment {
         listOfPatients = v.findViewById(R.id.list_of_patients);
 
         final List<String> patientList = new ArrayList<>();
+        final List<String> patientUidList = new ArrayList<>();
 
         final ListAdapter adapter = new ArrayAdapter<>(
                 getActivity(),
@@ -87,6 +88,7 @@ public class PatientListFragment extends Fragment {
                                     ? child.child("Profile").child("name").getValue().toString() : null;
                             if (patient != null) {
                                 patientList.add(patient);
+                                patientUidList.add(key);
                                 listOfPatients.invalidateViews();
                             }
                         }
@@ -102,9 +104,11 @@ public class PatientListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String patientName = parent.getItemAtPosition(position).toString();
+                String patientUid = patientUidList.get(position);
 
                 Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
                 patientPackets.putExtra("name", patientName);
+                patientPackets.putExtra("uid", patientUid);
                 startActivity(patientPackets);
             }
         });
