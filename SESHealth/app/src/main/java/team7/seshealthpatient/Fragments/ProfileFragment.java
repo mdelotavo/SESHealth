@@ -95,19 +95,25 @@ public class ProfileFragment extends Fragment {
 
         setTVValuesProfile(textViewsProfile, childrenProfile);
         profileEmailTV.setText(mUser.getEmail());
+
         reference.child("accountType").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue().toString().equals("patient")) {
-                    Log.d(TAG, dataSnapshot.getValue().toString());
-                    setPatientView();
-                } else if(dataSnapshot.getValue().toString().equals("doctor")) {
-                    Log.d(TAG, dataSnapshot.getValue().toString());
-                    setDoctorView();
+                if(dataSnapshot.getValue() == null) {
+                    Toast.makeText(getActivity(), "An account type does not exist for this user", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d(TAG, dataSnapshot.getValue().toString());
-                    Toast.makeText(getActivity(), "Could not find a valid account type", Toast.LENGTH_SHORT).show();
+                    if(dataSnapshot.getValue().toString().equals("patient")) {
+                        Log.d(TAG, dataSnapshot.getValue().toString());
+                        setPatientView();
+                    } else if(dataSnapshot.getValue().toString().equals("doctor")) {
+                        Log.d(TAG, dataSnapshot.getValue().toString());
+                        setDoctorView();
+                    } else {
+                        Log.d(TAG, dataSnapshot.getValue().toString());
+                        Toast.makeText(getActivity(), "Could not find a valid account type", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             }
 
             @Override
@@ -116,6 +122,8 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "An error occurred when connecting with the database", Toast.LENGTH_SHORT).show();
             }
         });
+
+
         return v;
     }
 
