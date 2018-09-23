@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +17,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import team7.seshealthpatient.R;
 
@@ -59,6 +64,16 @@ public class PatientListFragment extends Fragment {
 
         listOfPatients = v.findViewById(R.id.list_of_patients);
 
+        final List<String> patientList = new ArrayList<>();
+
+        final ListAdapter adapter = new ArrayAdapter<>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                patientList
+        );
+
+        listOfPatients.setAdapter(adapter);
+
         FirebaseDatabase.getInstance().getReference().child("Users")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -67,7 +82,11 @@ public class PatientListFragment extends Fragment {
                             String key = child.getKey();
                             String patient = (child.child("Profile").child("name").getValue() != null)
                                     ? child.child("Profile").child("name").getValue().toString() : null;
-                            System.out.println(key + " " + patient);
+                            if (patient != null) {
+                                System.out.println(key + " " + patient);
+                                patientList.add(patient);
+                                listOfPatients.invalidateViews();
+                            }
                         }
                     }
 
