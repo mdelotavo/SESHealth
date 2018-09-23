@@ -37,6 +37,7 @@ import butterknife.BindView;
 import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
+import team7.seshealthpatient.Fragments.ProfileFragment;
 import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
@@ -87,9 +88,7 @@ public class MainActivity extends AppCompatActivity {
      * I am using this enum to know which is the current fragment being displayed, you will see
      * what I mean with this later in this code.
      */
-    private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, SETTINGS, LOGOUT
-    }
+    private enum MenuStates {PATIENT_INFO, NAVIGATION_MAP, CHAT, PROFILE, SETTINGS, LOGOUT};
 
     /**
      * The current fragment being displayed.
@@ -169,6 +168,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.CHAT) {
                                     fragment = new ChatFragment();
                                     currentState = MenuStates.CHAT;
+                                }
+                                break;
+                            case R.id.nav_profile:
+                                if (currentState != MenuStates.PROFILE) {
+                                    fragment = new ProfileFragment();
+                                    currentState = MenuStates.PROFILE;
                                 }
                                 break;
                             case R.id.nav_settings:

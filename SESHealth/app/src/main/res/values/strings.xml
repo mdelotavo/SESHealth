@@ -62,7 +62,7 @@
     <string name="gender_rg_title">Gender</string>
     <string name="male_rb">Male</string>
     <string name="female_rb">Female</string>
-    <string name="patient_setup_second">The fields below are optional and can be left blank. Please seperate each allergy or medication with a comma (,) for multiple values</string>
+    <string name="patient_setup_second">The fields below are optional and can be left blank. Please separate each allergy or medication with a comma (,) for multiple values</string>
     <string name="finish_setup">Finish</string>
     <string name="setup_doctor_desc">Please complete the fields below to set up your doctor profile.</string>
     <string name="allergies_hint">Allergies</string>
@@ -71,6 +71,7 @@
     <string name="occupation_hint">Current Occupation</string>
     <string name="experience_hint">Past Experience (optional)</string>
     <string name="clinic_location">Your Clinic\'s Address</string>
+    <string name="profile">Profile</string>
 
     <string-array name="genders">
         <item>Male</item>

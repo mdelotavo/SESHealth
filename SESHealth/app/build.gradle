@@ -45,17 +45,17 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:0.6.0'
 
     /**
-    * https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    */
+     * https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+     */
 
     implementation 'org.apache.commons:commons-lang3:3.7'
-    
+
     /**
-    * https://github.com/shobhitpuri/custom-google-signin-button/
-    */
+     * https://github.com/shobhitpuri/custom-google-signin-button/
+     */
 
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.0.0'
-    
+
     /**
      * NOTE: Whenever you reference to an external library, please add a link to where you took the library from
      * Below is the Butter Knife library, it will help you access the UI elements easily without much work (examples on its
