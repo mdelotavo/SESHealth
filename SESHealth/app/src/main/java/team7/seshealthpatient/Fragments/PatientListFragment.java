@@ -86,7 +86,6 @@ public class PatientListFragment extends Fragment {
                             String patient = (child.child("Profile").child("name").getValue() != null)
                                     ? child.child("Profile").child("name").getValue().toString() : null;
                             if (patient != null) {
-                                System.out.println(key + " " + patient);
                                 patientList.add(patient);
                                 listOfPatients.invalidateViews();
                             }
