@@ -29,7 +29,7 @@ import team7.seshealthpatient.R;
 public class PatientListFragment extends Fragment {
 
     FirebaseUser user;
-    String uid, name;
+    String uid;
     ListView listOfPatients;
 
     public PatientListFragment() {
@@ -44,19 +44,6 @@ public class PatientListFragment extends Fragment {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         uid = user.getUid();
-
-        FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Profile").child("name")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        name = (String) dataSnapshot.getValue();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
