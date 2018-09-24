@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -67,5 +69,17 @@ public class PatientPacketsActivity extends AppCompatActivity {
 
                     }
                 });
+
+        listOfPackets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String packetId = packetIdList.get(position);
+
+                Intent packetInfo = new Intent(PatientPacketsActivity.this, PacketInfoActivity.class);
+                packetInfo.putExtra("uid", uid);
+                packetInfo.putExtra("packetId", packetId);
+                startActivity(packetInfo);
+            }
+        });
     }
 }
