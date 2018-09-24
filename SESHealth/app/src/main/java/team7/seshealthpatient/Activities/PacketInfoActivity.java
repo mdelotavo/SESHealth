@@ -51,9 +51,10 @@ public class PacketInfoActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            String key = child.getKey();
                             String info = child.getValue() != null ? child.getValue().toString() : null;
                             if (info != null) {
-                                packetInfoList.add(info);
+                                packetInfoList.add("[" + key + "]\n" + info);
                                 listOfPacketInfo.invalidateViews();
                             }
                         }
