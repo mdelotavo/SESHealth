@@ -29,8 +29,7 @@ import team7.seshealthpatient.R;
 public class PatientListFragment extends Fragment {
 
     FirebaseUser user;
-    String uid, name, doctorKey;
-    boolean isDoctor = false;
+    String uid, name;
     ListView listOfPatients;
 
     public PatientListFragment() {
@@ -43,7 +42,6 @@ public class PatientListFragment extends Fragment {
 
         getActivity().setTitle("Patient List");
 
-        doctorKey = "1234";
         user = FirebaseAuth.getInstance().getCurrentUser();
         uid = user.getUid();
 
