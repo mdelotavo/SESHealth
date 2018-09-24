@@ -103,11 +103,9 @@ public class PatientListFragment extends Fragment {
         listOfPatients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String patientName = parent.getItemAtPosition(position).toString();
                 String patientUid = patientUidList.get(position);
 
                 Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
-                patientPackets.putExtra("name", patientName);
                 patientPackets.putExtra("uid", patientUid);
                 startActivity(patientPackets);
             }
