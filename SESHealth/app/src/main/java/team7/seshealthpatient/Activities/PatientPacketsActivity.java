@@ -15,7 +15,5 @@ public class PatientPacketsActivity extends AppCompatActivity {
 
         Intent receivedIntent = getIntent();
         uid = receivedIntent.getStringExtra("uid");
-
-        System.out.println(uid);
     }
 }
