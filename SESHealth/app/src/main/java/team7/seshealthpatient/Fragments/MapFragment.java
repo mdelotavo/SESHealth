@@ -36,8 +36,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import team7.seshealthpatient.MapModels.PlaceResult;
 import team7.seshealthpatient.MapModels.LocationDefaults;
+import team7.seshealthpatient.MapModels.PlaceResult;
 import team7.seshealthpatient.R;
 import team7.seshealthpatient.Services.Shigleton;
 

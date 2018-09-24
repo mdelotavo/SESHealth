@@ -38,6 +38,7 @@ import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.PatientListFragment;
+import team7.seshealthpatient.Fragments.ProfileFragment;
 import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, PATIENT_LIST, SETTINGS, LOGOUT
+        PATIENT_INFO, NAVIGATION_MAP, CHAT, PATIENT_LIST, PROFILE, SETTINGS, LOGOUT
     }
 
     /**
@@ -176,6 +177,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.PATIENT_LIST) {
                                     fragment = new PatientListFragment();
                                     currentState = MenuStates.PATIENT_LIST;
+                                }
+                                break;
+                            case R.id.nav_profile:
+                                if (currentState != MenuStates.PROFILE) {
+                                    fragment = new ProfileFragment();
+                                    currentState = MenuStates.PROFILE;
                                 }
                                 break;
                             case R.id.nav_settings:
