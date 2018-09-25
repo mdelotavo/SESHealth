@@ -173,6 +173,7 @@ public class SendFileActivity extends AppCompatActivity {
         });
     }
     private void uploadFile(Uri pdfUri){
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         progressDialog=new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("Uploading file...");
@@ -180,7 +181,7 @@ public class SendFileActivity extends AppCompatActivity {
         progressDialog.show();
         final String fileName=System.currentTimeMillis()+"";
         StorageReference storageReference=storage.getReference();
-        storageReference.child("Uploads").child(fileName).putFile(pdfUri)
+        storageReference.child("Users/"+userId+"/Uploads"+pdfUri).child(fileName).putFile(pdfUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
