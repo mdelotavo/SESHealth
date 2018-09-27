@@ -71,15 +71,19 @@ public class ChatFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase.getInstance()
-                        .getReference()
-                        .child("Users")
-                        .child(uid)
-                        .child("chat")
-                        .push()
-                        .setValue(new ChatMessage(input.getText().toString(), name));
-                toastMessage("Sent");
-                input.setText("");
+                if (input.getText().toString().trim().isEmpty()) {
+                    toastMessage("Your message is empty...");
+                } else {
+                    FirebaseDatabase.getInstance()
+                            .getReference()
+                            .child("Users")
+                            .child(uid)
+                            .child("chat")
+                            .push()
+                            .setValue(new ChatMessage(input.getText().toString(), name));
+                    toastMessage("Sent");
+                    input.setText("");
+                }
             }
         });
 
