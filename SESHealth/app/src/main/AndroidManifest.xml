@@ -70,6 +70,7 @@
         <activity android:name=".Activities.PatientPacketsActivity" />
         <activity android:name=".Activities.PacketInfoActivity" />
         <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.ChatActivity" />
     </application>
 
 </manifest>
