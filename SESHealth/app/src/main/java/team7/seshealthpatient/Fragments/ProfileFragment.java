@@ -37,17 +37,6 @@ import team7.seshealthpatient.Activities.EditInfoActivity;
 import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
 
-/**
- * Class: PatientInformationFragment
- * Extends: {@link Fragment}
- * Author: Carlos Tirado < Carlos.TiradoCorts@uts.edu.au> and YOU!
- * Description:
- * <p>
- * This fragment's job will be that to display patients information, and be able to edit that
- * information (either edit it in this fragment or a new fragment, up to you!)
- * <p>
-
- */
 public class ProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
