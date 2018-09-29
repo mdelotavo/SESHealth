@@ -52,6 +52,13 @@ public class ProfileActivity extends AppCompatActivity {
         Bundle extra = getIntent().getExtras();
         userValues = extra.getStringArray("userValues");
 
+        toolbar = findViewById(R.id.profileToolbar);
+        toolbar.setTitle("Profile");
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         Intent intent = getIntent();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(intent.getStringExtra("uid"));

@@ -38,7 +38,6 @@ import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.PatientListFragment;
-import team7.seshealthpatient.Fragments.ProfileFragment;
 import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
