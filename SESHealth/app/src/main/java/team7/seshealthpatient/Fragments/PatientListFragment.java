@@ -98,13 +98,10 @@ public class PatientListFragment extends Fragment {
                 Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
                 patientPackets.putExtra("uid", patientUid);
                 startActivity(patientPackets);
-
-//                Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
-//                patientPackets.putExtra("uid", patientUid);
-//                startActivity(patientPackets);
             }
         });
 
+        // To view the selected user's profile
         listOfPatients.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {

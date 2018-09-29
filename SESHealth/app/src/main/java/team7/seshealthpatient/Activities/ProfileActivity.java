@@ -1,64 +1,27 @@
 package team7.seshealthpatient.Activities;
 
 
-import android.Manifest;
 
-import android.app.ProgressDialog;
-import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import team7.seshealthpatient.HeartBeat.HeartRateMonitor;
 import team7.seshealthpatient.R;
 import team7.seshealthpatient.Util.MyUtilities;
 
@@ -67,11 +30,6 @@ import team7.seshealthpatient.Util.MyUtilities;
  */
 public class ProfileActivity extends AppCompatActivity {
     private static String TAG = "ProfileActivity";
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private ProgressDialog progressDialog;
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private Toolbar toolbar;
@@ -95,15 +53,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         Bundle extra = getIntent().getExtras();
         userValues = extra.getStringArray("userValues");
-
-
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-
-//        mAuth = ((MainActivity)getApplicationContext()).getFirebaseAuth();
-//        mUser = mAuth.getCurrentUser();
-//        this.setTitle("Profile");
 
         Intent intent = getIntent();
         database = FirebaseDatabase.getInstance();
@@ -131,7 +80,6 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Could not find a valid account type", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
 
             @Override
@@ -140,7 +88,6 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "An error occurred when connecting with the database", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     // Put this in a utility class
@@ -151,7 +98,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void setTVValues(TextView[] textViews, String[] children) {
         for (int i = 0; i < textViews.length; i++)
-//            ((MainActivity)getApplicationContext()).setTVValues(textViews[i], children[i]);
             MyUtilities.setTVValues(reference, textViews[i], children[i]);
     }
 
@@ -191,11 +137,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
         finish();
     }
 
