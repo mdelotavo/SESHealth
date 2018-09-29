@@ -109,11 +109,10 @@ public class ProfileActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(intent.getStringExtra("uid"));
 
-        TextView[] textViewsProfile = {profileNameTV};
-        String[] childrenProfile = {"name"};
+        TextView[] textViewsProfile = {profileNameTV, profileEmailTV};
+        String[] childrenProfile = {"name", "email"};
 
-//        setTVValuesProfile(textViewsProfile, childrenProfile);
-//        profileEmailTV.setText(mUser.getEmail());
+        setTVValuesProfile(textViewsProfile, childrenProfile);
 
         reference.child("accountType").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -95,13 +95,24 @@ public class PatientListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String patientUid = patientUidList.get(position);
 
-//                Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
+                Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
+                patientPackets.putExtra("uid", patientUid);
+                startActivity(patientPackets);
+
+//                Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
 //                patientPackets.putExtra("uid", patientUid);
 //                startActivity(patientPackets);
+            }
+        });
 
+        listOfPatients.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String patientUid = patientUidList.get(position);
                 Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
                 patientPackets.putExtra("uid", patientUid);
                 startActivity(patientPackets);
+                return true;
             }
         });
 
