@@ -162,6 +162,7 @@ public class SetupActivity extends AppCompatActivity {
     public void setPatientInfo() {
         if (checkPassedSecondPatient()) {
             String name = nameET.getText().toString().trim();
+            String email = mAuth.getCurrentUser().getEmail();
             RadioButton radioButton = findViewById(genderRGPatient.getCheckedRadioButtonId());
             String gender = radioButton.getText().toString().trim();
             String date = setupDOBDateET.getText().toString().trim();
@@ -172,6 +173,7 @@ public class SetupActivity extends AppCompatActivity {
             String medication = medicationET.getText().toString().trim();
 
             reference.child("Profile").child("name").setValue(name);
+            reference.child("Profile").child("email").setValue(email);
             reference.child("Profile").child("phoneNO").setValue(phoneNO);
             reference.child("Profile").child("DOB").setValue(date);
             reference.child("Profile").child("gender").setValue(gender);
