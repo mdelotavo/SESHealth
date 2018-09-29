@@ -108,6 +108,7 @@ public class ChatFragment extends Fragment {
                 Intent userChat = new Intent(getActivity(), ChatActivity.class);
                 userChat.putExtra("uid", userUid);
                 userChat.putExtra("name", name);
+                userList.clear();
                 startActivity(userChat);
             }
         });
