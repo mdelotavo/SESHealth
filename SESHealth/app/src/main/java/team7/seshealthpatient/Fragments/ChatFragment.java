@@ -1,6 +1,7 @@
 package team7.seshealthpatient.Fragments;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +9,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,14 +25,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import team7.seshealthpatient.Activities.ChatActivity;
 import team7.seshealthpatient.R;
 
 public class ChatFragment extends Fragment {
 
     FirebaseUser user;
     String uid, name;
-    FloatingActionButton fab;
-    EditText input;
     ListView listOfMessages;
 
     public ChatFragment() {
@@ -56,7 +62,6 @@ public class ChatFragment extends Fragment {
 
                     }
                 });
-
     }
 
     @Override
@@ -65,55 +70,53 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        fab = v.findViewById(R.id.fab);
-        input = v.findViewById(R.id.input);
+        listOfMessages = v.findViewById(R.id.list_of_users);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (input.getText().toString().trim().isEmpty()) {
-                    toastMessage("Your message is empty...");
-                } else {
-                    FirebaseDatabase.getInstance()
-                            .getReference()
-                            .child("Users")
-                            .child(uid)
-                            .child("chat")
-                            .push()
-                            .setValue(new ChatMessage(input.getText().toString(), name));
-                    toastMessage("Sent");
-                    input.setText("");
-                }
-            }
-        });
+        final List<String> userList = new ArrayList<>();
+        final List<String> userUidList = new ArrayList<>();
 
-        listOfMessages = v.findViewById(R.id.list_of_messages);
-
-        FirebaseListAdapter<ChatMessage> adapter = new FirebaseListAdapter<ChatMessage>(
+        final ListAdapter adapter = new ArrayAdapter<>(
                 getActivity(),
-                ChatMessage.class, android.R.layout.simple_list_item_2,
-                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("chat")) {
-            @Override
-            protected void populateView(View v, ChatMessage model, int position) {
-                TextView messageText = v.findViewById(android.R.id.text1);
-                messageText.setText(model.getMessageText());
-
-                final android.text.format.DateFormat df = new android.text.format.DateFormat();
-
-                TextView messageInfo = v.findViewById(android.R.id.text2);
-                messageInfo.setText(
-                        df.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()).toString()
-                        + " " + model.getMessageUser()
-                );
-            }
-        };
+                android.R.layout.simple_list_item_1,
+                userList
+        );
 
         listOfMessages.setAdapter(adapter);
 
-        return v;
-    }
+        FirebaseDatabase.getInstance().getReference().child("Users")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            String key = child.getKey();
+                            String user = (child.child("Profile").child("name").getValue() != null)
+                                    ? child.child("Profile").child("name").getValue().toString() : null;
+                            if (user != null) {
+                                userList.add(user);
+                                userUidList.add(key);
+                                listOfMessages.invalidateViews();
+                            }
+                        }
+                    }
 
-    private void toastMessage(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+        listOfMessages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String userUid = userUidList.get(position);
+
+                Intent userChat = new Intent(getActivity(), ChatActivity.class);
+                userChat.putExtra("uid", userUid);
+                userChat.putExtra("name", name);
+                startActivity(userChat);
+            }
+        });
+
+        return v;
     }
 }
