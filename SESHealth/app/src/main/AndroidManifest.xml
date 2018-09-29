@@ -69,6 +69,7 @@
         <activity android:name=".HeartBeat.HeartRateMonitor" />
         <activity android:name=".Activities.PatientPacketsActivity" />
         <activity android:name=".Activities.PacketInfoActivity" />
+        <activity android:name=".Activities.ProfileActivity" />
     </application>
 
 </manifest>

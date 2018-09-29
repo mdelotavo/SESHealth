@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, PATIENT_LIST, PROFILE, SETTINGS, LOGOUT
+        PATIENT_INFO, NAVIGATION_MAP, CHAT, PATIENT_LIST, SETTINGS, LOGOUT
     }
 
     /**
@@ -177,12 +177,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.PATIENT_LIST) {
                                     fragment = new PatientListFragment();
                                     currentState = MenuStates.PATIENT_LIST;
-                                }
-                                break;
-                            case R.id.nav_profile:
-                                if (currentState != MenuStates.PROFILE) {
-                                    fragment = new ProfileFragment();
-                                    currentState = MenuStates.PROFILE;
                                 }
                                 break;
                             case R.id.nav_settings:
@@ -285,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param selectedFragment The fragment to be displayed
      */
-    private void ChangeFragment(Fragment selectedFragment) {
+    public void ChangeFragment(Fragment selectedFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, selectedFragment);
         transaction.addToBackStack(null);

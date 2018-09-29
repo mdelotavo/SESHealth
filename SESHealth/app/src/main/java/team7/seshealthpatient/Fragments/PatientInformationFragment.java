@@ -27,6 +27,7 @@ import team7.seshealthpatient.Activities.EditInfoActivity;
 import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.Activities.SendFileActivity;
 import team7.seshealthpatient.R;
+import team7.seshealthpatient.Util.MyUtilities;
 
 /**
  * Class: PatientInformationFragment

@@ -18,10 +18,6 @@
             android:icon="@drawable/ic_profile_icon"
             android:title="@string/patient_list" />
         <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_profile_icon"
-            android:title="@string/profile" />
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_outline"
             android:title="@string/settings" />
