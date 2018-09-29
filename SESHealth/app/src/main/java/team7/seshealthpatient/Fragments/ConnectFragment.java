@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,12 +37,14 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
 
 
 public class ConnectFragment extends Fragment {
 
     private final static String TAG = "ConnectFragment";
+    private FirebaseUser mUser;
     private FirebaseDatabase database;
     private DatabaseReference reference;
     final Map<String, String> doctorUidList = new HashMap<>();
@@ -61,6 +64,7 @@ public class ConnectFragment extends Fragment {
         getActivity().setTitle("Connect!");
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users");
+        mUser = ((MainActivity)getActivity()).getFirebaseAuth().getCurrentUser();
     }
 
     @Override
@@ -114,8 +118,6 @@ public class ConnectFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
-
     private void setPatientView() {
         TextView occupation = new TextView(getActivity());
     }
@@ -126,16 +128,26 @@ public class ConnectFragment extends Fragment {
 
     @OnClick(R.id.connectBtn)
     public void clicked() {
-        String text = connectET.getText().toString().trim();
+        String doctorId = connectET.getText().toString().trim();
         Log.d(TAG, doctorUidList.toString());
-        if(doctorUidList.containsKey(text)) {
-            Toast.makeText(getActivity(), "List Contains: " + text, Toast.LENGTH_SHORT).show();
+        if(doctorUidList.containsKey(doctorId)) {
+            addNewPatient(doctorId);
         } else {
-            Toast.makeText(getActivity(), "List does not contain: " + text, Toast.LENGTH_SHORT).show();
-            Log.d(TAG, text + " is not found in " + doctorUidList.toString());
-
+            Toast.makeText(getActivity(), "Please enter a valid code", Toast.LENGTH_SHORT).show(); // Fix Toast message
+            Log.d(TAG, doctorId + " is not found in " + doctorUidList.toString());
         }
 
+    }
+
+    private void addNewPatient(String doctorId) {
+
+        DatabaseReference ref = reference.child(doctorUidList.get(doctorId)).child("Patients").child(mUser.getUid());
+        if(ref.getKey().toString().equals(mUser.getUid())) {
+            Toast.makeText(getActivity(), "A request has already been made to your doctor", Toast.LENGTH_SHORT).show();
+        } else {
+            ref.setValue(false);
+            Toast.makeText(getActivity(), "A request has been made to your doctor", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

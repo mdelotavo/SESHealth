@@ -10,6 +10,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter a 5 character id to connect to your doctor" />
+
         <EditText
             android:id="@+id/connectET"
             android:layout_width="wrap_content"
@@ -22,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Click me!"/>
+            android:text="Click me!" />
 
 
 
