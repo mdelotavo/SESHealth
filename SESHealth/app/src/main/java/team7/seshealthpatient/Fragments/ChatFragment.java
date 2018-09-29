@@ -86,7 +86,7 @@ public class ChatFragment extends Fragment {
                             String key = child.getKey();
                             String user = (child.child("Profile").child("name").getValue() != null)
                                     ? child.child("Profile").child("name").getValue().toString() : null;
-                            if (user != null) {
+                            if (user != null && !userUidList.contains(key)) {
                                 userList.add(user);
                                 userUidList.add(key);
                                 listOfMessages.invalidateViews();
@@ -108,7 +108,6 @@ public class ChatFragment extends Fragment {
                 Intent userChat = new Intent(getActivity(), ChatActivity.class);
                 userChat.putExtra("uid", userUid);
                 userChat.putExtra("name", name);
-                userList.clear();
                 startActivity(userChat);
             }
         });
