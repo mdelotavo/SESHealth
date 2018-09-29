@@ -1,7 +1,5 @@
 package team7.seshealthpatient.Activities;
 
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
