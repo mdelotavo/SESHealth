@@ -133,8 +133,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setDoctorView() {
         TextView occupation = new TextView(ProfileActivity.this);
-        TextView[] textViewsProfile = {occupation};
-        String[] childrenProfile = {"occupation"};
+        TextView location = new TextView(ProfileActivity.this);
+        TextView[] textViewsProfile = {occupation, location};
+        String[] childrenProfile = {"occupation", "location"};
         setTVValuesProfile(textViewsProfile, childrenProfile);
 
         for(int i = 0; i < textViewsProfile.length; i++) {
