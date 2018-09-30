@@ -1,6 +1,9 @@
 package team7.seshealthpatient.Fragments;
 
+import android.Manifest;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,9 +28,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import team7.seshealthpatient.Activities.PatientPacketsActivity;
+import team7.seshealthpatient.Activities.ProfileActivity;
 import team7.seshealthpatient.R;
 
 public class PatientListFragment extends Fragment {
@@ -148,6 +153,18 @@ public class PatientListFragment extends Fragment {
                 Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
                 patientPackets.putExtra("uid", patientUid);
                 startActivity(patientPackets);
+            }
+        });
+
+        // To view the selected user's profile
+        listOfPatients.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String patientUid = patientUidList.get(position);
+                Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
+                patientPackets.putExtra("uid", patientUid);
+                startActivity(patientPackets);
+                return true;
             }
         });
 
