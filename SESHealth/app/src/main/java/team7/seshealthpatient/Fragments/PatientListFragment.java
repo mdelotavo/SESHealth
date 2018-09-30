@@ -28,7 +28,7 @@ import team7.seshealthpatient.R;
 
 public class PatientListFragment extends Fragment {
 
-    FirebaseUser user;
+    FirebaseUser mUser;
     String uid;
     ListView listOfPatients;
 
@@ -42,8 +42,8 @@ public class PatientListFragment extends Fragment {
 
         getActivity().setTitle("Patient List");
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        uid = user.getUid();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        uid = mUser.getUid();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,14 +63,14 @@ public class PatientListFragment extends Fragment {
 
         listOfPatients.setAdapter(adapter);
 
-        FirebaseDatabase.getInstance().getReference().child("Users").child("Patients")
+        FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid()).child("Patients")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             String key = child.getKey();
-                            String patient = (child.child("Profile").child("name").getValue() != null)
-                                    ? child.child("Profile").child("name").getValue().toString() : null;
+                            String patient = (child.child("name").getValue() != null)
+                                    ? child.child("name").getValue().toString() : null;
                             if (patient != null) {
                                 patientList.add(patient);
                                 patientUidList.add(key);
