@@ -14,11 +14,11 @@
     <Preference
         android:id="@+id/aboutPreference"
         android:key="aboutPreference"
-        android:title="About"/>
+        android:title="About" />
 
     <Preference
         android:id="@+id/logOutPreference"
         android:key="logOutPreference"
-        android:title="Log out"/>
+        android:title="@string/logout" />
 
 </PreferenceScreen>

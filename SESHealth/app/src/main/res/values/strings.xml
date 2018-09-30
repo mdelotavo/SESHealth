@@ -24,7 +24,7 @@
     <string name="passwordCheck_toast">Please fill in your password</string>
     <string name="passwordCheckLength_toast">Password must be 6 or more characters</string>
     <string name="create_account_txt">Creating account</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Log Out</string>
     <string name="email_authentication_message_success">A verification email has been sent to your account. Please click on the link sent to verify your account</string>
     <string name="email_authentication_message_failure">Failed to create account</string>
     <string name="email_success">Email sent, please check your inbox</string>
@@ -73,6 +73,7 @@
     <string name="experience_hint">Past Experience (optional)</string>
     <string name="clinic_location">Your Clinic\'s Address</string>
     <string name="profile">Profile</string>
+    <string name="connect">Connect</string>
 
     <string-array name="genders">
         <item>Male</item>
