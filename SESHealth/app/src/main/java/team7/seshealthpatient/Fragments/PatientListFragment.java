@@ -39,6 +39,9 @@ public class PatientListFragment extends Fragment {
     ListView listOfPatients;
     ListView listOfPendingPatients;
 
+    @BindView(R.id.doctorKeyTV)
+    TextView doctorKeyTV;
+
     @BindView(R.id.pendingPatientsTV)
     TextView pendingPatientsTV;
 
@@ -66,7 +69,7 @@ public class PatientListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_patient_list, container, false);
         ButterKnife.bind(this, v);
 
-
+        doctorKeyTV.setText(doctorKeyTV.getText() + " " + mUser.getUid().substring(0, 5));
         listOfPatients = v.findViewById(R.id.list_of_patients);
         listOfPendingPatients = v.findViewById(R.id.list_of_pending_patients);
 
