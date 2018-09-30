@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import team7.seshealthpatient.Activities.PatientPacketsActivity;
 import team7.seshealthpatient.R;
 
@@ -35,6 +38,12 @@ public class PatientListFragment extends Fragment {
     String uid;
     ListView listOfPatients;
     ListView listOfPendingPatients;
+
+    @BindView(R.id.pendingPatientsTV)
+    TextView pendingPatientsTV;
+
+    @BindView(R.id.currentPatientsTV)
+    TextView currentPatientsTV;
 
     public PatientListFragment() {
 
@@ -55,6 +64,8 @@ public class PatientListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_patient_list, container, false);
+        ButterKnife.bind(this, v);
+
 
         listOfPatients = v.findViewById(R.id.list_of_patients);
         listOfPendingPatients = v.findViewById(R.id.list_of_pending_patients);
@@ -87,6 +98,9 @@ public class PatientListFragment extends Fragment {
                         patientUidList.clear();
                         pendingPatientList.clear();
                         pendingPatientUidList.clear();
+                        pendingPatientsTV.setVisibility(View.VISIBLE);
+                        currentPatientsTV.setVisibility(View.VISIBLE);
+
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             String key = child.getKey();
                             String patient = (child.child("name").getValue() != null)
@@ -95,9 +109,13 @@ public class PatientListFragment extends Fragment {
                                 if(child.child("approved").getValue().toString().equals("false")) {
                                     pendingPatientList.add(patient);
                                     pendingPatientUidList.add(key);
+                                    if(pendingPatientsTV.getVisibility() != View.INVISIBLE)
+                                        pendingPatientsTV.setVisibility(View.INVISIBLE);
                                 } else {
                                     patientList.add(patient);
                                     patientUidList.add(key);
+                                    if(currentPatientsTV.getVisibility() != View.INVISIBLE)
+                                        currentPatientsTV.setVisibility(View.INVISIBLE);
                                 }
                                 listOfPatients.invalidateViews();
                                 listOfPendingPatients.invalidateViews();
@@ -111,12 +129,11 @@ public class PatientListFragment extends Fragment {
                     }
                 });
 
-        listOfPendingPatients.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listOfPendingPatients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String patientUid = pendingPatientUidList.get(position);
                 reference.child(mUser.getUid()).child("Patients").child(patientUid).child("approved").setValue(true);
-                return true;
             }
         });
 
@@ -132,5 +149,9 @@ public class PatientListFragment extends Fragment {
         });
 
         return v;
+    }
+
+    private void setTextView() {
+
     }
 }
