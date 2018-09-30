@@ -1,6 +1,5 @@
 package team7.seshealthpatient.Fragments;
 
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -40,7 +39,6 @@ import butterknife.OnClick;
 import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.R;
 
-
 public class ConnectFragment extends Fragment {
 
     private final static String TAG = "ConnectFragment";
@@ -61,7 +59,6 @@ public class ConnectFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Connect!");
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users");
@@ -71,10 +68,8 @@ public class ConnectFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_connect, container, false);
 
-        // Note how we are telling butter knife to bind during the on create view method
         ButterKnife.bind(this, v);
 
         FirebaseDatabase.getInstance().getReference().child("Users")
