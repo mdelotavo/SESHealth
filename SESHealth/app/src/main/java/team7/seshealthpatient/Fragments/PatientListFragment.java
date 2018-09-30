@@ -63,7 +63,7 @@ public class PatientListFragment extends Fragment {
 
         listOfPatients.setAdapter(adapter);
 
-        FirebaseDatabase.getInstance().getReference().child("Users")
+        FirebaseDatabase.getInstance().getReference().child("Users").child("Patients")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

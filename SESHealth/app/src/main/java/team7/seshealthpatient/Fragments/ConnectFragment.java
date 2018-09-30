@@ -47,6 +47,7 @@ public class ConnectFragment extends Fragment {
     private FirebaseUser mUser;
     private FirebaseDatabase database;
     private DatabaseReference reference;
+    private String name = "";
     final Map<String, String> doctorUidList = new HashMap<>();
 
     @BindView(R.id.connectET)
@@ -80,6 +81,7 @@ public class ConnectFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        name = dataSnapshot.child(mUser.getUid()).child("Profile").child("name").getValue().toString();
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             String key = child.getKey();
                             String doctor = (child.child("Profile").child("name").getValue() != null && child.child("accountType").getValue().toString().equals("doctor"))
@@ -140,14 +142,27 @@ public class ConnectFragment extends Fragment {
     }
 
     private void addNewPatient(String doctorId) {
+        final DatabaseReference ref = reference.child(doctorUidList.get(doctorId)).child("Patients").child(mUser.getUid());
+        Log.d(TAG, "NAME is: " + name);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    Log.d(TAG, dataSnapshot.getValue().toString());
+                    Toast.makeText(getActivity(), "A request has already been made to your doctor", Toast.LENGTH_SHORT).show();
+                }   else {
+                    ref.child("approved").setValue(false);
+                    ref.child("name").setValue(name);
+                    Toast.makeText(getActivity(), "A request has been made to your doctor", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        DatabaseReference ref = reference.child(doctorUidList.get(doctorId)).child("Patients").child(mUser.getUid());
-        if(ref.getKey().toString().equals(mUser.getUid())) {
-            Toast.makeText(getActivity(), "A request has already been made to your doctor", Toast.LENGTH_SHORT).show();
-        } else {
-            ref.setValue(false);
-            Toast.makeText(getActivity(), "A request has been made to your doctor", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
