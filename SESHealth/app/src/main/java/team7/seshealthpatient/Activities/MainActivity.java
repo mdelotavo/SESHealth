@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private Location userLocation;
     private Fragment fragment;
+    private NavigationView navigationView;
 
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, SETTINGS, LOGOUT
+        PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, PROFILE, SETTINGS, LOGOUT
     }
 
     /**
@@ -140,7 +142,26 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup the navigation drawer, most of this code was taken from:
         // https://developer.android.com/training/implementing-navigation/nav-drawer
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+
+        reference.child("accountType").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    Toast.makeText(MainActivity.this, "null account type", Toast.LENGTH_SHORT).show();
+                } else {
+                    navigationView.getMenu().clear();
+                    if (dataSnapshot.getValue().toString().equals("patient"))
+                        navigationView.inflateMenu(R.menu.drawer_view_patient);
+                    else if (dataSnapshot.getValue().toString().equals("doctor"))
+                        navigationView.inflateMenu(R.menu.drawer_view_doctor);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -152,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // Using a switch to see which item on the menu was clicked
                         switch (menuItem.getItemId()) {
-                            // You can find these id's at: res -> menu -> drawer_view.xml
+                            // You can find these id's at: res -> menu -> drawer_view_patient.xml
                             case R.id.nav_patient_info:
                                 // If the user clicked on a different item than the current item
                                 if (currentState != MenuStates.PATIENT_INFO) {
@@ -285,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param selectedFragment The fragment to be displayed
      */
-    public void ChangeFragment(Fragment selectedFragment) {
+    private void ChangeFragment(Fragment selectedFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, selectedFragment);
         transaction.addToBackStack(null);
