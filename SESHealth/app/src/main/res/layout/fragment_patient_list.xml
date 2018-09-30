@@ -6,17 +6,26 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pending Patients"
-        android:layout_gravity="center_horizontal" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/pendingPatientsTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="None" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending Patients:"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/pendingPatientsTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="None" />
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/list_of_pending_patients"
@@ -27,17 +36,25 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Patients"
-        android:layout_gravity="center_horizontal" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/currentPatientsTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="None"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Patients"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/currentPatientsTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="None"/>
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/list_of_patients"
