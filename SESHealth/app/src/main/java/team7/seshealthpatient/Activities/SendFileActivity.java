@@ -321,6 +321,7 @@ public class SendFileActivity extends AppCompatActivity {
         if(requestCode == FILE_REQUEST_CODE && resultCode==RESULT_OK && data != null){
             fileUri = data.getData();
             sendFileNotification.setText("A file is selected: "+ data.getData().getLastPathSegment());
+            uploadFile(fileUri);
         } else {
             Toast.makeText(SendFileActivity.this,"Please select a file",Toast.LENGTH_SHORT).show();
         }
@@ -411,20 +412,13 @@ public class SendFileActivity extends AppCompatActivity {
         startActivityForResult(intent, FILE_REQUEST_CODE);
     }
 
-    @OnClick(R.id.sendFileUploadBtn)
-    public void sendFileClicked() {
-        if(fileUri != null)
-            uploadFile(fileUri);
-        else
-            Toast.makeText(SendFileActivity.this,"Select a File", Toast.LENGTH_SHORT).show();
-    }
-
     @OnClick(R.id.selectFileBtn)
     public void selectFileClicked() {
-        if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             selectType();
-        else
-            ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE }, 9);
+        } else {
+            ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+        }
     }
 
     // Gets the path from the URI so the video captured can be uploaded to Firebase Storage
