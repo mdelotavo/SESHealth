@@ -8,6 +8,7 @@ import team7.seshealthpatient.R;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,19 +20,25 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class ForgotPasswordActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    private Toolbar toolbar;
     private ProgressDialog progressDialog;
 
     @BindView(R.id.forgotPasswordET)
     EditText forgotPasswordET;
+
+    @BindView(R.id.logoForgot)
+    ImageView logoForgot;
 
     private static String TAG = "ForgotPasswordActivity";
     @Override
@@ -41,15 +48,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
 
-        toolbar = findViewById(R.id.forgotPassword_toolbar);
-        toolbar.setTitle(R.string.forgotPassword_activity_title);
-
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-
         progressDialog = new ProgressDialog(this);
+
+        String logoName = "health_icon_1.png";
+        try {
+            InputStream stream = getAssets().open(logoName);
+            Drawable d = Drawable.createFromStream(stream, null);
+            logoForgot.setImageDrawable(d);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, e.toString());
+        }
     }
 
     @Override

@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.logout:
                                 if (currentState != MenuStates.LOGOUT) {
                                     mAuth.signOut();
-                                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                                     finish();
                                 }
                                 break;

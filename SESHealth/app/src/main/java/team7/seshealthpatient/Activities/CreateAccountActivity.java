@@ -3,6 +3,7 @@ package team7.seshealthpatient.Activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,7 +45,6 @@ public class CreateAccountActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private ProgressDialog progressDialog;
-    private Toolbar toolbar;
 
     private FirebaseDatabase database;
     private DatabaseReference reference;
@@ -58,6 +62,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     @BindView(R.id.createPasswordInputLayout)
     TextInputLayout createPasswordInputLayout;
 
+    @BindView(R.id.logoCreate)
+    ImageView logoCreate;
+
     private static String TAG = "CreateAccountActivity";
 
     @Override
@@ -67,18 +74,20 @@ public class CreateAccountActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
 
-        toolbar = findViewById(R.id.createAccount_toolbar);
-        toolbar.setTitle(getString(R.string.createAccount_activity_title));
-
         createEmailInputLayout.setHintEnabled(false);
         createPasswordInputLayout.setHintEnabled(false);
 
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-
         progressDialog = new ProgressDialog(this);
+
+        String logoName = "health_icon_1.png";
+        try {
+            InputStream stream = getAssets().open(logoName);
+            Drawable d = Drawable.createFromStream(stream, null);
+            logoCreate.setImageDrawable(d);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, e.toString());
+        }
     }
 
     @Override

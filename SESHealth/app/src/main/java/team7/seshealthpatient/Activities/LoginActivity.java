@@ -150,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
         // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
         setTitle(R.string.login_activity_title);
         progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -380,7 +381,6 @@ public class LoginActivity extends AppCompatActivity {
                     startSetup();
                 }
                 progressDialog.dismiss();
-                finish();
             }
 
             @Override
