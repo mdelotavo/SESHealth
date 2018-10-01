@@ -158,10 +158,13 @@ public class SendFileActivity extends AppCompatActivity {
                 if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     selectPdf();
                 }
+                if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    selectPic();
+                }
                 else
                     ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},9);
             }
-        });/////////////////
+        });///////////////
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,6 +217,12 @@ public class SendFileActivity extends AppCompatActivity {
     private void selectPdf(){
         Intent intent = new Intent();
         intent.setType("application/pdf");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 86);
+    }
+    private void selectPic(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 86);
     }
@@ -542,6 +551,7 @@ public class SendFileActivity extends AppCompatActivity {
         }
         if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
             selectPdf();
+            selectPic();
         }
         else
             Toast.makeText(SendFileActivity.this,"Please provide permission...",Toast.LENGTH_SHORT).show();
