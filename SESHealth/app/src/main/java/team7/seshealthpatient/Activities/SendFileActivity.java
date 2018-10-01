@@ -52,10 +52,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,6 +76,7 @@ public class SendFileActivity extends AppCompatActivity {
     private static String TAG = "SendFileActivity";
     private static final int CAMERA_REQUEST_CODE = 5;
     private static final int HEARTBEAT_REQUEST_CODE = 6;
+    private static final int FILE_REQUEST_CODE = 86;
     private static final int RECORD_VIDEO_REQUEST_PERMISSIONS = 10;
     private static final int HEART_BEAT_REQUEST_PERMISSIONS = 11;
     private static final int LOCATION_REQUEST_PERMISSIONS = 12;
@@ -91,11 +95,8 @@ public class SendFileActivity extends AppCompatActivity {
     private Location mLocation = null;
 
     private Uri videoUri = null;
+    private Uri fileUri = null;
     private int heartBeatAvg = 0;
-
-    Button selectFile, upload;
-    TextView notification;
-    Uri pdfUri;
 
     private static final String[] CAMERA_PERMISSION = {
             Manifest.permission.CAMERA,
@@ -120,6 +121,10 @@ public class SendFileActivity extends AppCompatActivity {
 
     @BindView(R.id.packetCameraCheck)
     CheckBox packetCameraCheck;
+
+    @BindView(R.id.sendFileNotification)
+    TextView sendFileNotification;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,86 +154,57 @@ public class SendFileActivity extends AppCompatActivity {
         reference = database.getReference("Users").child(mUser.getUid());
         storage = FirebaseStorage.getInstance();
         database = FirebaseDatabase.getInstance();
-        selectFile = findViewById(R.id.selectFile);
-        upload = findViewById(R.id.upload);
-        notification = findViewById(R.id.notification);
-        selectFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    selectPdf();
-                }
-                if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    selectPic();
-                }
-                else
-                    ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},9);
-            }
-        });///////////////
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(pdfUri!=null)
-                    uploadFile(pdfUri);
-                else
-                    Toast.makeText(SendFileActivity.this,"Select a File",Toast.LENGTH_SHORT).show();
-            }
-        });
     }
-    private void uploadFile(Uri pdfUri){
+
+    private void uploadFile(Uri fileUri){
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        progressDialog=new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("Uploading file...");
         progressDialog.setProgress(0);
         progressDialog.show();
-        final String fileName=System.currentTimeMillis()+"";
-        StorageReference storageReference=storage.getReference();
-        storageReference.child("Users/"+userId+"/Uploads"+pdfUri).child(fileName).putFile(pdfUri)
+        StorageReference storageReference = storage.getReference();
+        final String uriUUID =  UUID.randomUUID().toString();
+
+        storageReference.child("Users/" + userId + "/Uploads/" + uriUUID).putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        String url=taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                        String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
                         DatabaseReference reference=database.getReference();
-                        reference.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        reference.child(uriUUID).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful())
-                                    Toast.makeText(SendFileActivity.this,"File succesfully uploaded",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SendFileActivity.this,"Your file has successfully uploaded",Toast.LENGTH_SHORT).show();
                                 else
-                                    Toast.makeText(SendFileActivity.this,"File NOT succesfully uploaded",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SendFileActivity.this,"Your file was not successfully uploaded",Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SendFileActivity.this,"File NOT succesfully uploaded",Toast.LENGTH_SHORT).show();
+                Toast.makeText(SendFileActivity.this,"Your file was not successfully uploaded",Toast.LENGTH_SHORT).show();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                int currentProgress=(int)(100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                int currentProgress = (int)(100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                 progressDialog.setProgress(currentProgress);
             }
-        }); //////////////
+        });
     }
 
-    private void selectPdf(){
-        Intent intent = new Intent();
-        intent.setType("application/pdf");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 86);
-    }
-    private void selectPic(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 86);
+    private void selectType(){
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        String[] mimetypes = {"audio/*", "image/*", "video/*", "application/pdf"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+        startActivityForResult(intent, FILE_REQUEST_CODE);
     }
 
-
-    //////
     // During onClick event, the camera application will open up allowing users to record video
     public void recordVideo() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -388,11 +364,10 @@ public class SendFileActivity extends AppCompatActivity {
             }
         }
 
-        if(requestCode==86 && resultCode==RESULT_OK && data!=null){
-            pdfUri=data.getData();
-            notification.setText("A file is selected: "+ data.getData().getLastPathSegment());
-        }
-        else{
+        if(requestCode == FILE_REQUEST_CODE && resultCode==RESULT_OK && data != null){
+            fileUri = data.getData();
+            sendFileNotification.setText("A file is selected: "+ data.getData().getLastPathSegment());
+        } else {
             Toast.makeText(SendFileActivity.this,"Please select a file",Toast.LENGTH_SHORT).show();
         }
     }
@@ -426,6 +401,22 @@ public class SendFileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @OnClick(R.id.sendFileUploadBtn)
+    public void sendFileClicked() {
+        if(fileUri != null)
+            uploadFile(fileUri);
+        else
+            Toast.makeText(SendFileActivity.this,"Select a File", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.selectFileBtn)
+    public void selectFileClicked() {
+        if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            selectType();
+        else
+            ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE }, 9);
     }
 
     // Gets the path from the URI so the video captured can be uploaded to Firebase Storage
@@ -549,12 +540,12 @@ public class SendFileActivity extends AppCompatActivity {
                 }
                 break;
         }
-        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            selectPdf();
-            selectPic();
-        }
+
+        // Add this into the switch statement
+        if(requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            selectType();
         else
-            Toast.makeText(SendFileActivity.this,"Please provide permission...",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SendFileActivity.this,"Please provide permission...", Toast.LENGTH_SHORT).show();
     }
 
     @Override
