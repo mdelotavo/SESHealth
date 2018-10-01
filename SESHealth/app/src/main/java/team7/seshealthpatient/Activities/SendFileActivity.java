@@ -78,6 +78,7 @@ public class SendFileActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 5;
     private static final int HEARTBEAT_REQUEST_CODE = 6;
     private static final int FILE_REQUEST_CODE = 86;
+    private static final int SELECT_FILE_REQUEST_CODE=9;
     private static final int RECORD_VIDEO_REQUEST_PERMISSIONS = 10;
     private static final int HEART_BEAT_REQUEST_PERMISSIONS = 11;
     private static final int LOCATION_REQUEST_PERMISSIONS = 12;
@@ -417,7 +418,7 @@ public class SendFileActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             selectType();
         } else {
-            ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+            ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FILE_REQUEST_CODE);
         }
     }
 
@@ -550,7 +551,7 @@ public class SendFileActivity extends AppCompatActivity {
         }
 
         // Add this into the switch statement
-        if(requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        if(requestCode == SELECT_FILE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             selectType();
         else
             Toast.makeText(SendFileActivity.this,"Please provide permission...", Toast.LENGTH_SHORT).show();
