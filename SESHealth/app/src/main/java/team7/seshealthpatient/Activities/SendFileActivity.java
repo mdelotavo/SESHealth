@@ -53,6 +53,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -94,7 +95,8 @@ public class SendFileActivity extends AppCompatActivity {
     private LocationListener locationListener;
     private Location mLocation = null;
 
-    private Uri videoUri = null;
+    private Uri videoDownloadUri = null;
+    private Uri fileDownloadUri = null;
     private Uri fileUri = null;
     private int heartBeatAvg = 0;
 
@@ -156,54 +158,6 @@ public class SendFileActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
     }
 
-    private void uploadFile(Uri fileUri){
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setTitle("Uploading file...");
-        progressDialog.setProgress(0);
-        progressDialog.show();
-        StorageReference storageReference = storage.getReference();
-        final String uriUUID =  UUID.randomUUID().toString();
-
-        storageReference.child("Users/" + userId + "/Uploads/" + uriUUID).putFile(fileUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-                        DatabaseReference reference=database.getReference();
-                        reference.child(uriUUID).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful())
-                                    Toast.makeText(SendFileActivity.this,"Your file has successfully uploaded",Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(SendFileActivity.this,"Your file was not successfully uploaded",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SendFileActivity.this,"Your file was not successfully uploaded",Toast.LENGTH_SHORT).show();
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                int currentProgress = (int)(100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                progressDialog.setProgress(currentProgress);
-            }
-        });
-    }
-
-    private void selectType(){
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        String[] mimetypes = {"audio/*", "image/*", "video/*", "application/pdf"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        startActivityForResult(intent, FILE_REQUEST_CODE);
-    }
 
     // During onClick event, the camera application will open up allowing users to record video
     public void recordVideo() {
@@ -332,10 +286,10 @@ public class SendFileActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             progressDialog.setMessage("Uploading video, please wait...");
             progressDialog.show();
-            Uri videoUri = data.getData();
+            videoDownloadUri = data.getData();
             Log.d(TAG, "onActivityResult: done taking a video");
 
-            String uri = getRealPathFromURI(videoUri);
+            String uri = getRealPathFromURI(videoDownloadUri);
             InputStream stream = null;
             try {
                 stream = new FileInputStream(new File(uri));
@@ -352,7 +306,7 @@ public class SendFileActivity extends AppCompatActivity {
 
             final StorageReference ref = storageRef.child("Users/" + userId + "/videos/" + uriString);
             UploadTask uploadTask = ref.putStream(stream);
-            uploadToFirebase(ref, uploadTask);
+            uploadToFirebase(ref, uploadTask, "video");
         } else if (requestCode == HEARTBEAT_REQUEST_CODE) {
             Log.d(TAG, "Back from heartbeat");
             if (resultCode == RESULT_OK) {
@@ -372,7 +326,7 @@ public class SendFileActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadToFirebase(final StorageReference ref, UploadTask uploadTask) {
+    private void uploadToFirebase(final StorageReference ref, UploadTask uploadTask, final String type) {
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -391,9 +345,14 @@ public class SendFileActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    videoUri = downloadUri;
+                    if(type.equals("video")) {
+                        videoDownloadUri = downloadUri;
+                        packetCameraCheck.setChecked(true);
+                    } else if(type.equals("file")) {
+
+                    }
                     progressDialog.dismiss();
-                    packetCameraCheck.setChecked(true);
+
                 } else {
                     Log.d(TAG, "An error occurred when uploading the video: " + task.getException());
                     progressDialog.dismiss();
@@ -401,6 +360,55 @@ public class SendFileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void uploadFile(Uri fileUri){
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Uploading file...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+        StorageReference storageReference = storage.getReference();
+        String uri =  fileUri.getPath();
+        String[] uriPath = uri.split("/[a-zA-z0-9]");
+        String uriString = uriPath[uriPath.length - 1];
+
+        storageReference.child("Users/" + userId + "/Uploads/" + uriString).putFile(fileUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                fileDownloadUri = uri;
+                                Log.d(TAG, "URL IS: " + uri);
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    Toast.makeText(SendFileActivity.this,"Your file was not successfully uploaded",Toast.LENGTH_SHORT).show();
+                }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        int currentProgress = (int)(100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        progressDialog.setProgress(currentProgress);
+                    }
+                });
+    }
+
+    private void selectType(){
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        String[] mimetypes = {"audio/*", "image/*", "video/*", "application/pdf"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+        startActivityForResult(intent, FILE_REQUEST_CODE);
     }
 
     @OnClick(R.id.sendFileUploadBtn)
@@ -467,15 +475,21 @@ public class SendFileActivity extends AppCompatActivity {
 
         userProfile.put("message", message);
 
-        // Sets an empty string if videoURI has not been set
+        // Sets an empty string if videoDownloadUri has not been set
         if (packetCameraCheck.isChecked())
             try {
-                userProfile.put("videoURI", videoUri.toString());
+                userProfile.put("videoDownloadUri", videoDownloadUri.toString());
             } catch (Exception e) {
-                userProfile.put("videoURI", "");
+                userProfile.put("videoDownloadUri", "");
             }
         else
-            userProfile.put("videoURI", "");
+            userProfile.put("videoDownloadUri", "");
+
+        if(fileDownloadUri != null)
+            userProfile.put("fileDownloadUri", fileDownloadUri.toString());
+        else
+            userProfile.put("fileDownloadUri", "");
+
 
         // Creates a database reference with a unique ID and provides it with the data packet
         DatabaseReference ref = reference.child("Packets").push();
