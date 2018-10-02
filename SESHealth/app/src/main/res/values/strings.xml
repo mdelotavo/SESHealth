@@ -15,6 +15,7 @@
     <string name="record_video">Record Video</string>
     <string name="send_local_file">Send Local File</string>
     <string name="facilities_map">Facilities Map</string>
+    <string name="patient_list">Patient List</string>
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
@@ -23,7 +24,7 @@
     <string name="passwordCheck_toast">Please fill in your password</string>
     <string name="passwordCheckLength_toast">Password must be 6 or more characters</string>
     <string name="create_account_txt">Creating account</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Log Out</string>
     <string name="email_authentication_message_success">A verification email has been sent to your account. Please click on the link sent to verify your account</string>
     <string name="email_authentication_message_failure">Failed to create account</string>
     <string name="email_success">Email sent, please check your inbox</string>
@@ -46,6 +47,33 @@
     <string name="settings">Settings</string>
 
     <string name="chat">Chat</string>
+    <string name="next_setup"><![CDATA[Next >]]></string>
+    <string name="back_setup"><![CDATA[< Back]]></string>
+    <string name="doctor_setup">Doctor Setup</string>
+    <string name="welcome_setup">Welcome to SESHealth</string>
+    <string name="doctor_selection_setup">I Am A Doctor</string>
+    <string name="patient_selection_setup">I Am A Patient</string>
+    <string name="patient_setup_title">Patient Setup</string>
+    <string name="patient_setup_first">Please complete the required fields below to continue setting up your profile</string>
+    <string name="name_et_hint">Full Name</string>
+    <string name="number_et_hint">Mobile No.</string>
+    <string name="dob_et_hint">Date of Birth</string>
+    <string name="height_et_hint">Height (cm)</string>
+    <string name="weight_et_hint">Weight (kg)</string>
+    <string name="gender_rg_title">Gender</string>
+    <string name="male_rb">Male</string>
+    <string name="female_rb">Female</string>
+    <string name="patient_setup_second">The fields below are optional and can be left blank. Please separate each allergy or medication with a comma (,) for multiple values</string>
+    <string name="finish_setup">Finish</string>
+    <string name="setup_doctor_desc">Please complete the fields below to set up your doctor profile.</string>
+    <string name="allergies_hint">Allergies</string>
+    <string name="medication_hint">Current Medication</string>
+    <string name="name_hint">Full Name</string>
+    <string name="occupation_hint">Current Occupation</string>
+    <string name="experience_hint">Past Experience (optional)</string>
+    <string name="clinic_location">Your Clinic\'s Address</string>
+    <string name="profile">Profile</string>
+    <string name="connect">Connect</string>
 
     <string-array name="genders">
         <item>Male</item>

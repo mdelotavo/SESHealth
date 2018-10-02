@@ -16,6 +16,7 @@
 
     <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.hardware.camera2.full" android:required="true" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -69,6 +70,10 @@
                 android:value=".Activities.LoginActivity" />
         </activity>
         <activity android:name=".HeartBeat.HeartRateMonitor" />
+        <activity android:name=".Activities.PatientPacketsActivity" />
+        <activity android:name=".Activities.PacketInfoActivity" />
+        <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.ChatActivity" />
     </application>
 
 </manifest>

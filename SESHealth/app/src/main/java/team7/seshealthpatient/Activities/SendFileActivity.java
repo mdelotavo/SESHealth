@@ -3,7 +3,6 @@ package team7.seshealthpatient.Activities;
 
 import android.Manifest;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -34,6 +33,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -56,6 +57,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,11 +66,8 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.HeartBeat.HeartRateMonitor;
 import team7.seshealthpatient.R;
-
-import static org.apache.commons.lang3.time.DateUtils.round;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,9 +91,8 @@ public class SendFileActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private String[] userValues;
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private Location mLocation = null;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLastKnownLocation = null;
 
     private Uri videoDownloadUri = null;
     private Uri fileDownloadUri = null;
@@ -142,6 +140,8 @@ public class SendFileActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
         // Note the use of getActivity() to reference the Activity holding this fragment
 
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(SendFileActivity.this);
+
         toolbar = findViewById(R.id.sendFileToolbar);
         toolbar.setTitle("Send File");
 
@@ -170,7 +170,7 @@ public class SendFileActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "onClick: starting camera");
             Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8);
+            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 8); // Sets video duration to 8 seconds max
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);// change the quality of the video
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         }
@@ -213,10 +213,18 @@ public class SendFileActivity extends AppCompatActivity {
     public void coordinatesClicked() {
         boolean checked = packetGPSCheck.isChecked();
         packetGPSCheck.setChecked(false);
-        if (checked)
-            getCurrentLocation();
-        else
-            locationManager.removeUpdates(locationListener);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+            }, LOCATION_REQUEST_PERMISSIONS);
+            return;
+        }
+        if (checked) {
+            getDeviceLocation();
+        } else {
+            mLastKnownLocation = null;
+            packetGPSTV.setText("Not Set");
+        }
     }
 
     @OnClick(R.id.packetHeartBeatCheck)
@@ -235,50 +243,32 @@ public class SendFileActivity extends AppCompatActivity {
             recordVideo();
     }
 
-    private void getCurrentLocation() {
-        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        final boolean locationCaptured = false;
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.d(TAG, "Latitude: " + location.getLatitude() + "\tLongitude: " + location.getLongitude());
-                mLocation = location;
-                String latitude = location.getLatitude() + "";
-                String longitude = location.getLongitude() + "";
-                String coordinates = latitude + " " + longitude;
-                packetGPSTV.setText(coordinates);
-                packetGPSCheck.setChecked(true);
-                progressDialog.dismiss();
-            }
+    private void getDeviceLocation() {
+        try {
+            Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+            locationResult.addOnCompleteListener(SendFileActivity.this, new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if (task.isSuccessful()) {
+                        mLastKnownLocation = task.getResult();
+                        if (mLastKnownLocation == null) {
+                            Toast.makeText(getApplicationContext(), "Could not get your current location, make sure your location settings are enabled", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d(TAG, "your latitude is: " + mLastKnownLocation.getLatitude() + "\tYour longitude is: " + mLastKnownLocation.getLongitude());
+                            DecimalFormat f = new DecimalFormat("##0.000");
+                            String latitude = f.format(mLastKnownLocation.getLatitude());
+                            String longitude = f.format(mLastKnownLocation.getLongitude());
+                            String coordinates = latitude + " " + longitude;
+                            packetGPSTV.setText(coordinates);
+                            packetGPSCheck.setChecked(true);
+                        }
+                    }
+                }
+            });
 
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-                Log.d(TAG, "Provider enabled");
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-                Toast.makeText(getApplicationContext(), "Please turn on your location", Toast.LENGTH_SHORT).show();
-                packetGPSCheck.setChecked(false);
-                progressDialog.dismiss();
-            }
-
-        };
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
-            }, LOCATION_REQUEST_PERMISSIONS);
-            return;
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
         }
-        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
-        progressDialog.setMessage("Getting current location...");
-        progressDialog.show();
     }
 
     @Override
@@ -457,11 +447,8 @@ public class SendFileActivity extends AppCompatActivity {
         userProfile.put("weight", weight);
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
+        userProfile.put("coordinates", setCoordinates());
 
-        if (packetGPSCheck.isChecked())
-            userProfile.put("coordinates", setCoordinates(true));
-        else
-            userProfile.put("coordinates", setCoordinates(false));
 
         if (packetHeartBeatCheck.isChecked())
             userProfile.put("heartBeat", heartBeatAvg);
@@ -494,16 +481,11 @@ public class SendFileActivity extends AppCompatActivity {
         finish();
     }
 
-    private Map setCoordinates(boolean isChecked) {
+    private Map setCoordinates() {
         Map coordinates = new HashMap();
-        if (isChecked) {
-            try {
-                coordinates.put("latitude", mLocation.getLatitude());
-                coordinates.put("longitude", mLocation.getLongitude());
-            } catch (Exception e) {
-                coordinates.put("latitude", 0);
-                coordinates.put("longitude", 0);
-            }
+        if (mLastKnownLocation != null) {
+            coordinates.put("latitude", mLastKnownLocation.getLatitude());
+            coordinates.put("longitude", mLastKnownLocation.getLongitude());
         } else {
             coordinates.put("latitude", 0);
             coordinates.put("longitude", 0);
@@ -542,7 +524,7 @@ public class SendFileActivity extends AppCompatActivity {
                 break;
             case LOCATION_REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getCurrentLocation();
+                    getDeviceLocation();
                     return;
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();

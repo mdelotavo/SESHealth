@@ -20,8 +20,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="#eee"
-            android:theme="@style/toolbarStyle"/>
+            android:theme="@style/toolbarStyle"
+            app:titleTextColor="#eee" />
 
         <FrameLayout
             android:id="@+id/fragment_container"
@@ -38,7 +38,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/drawer_view" />
+        app:menu="@menu/drawer_view_patient" />
 
 
 </android.support.v4.widget.DrawerLayout>
