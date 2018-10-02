@@ -77,7 +77,7 @@ public class SendFileActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 5;
     private static final int HEARTBEAT_REQUEST_CODE = 6;
     private static final int FILE_REQUEST_CODE = 86;
-    private static final int SELECT_FILE_REQUEST_CODE=9;
+    private static final int SELECT_FILE_REQUEST_CODE = 9;
     private static final int RECORD_VIDEO_REQUEST_PERMISSIONS = 10;
     private static final int HEART_BEAT_REQUEST_PERMISSIONS = 11;
     private static final int LOCATION_REQUEST_PERMISSIONS = 12;
@@ -110,6 +110,9 @@ public class SendFileActivity extends AppCompatActivity {
     @BindView(R.id.packetGPSTV)
     TextView packetGPSTV;
 
+    @BindView(R.id.packetFileTV)
+    TextView packetFileTV;
+
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
 
@@ -123,8 +126,8 @@ public class SendFileActivity extends AppCompatActivity {
     @BindView(R.id.packetCameraCheck)
     CheckBox packetCameraCheck;
 
-    @BindView(R.id.sendFileNotification)
-    TextView sendFileNotification;
+    @BindView(R.id.packetFileCheck)
+    CheckBox packetFileCheck;
 
 
     @Override
@@ -243,6 +246,18 @@ public class SendFileActivity extends AppCompatActivity {
             recordVideo();
     }
 
+    @OnClick(R.id.packetFileCheck)
+    public void selectFileClicked() {
+        boolean checked = packetFileCheck.isChecked();
+        packetFileCheck.setChecked(false);
+        if (checked)
+            if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                selectType();
+            } else {
+                ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FILE_REQUEST_CODE);
+            }
+    }
+
     private void getDeviceLocation() {
         try {
             Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
@@ -309,12 +324,13 @@ public class SendFileActivity extends AppCompatActivity {
             }
         }
 
-        if(requestCode == FILE_REQUEST_CODE && resultCode==RESULT_OK && data != null){
+        if (requestCode == FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             fileUri = data.getData();
-            sendFileNotification.setText("A file is selected: "+ data.getData().getLastPathSegment());
+            packetFileTV.setText(data.getData().getLastPathSegment());
             uploadFile(fileUri);
+            packetFileCheck.setChecked(true);
         } else {
-            Toast.makeText(SendFileActivity.this,"Please select a file",Toast.LENGTH_SHORT).show();
+            Toast.makeText(SendFileActivity.this, "Please select a file", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -337,10 +353,10 @@ public class SendFileActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    if(type.equals("video")) {
+                    if (type.equals("video")) {
                         videoDownloadUri = downloadUri;
                         packetCameraCheck.setChecked(true);
-                    } else if(type.equals("file")) {
+                    } else if (type.equals("file")) {
 
                     }
                     progressDialog.dismiss();
@@ -354,7 +370,7 @@ public class SendFileActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadFile(Uri fileUri){
+    private void uploadFile(Uri fileUri) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -362,7 +378,7 @@ public class SendFileActivity extends AppCompatActivity {
         progressDialog.setProgress(0);
         progressDialog.show();
         StorageReference storageReference = storage.getReference();
-        String uri =  fileUri.getPath();
+        String uri = fileUri.getPath();
         String[] uriPath = uri.split("/[a-zA-z0-9]");
         String uriString = uriPath[uriPath.length - 1];
 
@@ -380,36 +396,27 @@ public class SendFileActivity extends AppCompatActivity {
                         });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressDialog.dismiss();
-                    Toast.makeText(SendFileActivity.this,"Your file was not successfully uploaded",Toast.LENGTH_SHORT).show();
-                }
-                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        int currentProgress = (int)(100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                        progressDialog.setProgress(currentProgress);
-                    }
-                });
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(SendFileActivity.this, "Your file was not successfully uploaded", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currentProgress = (int) (100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currentProgress);
+            }
+        });
     }
 
-    private void selectType(){
+    private void selectType() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
         String[] mimetypes = {"audio/*", "image/*", "video/*", "application/pdf"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         startActivityForResult(intent, FILE_REQUEST_CODE);
-    }
-
-    @OnClick(R.id.selectFileBtn)
-    public void selectFileClicked() {
-        if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            selectType();
-        } else {
-            ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FILE_REQUEST_CODE);
-        }
     }
 
     // Gets the path from the URI so the video captured can be uploaded to Firebase Storage
@@ -467,7 +474,7 @@ public class SendFileActivity extends AppCompatActivity {
         else
             userProfile.put("videoDownloadUri", "");
 
-        if(fileDownloadUri != null)
+        if (fileDownloadUri != null)
             userProfile.put("fileDownloadUri", fileDownloadUri.toString());
         else
             userProfile.put("fileDownloadUri", "");
@@ -533,10 +540,10 @@ public class SendFileActivity extends AppCompatActivity {
         }
 
         // Add this into the switch statement
-        if(requestCode == SELECT_FILE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        if (requestCode == SELECT_FILE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             selectType();
         else
-            Toast.makeText(SendFileActivity.this,"Please provide permission...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SendFileActivity.this, "Please provide permission...", Toast.LENGTH_SHORT).show();
     }
 
     @Override
