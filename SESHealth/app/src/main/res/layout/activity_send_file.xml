@@ -28,11 +28,12 @@
             android:textSize="20sp" />
 
         <LinearLayout
+            android:id="@+id/sendFileLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sendFileDesc"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
+            android:layout_below="@id/sendFileDesc"
             android:orientation="vertical"
             android:paddingBottom="20dp">
 
@@ -121,6 +122,25 @@
                 android:text="Submit" />
 
         </LinearLayout>
+
+
+        <Button
+            android:id="@+id/selectFileBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sendFileLL"
+            android:layout_centerHorizontal="true"
+            android:text="Choose a file" />
+
+        <TextView
+            android:id="@+id/sendFileNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_marginStart="120dp"
+            android:layout_below="@+id/selectFileBtn"
+            android:layout_centerHorizontal="true"
+            android:text="No file is selected" />
 
     </RelativeLayout>
 
