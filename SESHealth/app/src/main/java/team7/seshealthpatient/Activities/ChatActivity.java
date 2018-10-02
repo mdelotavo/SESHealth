@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity {
                             .getReference()
                             .child("Users")
                             .child(uid)
-                            .child("chat")
+                            .child("Chat")
                             .push()
                             .setValue(new ChatMessage(input.getText().toString(), name));
                     toastMessage("Sent");
@@ -65,7 +65,7 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseListAdapter<ChatMessage> adapter = new FirebaseListAdapter<ChatMessage>(
                 this,
                 ChatMessage.class, android.R.layout.simple_list_item_2,
-                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("chat")) {
+                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Chat")) {
             @Override
             protected void populateView(View v, ChatMessage model, int position) {
                 TextView messageText = v.findViewById(android.R.id.text1);
