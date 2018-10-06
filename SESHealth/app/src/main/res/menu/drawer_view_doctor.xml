@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_patient_info"
+            android:id="@+id/nav_patient_list"
             android:icon="@drawable/ic_profile_icon"
-            android:title="@string/patient_information" />
+            android:title="@string/patient_list" />
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_map_outline"
@@ -17,10 +17,6 @@
             android:id="@+id/nav_connect"
             android:icon="@drawable/ic_chat_outline"
             android:title="@string/connect" />
-        <item
-            android:id="@+id/nav_patient_list"
-            android:icon="@drawable/ic_profile_icon"
-            android:title="@string/patient_list" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_outline"

@@ -113,10 +113,9 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(fireBaseUser.getUid());
 
-        fragment = new PatientInformationFragment();
-
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
+        fragment = new PatientInformationFragment();
 
         // go look for the main drawer layout
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
@@ -151,10 +150,14 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "null account type", Toast.LENGTH_SHORT).show();
                 } else {
                     navigationView.getMenu().clear();
-                    if (dataSnapshot.getValue().toString().equals("patient"))
+                    if (dataSnapshot.getValue().toString().equals("patient")) {
                         navigationView.inflateMenu(R.menu.drawer_view_patient);
-                    else if (dataSnapshot.getValue().toString().equals("doctor"))
+                    } else if (dataSnapshot.getValue().toString().equals("doctor")) {
                         navigationView.inflateMenu(R.menu.drawer_view_doctor);
+                        fragment = new PatientListFragment();
+                        currentState = MenuStates.PATIENT_LIST;
+                        ChangeFragment(fragment);
+                    }
                 }
             }
             @Override
@@ -210,12 +213,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.SETTINGS) {
                                     fragment = new SettingsFragment();
                                     currentState = MenuStates.SETTINGS;
-                                }
-                                break;
-                            case R.id.logout:
-                                if (currentState != MenuStates.LOGOUT) {
-                                    mAuth.signOut();
-                                    finish();
                                 }
                                 break;
                         }
