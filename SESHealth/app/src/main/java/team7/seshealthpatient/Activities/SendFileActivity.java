@@ -19,10 +19,15 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,12 +37,15 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -45,11 +53,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,6 +76,8 @@ public class SendFileActivity extends AppCompatActivity {
     private static String TAG = "SendFileActivity";
     private static final int CAMERA_REQUEST_CODE = 5;
     private static final int HEARTBEAT_REQUEST_CODE = 6;
+    private static final int FILE_REQUEST_CODE = 86;
+    private static final int SELECT_FILE_REQUEST_CODE = 9;
     private static final int RECORD_VIDEO_REQUEST_PERMISSIONS = 10;
     private static final int HEART_BEAT_REQUEST_PERMISSIONS = 11;
     private static final int LOCATION_REQUEST_PERMISSIONS = 12;
@@ -80,7 +94,9 @@ public class SendFileActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation = null;
 
-    private Uri videoUri = null;
+    private Uri videoDownloadUri = null;
+    private Uri fileDownloadUri = null;
+    private Uri fileUri = null;
     private int heartBeatAvg = 0;
 
     private static final String[] CAMERA_PERMISSION = {
@@ -94,6 +110,9 @@ public class SendFileActivity extends AppCompatActivity {
     @BindView(R.id.packetGPSTV)
     TextView packetGPSTV;
 
+    @BindView(R.id.packetFileTV)
+    TextView packetFileTV;
+
     @BindView(R.id.packetMessageET)
     EditText packetMessageET;
 
@@ -106,6 +125,10 @@ public class SendFileActivity extends AppCompatActivity {
 
     @BindView(R.id.packetCameraCheck)
     CheckBox packetCameraCheck;
+
+    @BindView(R.id.packetFileCheck)
+    CheckBox packetFileCheck;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,11 +153,15 @@ public class SendFileActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         progressDialog = new ProgressDialog(this);
+        ///////////////////////
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(mUser.getUid());
+        storage = FirebaseStorage.getInstance();
+        database = FirebaseDatabase.getInstance();
     }
+
 
     // During onClick event, the camera application will open up allowing users to record video
     public void recordVideo() {
@@ -219,6 +246,18 @@ public class SendFileActivity extends AppCompatActivity {
             recordVideo();
     }
 
+    @OnClick(R.id.packetFileCheck)
+    public void selectFileClicked() {
+        boolean checked = packetFileCheck.isChecked();
+        packetFileCheck.setChecked(false);
+        if (checked)
+            if (ContextCompat.checkSelfPermission(SendFileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                selectType();
+            } else {
+                ActivityCompat.requestPermissions(SendFileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FILE_REQUEST_CODE);
+            }
+    }
+
     private void getDeviceLocation() {
         try {
             Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
@@ -253,10 +292,10 @@ public class SendFileActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             progressDialog.setMessage("Uploading video, please wait...");
             progressDialog.show();
-            Uri videoUri = data.getData();
+            videoDownloadUri = data.getData();
             Log.d(TAG, "onActivityResult: done taking a video");
 
-            String uri = getRealPathFromURI(videoUri);
+            String uri = getRealPathFromURI(videoDownloadUri);
             InputStream stream = null;
             try {
                 stream = new FileInputStream(new File(uri));
@@ -273,7 +312,7 @@ public class SendFileActivity extends AppCompatActivity {
 
             final StorageReference ref = storageRef.child("Users/" + userId + "/videos/" + uriString);
             UploadTask uploadTask = ref.putStream(stream);
-            uploadToFirebase(ref, uploadTask);
+            uploadToFirebase(ref, uploadTask, "video");
         } else if (requestCode == HEARTBEAT_REQUEST_CODE) {
             Log.d(TAG, "Back from heartbeat");
             if (resultCode == RESULT_OK) {
@@ -284,9 +323,18 @@ public class SendFileActivity extends AppCompatActivity {
                 Log.d(TAG, "An error occurred when getting the heartbeat");
             }
         }
+
+        if (requestCode == FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            fileUri = data.getData();
+            packetFileTV.setText(data.getData().getLastPathSegment());
+            uploadFile(fileUri);
+            packetFileCheck.setChecked(true);
+        } else {
+            Toast.makeText(SendFileActivity.this, "Please select a file", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void uploadToFirebase(final StorageReference ref, UploadTask uploadTask) {
+    private void uploadToFirebase(final StorageReference ref, UploadTask uploadTask, final String type) {
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -305,9 +353,14 @@ public class SendFileActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    videoUri = downloadUri;
+                    if (type.equals("video")) {
+                        videoDownloadUri = downloadUri;
+                        packetCameraCheck.setChecked(true);
+                    } else if (type.equals("file")) {
+
+                    }
                     progressDialog.dismiss();
-                    packetCameraCheck.setChecked(true);
+
                 } else {
                     Log.d(TAG, "An error occurred when uploading the video: " + task.getException());
                     progressDialog.dismiss();
@@ -315,6 +368,55 @@ public class SendFileActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void uploadFile(Uri fileUri) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Uploading file...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+        StorageReference storageReference = storage.getReference();
+        String uri = fileUri.getPath();
+        String[] uriPath = uri.split("/[a-zA-z0-9]");
+        String uriString = uriPath[uriPath.length - 1];
+
+        storageReference.child("Users/" + userId + "/Uploads/" + uriString).putFile(fileUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                fileDownloadUri = uri;
+                                Log.d(TAG, "URL IS: " + uri);
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(SendFileActivity.this, "Your file was not successfully uploaded", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currentProgress = (int) (100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currentProgress);
+            }
+        });
+    }
+
+    private void selectType() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        String[] mimetypes = {"audio/*", "image/*", "video/*", "application/pdf"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+        startActivityForResult(intent, FILE_REQUEST_CODE);
     }
 
     // Gets the path from the URI so the video captured can be uploaded to Firebase Storage
@@ -362,15 +464,21 @@ public class SendFileActivity extends AppCompatActivity {
 
         userProfile.put("message", message);
 
-        // Sets an empty string if videoURI has not been set
+        // Sets an empty string if videoDownloadUri has not been set
         if (packetCameraCheck.isChecked())
             try {
-                userProfile.put("videoURI", videoUri.toString());
+                userProfile.put("videoDownloadUri", videoDownloadUri.toString());
             } catch (Exception e) {
-                userProfile.put("videoURI", "");
+                userProfile.put("videoDownloadUri", "");
             }
         else
-            userProfile.put("videoURI", "");
+            userProfile.put("videoDownloadUri", "");
+
+        if (fileDownloadUri != null)
+            userProfile.put("fileDownloadUri", fileDownloadUri.toString());
+        else
+            userProfile.put("fileDownloadUri", "");
+
 
         // Creates a database reference with a unique ID and provides it with the data packet
         DatabaseReference ref = reference.child("Packets").push();
@@ -430,6 +538,12 @@ public class SendFileActivity extends AppCompatActivity {
                 }
                 break;
         }
+
+        // Add this into the switch statement
+        if (requestCode == SELECT_FILE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            selectType();
+        else
+            Toast.makeText(SendFileActivity.this, "Please provide permission...", Toast.LENGTH_SHORT).show();
     }
 
     @Override

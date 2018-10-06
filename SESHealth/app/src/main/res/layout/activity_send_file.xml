@@ -21,18 +21,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/sendFileToolbar"
-            android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             android:text="Your personal profile information, along with the chosen options below, will be sent to your currently selected doctor"
             android:textSize="20sp" />
 
         <LinearLayout
+            android:id="@+id/sendFileLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/sendFileDesc"
-            android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:orientation="vertical"
             android:paddingBottom="20dp">
 
@@ -47,16 +48,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:textSize="17sp"
-                android:text="Include: " />
+                android:text="Include: "
+                android:textSize="17sp" />
 
             <CheckBox
                 android:id="@+id/packetCameraCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="17sp"
                 android:layout_marginTop="5dp"
-                android:text="Video" />
+                android:text="Video"
+                android:textSize="17sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,8 +68,8 @@
                     android:id="@+id/packetHeartBeatCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:text="Heart Rate" />
+                    android:text="Heart Rate"
+                    android:textSize="17sp" />
 
                 <View
                     android:layout_width="0dp"
@@ -79,46 +80,72 @@
                     android:id="@+id/packetHeartBeatTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:text="Not Set" />
+                    android:text=""
+                    android:textSize="17sp" />
 
             </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/packetGPSCheck"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:text="Current location" />
+                android:orientation="horizontal">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                <CheckBox
+                    android:id="@+id/packetGPSCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current location"
+                    android:textSize="17sp" />
 
-            <TextView
-                android:id="@+id/packetGPSTV"
-                android:layout_width="wrap_content"
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/packetGPSTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="17sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:text="Not Set" />
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <CheckBox
+                    android:id="@+id/packetFileCheck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Uploaded file"
+                    android:textSize="17sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/packetFileTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="17sp" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/packetSubmitBtn"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/gradient_login_btn"
-                android:textColor="#eee"
-                android:text="Submit" />
+                android:text="Submit"
+                android:textColor="#eee" />
 
         </LinearLayout>
 

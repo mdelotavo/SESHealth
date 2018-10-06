@@ -4,39 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.CreateAccountActivity"
-    android:background="@drawable/gradient_login_bg">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/createAccount_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:titleTextColor="#eee"
-        android:theme="@style/toolbarStyle"/>
+    android:background="@drawable/gradient_login_bg"
+    tools:context=".Activities.CreateAccountActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
+
+            <ImageView
+                android:id="@+id/logoCreate"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:text="Create an Account"
                 android:textColor="#444"
-                android:textSize="33sp"/>
+                android:textSize="33sp" />
 
             <TextView
                 android:id="@+id/createAccDesc"
@@ -44,7 +46,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20sp"
                 android:text="Enter an E-mail and password into the fields below to use with our service"
-                android:textSize="18sp"/>
+                android:textAlignment="center"
+                android:textSize="20sp" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/createEmailInputLayout"
@@ -81,12 +84,12 @@
                 android:id="@+id/createAccBtn"
                 android:layout_width="275dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/gradient_login_btn"
                 android:text="Create Account"
-                android:textSize="20sp"
                 android:textColor="#eee"
-                android:background="@drawable/gradient_login_btn"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
     </ScrollView>

@@ -404,7 +404,6 @@ public class SetupActivity extends AppCompatActivity {
 
     public void logOut() {
         mAuth.signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }
 
