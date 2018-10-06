@@ -14,10 +14,6 @@
             android:icon="@drawable/ic_chat_outline"
             android:title="@string/chat" />
         <item
-            android:id="@+id/nav_connect"
-            android:icon="@drawable/ic_chat_outline"
-            android:title="@string/connect" />
-        <item
             android:id="@+id/nav_patient_list"
             android:icon="@drawable/ic_profile_icon"
             android:title="@string/patient_list" />
