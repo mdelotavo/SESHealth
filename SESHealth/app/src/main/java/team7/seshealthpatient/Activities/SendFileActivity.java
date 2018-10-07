@@ -517,7 +517,7 @@ public class SendFileActivity extends AppCompatActivity {
         switch (requestCode) {
             case RECORD_VIDEO_REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    cameraOnClick();
+                    recordVideo();
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
                 }
@@ -537,13 +537,13 @@ public class SendFileActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case SELECT_FILE_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    selectType();
+                else
+                    Toast.makeText(SendFileActivity.this, "Please provide permissions for this application to access your files", Toast.LENGTH_SHORT).show();
         }
 
-        // Add this into the switch statement
-        if (requestCode == SELECT_FILE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            selectType();
-        else
-            Toast.makeText(SendFileActivity.this, "Please provide permission...", Toast.LENGTH_SHORT).show();
     }
 
     @Override

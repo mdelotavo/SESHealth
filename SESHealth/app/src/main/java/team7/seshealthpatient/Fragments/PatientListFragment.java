@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +38,7 @@ import team7.seshealthpatient.Activities.ProfileActivity;
 import team7.seshealthpatient.R;
 
 public class PatientListFragment extends Fragment {
-
+    private final String TAG = "PatientListFragment";
     FirebaseUser mUser;
     private FirebaseDatabase database;
     private DatabaseReference reference;
@@ -114,12 +116,12 @@ public class PatientListFragment extends Fragment {
                             String patient = (child.child("name").getValue() != null)
                                     ? child.child("name").getValue().toString() : null;
                             if (patient != null) {
-                                if(child.child("approved").getValue().toString().equals("false")) {
+                                if(child.child("approved").getValue().toString().equals("pending")) {
                                     pendingPatientList.add(patient);
                                     pendingPatientUidList.add(key);
                                     if(pendingPatientsTV.getVisibility() != View.INVISIBLE)
                                         pendingPatientsTV.setVisibility(View.INVISIBLE);
-                                } else {
+                                } else if (child.child("approved").getValue().toString().equals("accepted")) {
                                     patientList.add(patient);
                                     patientUidList.add(key);
                                     if(currentPatientsTV.getVisibility() != View.INVISIBLE)
@@ -141,7 +143,23 @@ public class PatientListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String patientUid = pendingPatientUidList.get(position);
-                reference.child(mUser.getUid()).child("Patients").child(patientUid).child("approved").setValue(true);
+                reference.child(mUser.getUid()).child("Patients").child(patientUid).child("approved").setValue("accepted");
+                reference.child(patientUid).child("Doctor").child("approved").setValue("accepted");
+            }
+        });
+
+        listOfPendingPatients.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                String patientUid = pendingPatientUidList.get(position);
+//                Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
+//                patientPackets.putExtra("uid", patientUid);
+//                startActivity(patientPackets);
+//                return true;
+                String patientUid = pendingPatientUidList.get(position);
+                reference.child(mUser.getUid()).child("Patients").child(patientUid).child("approved").setValue("declined");
+                reference.child(patientUid).child("Doctor").child("approved").setValue("declined");
+                return true;
             }
         });
 

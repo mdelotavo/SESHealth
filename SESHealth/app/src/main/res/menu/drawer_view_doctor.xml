@@ -14,16 +14,8 @@
             android:icon="@drawable/ic_chat_outline"
             android:title="@string/chat" />
         <item
-            android:id="@+id/nav_connect"
-            android:icon="@drawable/ic_chat_outline"
-            android:title="@string/connect" />
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_outline"
             android:title="@string/settings" />
-        <item
-            android:id="@+id/logout"
-            android:icon="@drawable/ic_logout_outline"
-            android:title="@string/logout" />
     </group>
 </menu>

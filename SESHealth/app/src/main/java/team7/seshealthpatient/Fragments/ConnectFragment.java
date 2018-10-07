@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.telecom.ConnectionService;
 import android.util.Log;
 
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import team7.seshealthpatient.Activities.MainActivity;
+import team7.seshealthpatient.Activities.ProfileActivity;
 import team7.seshealthpatient.R;
 
 public class ConnectFragment extends Fragment {
@@ -44,13 +46,15 @@ public class ConnectFragment extends Fragment {
     private final static String TAG = "ConnectFragment";
     private FirebaseUser mUser;
     private FirebaseDatabase database;
-    private DatabaseReference reference;
+    private DatabaseReference usersReference;
     private String name = "";
     final Map<String, String> doctorUidList = new HashMap<>();
 
     @BindView(R.id.connectET)
     EditText connectET;
 
+    @BindView(R.id.connectStatusTV)
+    TextView connectStatusTV;
 
     public ConnectFragment() {
     }
@@ -61,7 +65,7 @@ public class ConnectFragment extends Fragment {
 
         getActivity().setTitle("Connect!");
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("Users");
+        usersReference = database.getReference("Users");
         mUser = ((MainActivity)getActivity()).getFirebaseAuth().getCurrentUser();
     }
 
@@ -71,28 +75,34 @@ public class ConnectFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_connect, container, false);
 
         ButterKnife.bind(this, v);
-
-        FirebaseDatabase.getInstance().getReference().child("Users")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        name = dataSnapshot.child(mUser.getUid()).child("Profile").child("name").getValue().toString();
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String key = child.getKey();
-                            String doctor = (child.child("Profile").child("name").getValue() != null && child.child("accountType").getValue().toString().equals("doctor"))
-                                    ? child.child("Profile").child("name").getValue().toString() : null;
-                            if (doctor != null) {
-                                Log.d(TAG, key);
-                                doctorUidList.put(key.substring(0, 5), key);
-                            }
+        listAllDoctors(); // Lists all the accounts with 'accountType' equal to "doctor"
+        usersReference.child(mUser.getUid()).child("Doctor").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("UID").getValue() != null) {
+                    try {
+                        switch (dataSnapshot.child("approved").getValue().toString()) {
+                            case "declined":
+                                connectStatusTV.setText("Declined");
+                                break;
+                            case "pending":
+                                connectStatusTV.setText("Pending");
+                                break;
+                            case "approved":
+                                connectStatusTV.setText("Approved");
+                                break;
                         }
+                    } catch(Exception e) {
+                        Toast.makeText(getActivity(), "An error occurred, please restart the application", Toast.LENGTH_SHORT).show();
                     }
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        });
 
         return v;
     }
@@ -115,12 +125,30 @@ public class ConnectFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void setPatientView() {
-        TextView occupation = new TextView(getActivity());
-    }
 
-    private void setDoctorView() {
-        TextView occupation = new TextView(getActivity());
+    private void listAllDoctors() {
+        usersReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot != null) {
+                    name = dataSnapshot.child(mUser.getUid()).child("Profile").child("name").getValue().toString();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        String key = child.getKey();
+                        String doctor = (child.child("Profile").child("name").getValue() != null && child.child("accountType").getValue().toString().equals("doctor"))
+                                ? child.child("Profile").child("name").getValue().toString() : null;
+                        if (doctor != null) {
+                            Log.d(TAG, key);
+                            doctorUidList.put(key.substring(0, 5), key);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @OnClick(R.id.connectBtn)
@@ -133,28 +161,59 @@ public class ConnectFragment extends Fragment {
             Toast.makeText(getActivity(), "Please enter a valid code", Toast.LENGTH_SHORT).show(); // Fix Toast message
             Log.d(TAG, doctorId + " is not found in " + doctorUidList.toString());
         }
-
     }
 
-    private void addNewPatient(String doctorId) {
-        final DatabaseReference ref = reference.child(doctorUidList.get(doctorId)).child("Patients").child(mUser.getUid());
+    private void addNewPatient(final String doctorId) {
+        final DatabaseReference doctorReference = usersReference.child(doctorUidList.get(doctorId)).child("Patients").child(mUser.getUid());
         Log.d(TAG, "NAME is: " + name);
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        doctorReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null) {
-                    Log.d(TAG, dataSnapshot.getValue().toString());
-                    Toast.makeText(getActivity(), "A request has already been made to your doctor", Toast.LENGTH_SHORT).show();
-                }   else {
-                    ref.child("approved").setValue(false);
-                    ref.child("name").setValue(name);
-                    Toast.makeText(getActivity(), "A request has been made to your doctor", Toast.LENGTH_SHORT).show();
+                if(dataSnapshot.getValue() == null) {
+                    createPatientDoctorConnection(doctorReference, doctorId);
+                } else {
+                    if(dataSnapshot.child("approved").getValue().toString().equals("declined")) {
+                        createPatientDoctorConnection(doctorReference, doctorId);
+                    } else {
+                        Log.d(TAG, dataSnapshot.getValue().toString());
+                        Toast.makeText(getActivity(), "A request has already been made to your doctor", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    private void createPatientDoctorConnection(DatabaseReference doctorReference, String doctorId) {
+        doctorReference.child("name").setValue(name);
+        doctorReference.child("approved").setValue("pending");
+        usersReference.child(mUser.getUid()).child("Doctor").child("UID").setValue(doctorUidList.get(doctorId));
+        usersReference.child(mUser.getUid()).child("Doctor").child("approved").setValue("pending");
+        Toast.makeText(getActivity(), "A request has been made to your doctor", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.viewDoctorProfileBtn)
+    public void viewProfileClicked() {
+        usersReference.child(mUser.getUid()).child("Doctor").child("UID").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    String UID = dataSnapshot.getValue().toString();
+                    Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
+                    patientPackets.putExtra("uid", UID);
+                    startActivity(patientPackets);
+                } else {
+                    Toast.makeText(getActivity(), "You have not connected with a doctor yet", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "An error occurred, please restart the app and try again...", Toast.LENGTH_SHORT).show();
             }
         });
     }
