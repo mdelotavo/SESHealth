@@ -100,7 +100,7 @@ public class SetupActivity extends AppCompatActivity {
     @BindView(R.id.selectSetupLL)
     LinearLayout selectSetupLL;
 
-    private static String TAG = "SetupActivity";
+    private final String TAG = "SetupActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,7 +237,8 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private boolean isValidDOB() {
-        Calendar cal = Calendar.getInstance();
+        Calendar currentCal = Calendar.getInstance();
+        Calendar dob = Calendar.getInstance();
         String date = setupDOBDateET.getText().toString().trim();
         if (date.length() == 0) {
             return false;
@@ -245,14 +246,14 @@ public class SetupActivity extends AppCompatActivity {
         int day = Integer.parseInt(date.substring(0, 2));
         int month = Integer.parseInt(date.substring(3, 5));
         int year = Integer.parseInt(date.substring(6, 10));
-        Log.d(TAG, "IsValidDOB being called: " + day + "/" + month + "/" + year);
-
-        if (year <= cal.get(Calendar.YEAR)) {
-            if (month <= cal.get(Calendar.MONTH) + 1) {
-                return (day <= cal.get(Calendar.DAY_OF_MONTH));
-            }
-        }
-        return false;
+        dob.set(Calendar.DAY_OF_MONTH, day);
+        dob.set(Calendar.MONTH, month);
+        dob.set(Calendar.YEAR, year);
+        Log.d(TAG, "IsValidDOB being called: " + dob);
+        if(dob.before(currentCal))
+            return true;
+        else
+            return false;
     }
 
     @OnClick(R.id.setupFinishDoctor)

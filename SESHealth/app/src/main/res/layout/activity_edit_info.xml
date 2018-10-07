@@ -38,7 +38,7 @@
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="40dp"
-            android:hint="A"
+            android:hint=""
             android:inputType="phone" />
 
         <EditText
@@ -47,7 +47,7 @@
             android:layout_alignEnd="@+id/editPhoneET"
             android:layout_alignStart="@+id/editPhoneET"
             android:layout_below="@+id/editPhoneET"
-            android:hint="A"
+            android:hint=""
             android:inputType="numberDecimal" />
 
         <EditText
@@ -56,7 +56,7 @@
             android:layout_alignEnd="@+id/editPhoneET"
             android:layout_alignStart="@+id/editWeightET"
             android:layout_below="@+id/editWeightET"
-            android:hint="A"
+            android:hint=""
             android:inputType="numberDecimal" />
 
         <EditText
@@ -65,7 +65,7 @@
             android:layout_alignEnd="@+id/editPhoneET"
             android:layout_alignStart="@+id/editHeightET"
             android:layout_below="@+id/editHeightET"
-            android:hint="A"
+            android:hint=""
             android:inputType="textMultiLine" />
 
         <EditText

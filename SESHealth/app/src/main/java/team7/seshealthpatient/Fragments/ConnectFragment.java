@@ -80,16 +80,20 @@ public class ConnectFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child("UID").getValue() != null) {
-                    switch (dataSnapshot.child("approved").getValue().toString()) {
-                        case "declined":
-                            connectStatusTV.setText("Declined");
-                            break;
-                        case "pending":
-                            connectStatusTV.setText("Pending");
-                            break;
-                        case "approved":
-                            connectStatusTV.setText("Approved");
-                            break;
+                    try {
+                        switch (dataSnapshot.child("approved").getValue().toString()) {
+                            case "declined":
+                                connectStatusTV.setText("Declined");
+                                break;
+                            case "pending":
+                                connectStatusTV.setText("Pending");
+                                break;
+                            case "approved":
+                                connectStatusTV.setText("Approved");
+                                break;
+                        }
+                    } catch(Exception e) {
+                        Toast.makeText(getActivity(), "An error occurred, please restart the application", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
