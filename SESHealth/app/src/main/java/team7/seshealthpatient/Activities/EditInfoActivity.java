@@ -158,11 +158,7 @@ public class EditInfoActivity extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() == null) {
-                            editText.setHint(label + "null");
-                            Toast.makeText(EditInfoActivity.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
-                        } else
-                            editText.setHint(label + dataSnapshot.getValue().toString());
+                        editText.setHint(label + dataSnapshot.getValue().toString());
                     }
 
                     @Override
@@ -197,7 +193,6 @@ public class EditInfoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
         finish();
     }
 

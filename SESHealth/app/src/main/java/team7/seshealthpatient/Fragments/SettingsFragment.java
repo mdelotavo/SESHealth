@@ -49,6 +49,12 @@ public class SettingsFragment extends PreferenceFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, v);
+
+        if (((MainActivity) getActivity()).getAccountType().equals("doctor"))
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editUserInfoPreference"));
+        else if (((MainActivity) getActivity()).getAccountType().equals("patient"))
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editDoctorInfoPreference"));
+
         return v;
     }
 

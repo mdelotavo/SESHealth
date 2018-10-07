@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:title="EditMenuInfo"
-        android:id="@+id/edit_menu_edit"
-        android:icon="@drawable/ic_edit_outline"
-        app:showAsAction="always"/>
-
-    <item
         android:title="SendFileInfo"
         android:id="@+id/send_file_info"
         android:icon="@drawable/ic_send_outline"

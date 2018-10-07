@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -60,6 +61,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -90,6 +92,8 @@ public class SendFileActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private Toolbar toolbar;
     private String[] userValues;
+    private Geocoder geocoder;
+    private String address;
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation = null;
@@ -138,6 +142,9 @@ public class SendFileActivity extends AppCompatActivity {
 
         Bundle extra = getIntent().getExtras();
         userValues = extra.getStringArray("userValues");
+
+        if (Geocoder.isPresent())
+            geocoder = new Geocoder(this, Locale.getDefault());
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -270,11 +277,15 @@ public class SendFileActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Could not get your current location, make sure your location settings are enabled", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d(TAG, "your latitude is: " + mLastKnownLocation.getLatitude() + "\tYour longitude is: " + mLastKnownLocation.getLongitude());
-                            DecimalFormat f = new DecimalFormat("##0.000");
-                            String latitude = f.format(mLastKnownLocation.getLatitude());
-                            String longitude = f.format(mLastKnownLocation.getLongitude());
-                            String coordinates = latitude + " " + longitude;
-                            packetGPSTV.setText(coordinates);
+                            //DecimalFormat f = new DecimalFormat("##0.000");
+                            Double latitude = mLastKnownLocation.getLatitude();
+                            Double longitude = mLastKnownLocation.getLongitude();
+                            try {
+                                address = geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);
+                            } catch (Exception e) {
+                                address = latitude + " " + longitude;
+                            }
+                            packetGPSTV.setText(address);
                             packetGPSCheck.setChecked(true);
                         }
                     }
@@ -454,13 +465,17 @@ public class SendFileActivity extends AppCompatActivity {
         userProfile.put("weight", weight);
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
-        userProfile.put("coordinates", setCoordinates());
 
 
         if (packetHeartBeatCheck.isChecked())
             userProfile.put("heartBeat", heartBeatAvg);
         else
             userProfile.put("heartBeat", "Not included");
+
+        if (packetGPSCheck.isChecked())
+            userProfile.put("location", address);
+        else
+            userProfile.put("location", "Not included");
 
         userProfile.put("message", message);
 
@@ -469,15 +484,15 @@ public class SendFileActivity extends AppCompatActivity {
             try {
                 userProfile.put("videoDownloadUri", videoDownloadUri.toString());
             } catch (Exception e) {
-                userProfile.put("videoDownloadUri", "");
+                userProfile.put("videoDownloadUri", "Not included");
             }
         else
-            userProfile.put("videoDownloadUri", "");
+            userProfile.put("videoDownloadUri", "Not included");
 
         if (fileDownloadUri != null)
             userProfile.put("fileDownloadUri", fileDownloadUri.toString());
         else
-            userProfile.put("fileDownloadUri", "");
+            userProfile.put("fileDownloadUri", "Not included");
 
 
         // Creates a database reference with a unique ID and provides it with the data packet
