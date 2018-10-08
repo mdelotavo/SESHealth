@@ -126,30 +126,6 @@ public class PatientListFragment extends Fragment {
                     }
                 });
 
-
-
-        listOfPatients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Patient patientUid = patientList.get(position);
-                Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
-                patientPackets.putExtra("uid", patientUid.getId());
-                startActivity(patientPackets);
-            }
-        });
-
-        // To view the selected user's profile
-        listOfPatients.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Patient patientUid = patientList.get(position);
-                Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
-                patientPackets.putExtra("uid", patientUid.getId());
-                startActivity(patientPackets);
-                return true;
-            }
-        });
-
         return v;
     }
 
