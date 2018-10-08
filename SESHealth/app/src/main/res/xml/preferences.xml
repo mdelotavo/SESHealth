@@ -6,6 +6,11 @@
         android:key="editUserInfoPreference"
         android:title="Change your profile information"/>
 
+    <team7.seshealthpatient.EditDoctorInfoDialog
+        android:id="@+id/editDoctorInfoPreference"
+        android:key="editDoctorInfoPreference"
+        android:title="Edit Your Information" />
+
     <team7.seshealthpatient.ChangePasswordDialog
         android:id="@+id/changePasswordPreference"
         android:key="changePasswordPreference"

@@ -20,6 +20,6 @@ public class PacketInfo {
 
     @Override
     public String toString() {
-        return "[" + key + "]\n" + info;
+        return key + "\n\n" + info;
     }
 }

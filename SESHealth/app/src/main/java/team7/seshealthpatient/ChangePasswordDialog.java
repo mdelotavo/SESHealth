@@ -67,8 +67,6 @@ public class ChangePasswordDialog extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult)
             saveNewPassword();
-        else
-            Toast.makeText(getContext(), "cancel", Toast.LENGTH_SHORT).show();
 
         super.onDialogClosed(positiveResult);
     }

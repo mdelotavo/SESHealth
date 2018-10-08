@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private Location userLocation;
     private Fragment fragment;
     private NavigationView navigationView;
+    private String accountType;
 
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
@@ -152,11 +153,15 @@ public class MainActivity extends AppCompatActivity {
                     navigationView.getMenu().clear();
                     if (dataSnapshot.getValue().toString().equals("patient")) {
                         navigationView.inflateMenu(R.menu.drawer_view_patient);
+                        navigationView.setCheckedItem(R.id.nav_patient_info);
+                        accountType = "patient";
                     } else if (dataSnapshot.getValue().toString().equals("doctor")) {
                         navigationView.inflateMenu(R.menu.drawer_view_doctor);
                         fragment = new PatientListFragment();
                         currentState = MenuStates.PATIENT_LIST;
                         ChangeFragment(fragment);
+                        navigationView.setCheckedItem(R.id.nav_patient_list);
+                        accountType = "doctor";
                     }
                 }
             }
@@ -254,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.add(R.id.fragment_container, new PatientInformationFragment());
         ft.commit();
-        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -366,5 +370,9 @@ public class MainActivity extends AppCompatActivity {
 
     public FirebaseAuth getFirebaseAuth() {
         return mAuth;
+    }
+
+    public String getAccountType() {
+        return accountType;
     }
 }

@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    tools:context="team7.seshealthpatient.Activities.EditInfoActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="20dp"
-        tools:context="team7.seshealthpatient.Activities.EditInfoActivity">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/editInfoToolbar"
@@ -24,58 +22,59 @@
             android:id="@+id/editInfoDescTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="110dp"
+            android:layout_below="@id/editInfoToolbar"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             android:text="Enter the information that you would like to edit into the fields below"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/editPhoneET"
-            style="@style/loginEditTexts"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/editInfoDescTV"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="40dp"
-            android:hint=""
-            android:inputType="phone" />
+        <LinearLayout
+            android:id="@+id/editInfoLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editInfoDescTV"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
 
-        <EditText
-            android:id="@+id/editWeightET"
-            style="@style/loginEditTexts"
-            android:layout_alignEnd="@+id/editPhoneET"
-            android:layout_alignStart="@+id/editPhoneET"
-            android:layout_below="@+id/editPhoneET"
-            android:hint=""
-            android:inputType="numberDecimal" />
+            <EditText
+                android:id="@+id/editPhoneET"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:inputType="phone" />
 
-        <EditText
-            android:id="@+id/editHeightET"
-            style="@style/loginEditTexts"
-            android:layout_alignEnd="@+id/editPhoneET"
-            android:layout_alignStart="@+id/editWeightET"
-            android:layout_below="@+id/editWeightET"
-            android:hint=""
-            android:inputType="numberDecimal" />
+            <EditText
+                android:id="@+id/editWeightET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:inputType="numberDecimal" />
 
-        <EditText
-            android:id="@+id/editAllergiesET"
-            style="@style/loginEditTexts"
-            android:layout_alignEnd="@+id/editPhoneET"
-            android:layout_alignStart="@+id/editHeightET"
-            android:layout_below="@+id/editHeightET"
-            android:hint=""
-            android:inputType="textMultiLine" />
+            <EditText
+                android:id="@+id/editHeightET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:inputType="numberDecimal" />
 
-        <EditText
-            android:id="@+id/editMedicationET"
-            style="@style/loginEditTexts"
-            android:layout_alignEnd="@+id/editPhoneET"
-            android:layout_alignStart="@+id/editAllergiesET"
-            android:layout_below="@+id/editAllergiesET"
-            android:hint="AAAAAAAAAAAAAA"
-            android:inputType="textMultiLine" />
+            <EditText
+                android:id="@+id/editAllergiesET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:inputType="textMultiLine" />
 
+            <EditText
+                android:id="@+id/editMedicationET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:inputType="textMultiLine" />
+
+        </LinearLayout>
     </RelativeLayout>
 </ScrollView>
