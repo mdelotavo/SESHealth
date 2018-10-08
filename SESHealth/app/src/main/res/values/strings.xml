@@ -16,6 +16,7 @@
     <string name="send_local_file">Send Local File</string>
     <string name="facilities_map">Facilities Map</string>
     <string name="patient_list">Patient List</string>
+    <string name="diagnose">Diagnose</string>
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>

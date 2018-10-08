@@ -37,6 +37,7 @@ import butterknife.BindView;
 
 import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.ConnectFragment;
+import team7.seshealthpatient.Fragments.DiagnoseFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.PatientListFragment;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, PROFILE, SETTINGS, LOGOUT
+        PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, DIAGNOSE, PROFILE, SETTINGS, LOGOUT
     }
 
     /**
@@ -207,6 +208,12 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.PATIENT_LIST) {
                                     fragment = new PatientListFragment();
                                     currentState = MenuStates.PATIENT_LIST;
+                                }
+                                break;
+                            case R.id.diagnose:
+                                if (currentState != MenuStates.DIAGNOSE) {
+                                    fragment = new DiagnoseFragment();
+                                    currentState = MenuStates.DIAGNOSE;
                                 }
                                 break;
                             case R.id.nav_settings:
