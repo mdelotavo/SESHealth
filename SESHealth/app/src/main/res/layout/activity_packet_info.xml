@@ -203,6 +203,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/packetLocationLabelTV"
                 android:textStyle="bold"
+                android:textColor="#333"
                 android:text="123 University of Technology, Sydney, NSW, 2000 (Tap to open in map)"
                 android:textSize="18sp" />
 

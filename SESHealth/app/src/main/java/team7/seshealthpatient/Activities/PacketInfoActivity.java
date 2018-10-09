@@ -47,6 +47,8 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     private TextView[] textViews;
     private String[] childrenKeys;
+    private String uid;
+    private String packetId;
     private String videoURI;
     private String fileURI;
     private Toolbar toolbar;
@@ -121,8 +123,6 @@ public class PacketInfoActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         progressDialog = new ProgressDialog(this);
-
-        final String uid, packetId;
 
         textViews = new TextView[]{packetNameInfoTV, packetMobileInfoTV, packetDOBInfoTV,
                 packetGenderInfoTV, packetWeightInfoTV, packetHeightInfoTV, packetAllergiesInfoTV,
@@ -220,7 +220,7 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @OnClick(R.id.packetLocationInfoTV)
     public void locationInMap() {
-        /*coordinates = coordinates.replaceAll("[^0-9.,-]","");
+        coordinates = coordinates.replaceAll("[^0-9.,-]","");
         String[] latLong = coordinates.split(",");
         String latitude = latLong[0];
         String longitude = latLong[1];
@@ -228,7 +228,7 @@ public class PacketInfoActivity extends AppCompatActivity {
         intent.putExtra("Latitude", latitude);
         intent.putExtra("Longitude", longitude);
         intent.putExtra("uid", uid);
-        startActivity(intent);*/
+        startActivity(intent);
     }
 
     public void setPacketInfoValues(final String childKey, final TextView textView) {
