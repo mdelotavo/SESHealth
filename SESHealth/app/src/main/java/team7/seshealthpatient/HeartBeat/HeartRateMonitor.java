@@ -10,11 +10,13 @@ import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -43,7 +45,12 @@ public class HeartRateMonitor extends Activity {
     private static View image = null;
     private static TextView text = null;
     private static Button heartBeatBtn;
+    private static ImageView infoIV;
     private static Timer timer = new Timer();
+
+    private static AlertDialog.Builder infoAlertBuilder;
+    private static AlertDialog infoAlert;
+
 
     private static PowerManager.WakeLock wakeLock = null;
 
@@ -85,6 +92,11 @@ public class HeartRateMonitor extends Activity {
         image = findViewById(R.id.heartBeatImage);
         text = (TextView) findViewById(R.id.heartBeatText);
         heartBeatBtn = (Button) findViewById(R.id.heartbeatBtn);
+        infoIV = (ImageView) findViewById(R.id.heartBeatInfoIV);
+        infoAlertBuilder = new AlertDialog.Builder(this);
+        infoAlertBuilder.setMessage("Please hold your finger over the camera for 10-15 seconds to record your heartbeat.\nTouch the 'Select' button once you're happy!");
+        infoAlertBuilder.setCancelable(true);
+        infoAlert = infoAlertBuilder.create();
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
@@ -97,6 +109,16 @@ public class HeartRateMonitor extends Activity {
                 finish();
             }
         });
+
+        infoIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(view != null) {
+                    infoAlert.show();
+                }
+            }
+        });
+
     }
 
     /**
