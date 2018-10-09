@@ -82,5 +82,8 @@
     </string-array>
     <string name="title_activity_patient_location">Map</string>
     <string name="title_activity_patient_view_doctor_recommendation">Map</string>
+    <string name="connect_request_made">A request has already been made to your doctor</string>
+    <string name="connect_invalid_key">Please enter a valid key provided by your doctor</string>
+    <string name="connect_check_patient_is_sure">Are you positive you want to request for a new doctor?  This will disconnect you with your registered doctor</string>
 
 </resources>
