@@ -465,7 +465,7 @@ public class SendFileActivity extends AppCompatActivity {
         userProfile.put("weight", weight);
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
-
+        userProfile.put("coordinates", setCoordinates());
 
         if (packetHeartBeatCheck.isChecked())
             userProfile.put("heartBeat", heartBeatAvg);
@@ -477,7 +477,10 @@ public class SendFileActivity extends AppCompatActivity {
         else
             userProfile.put("location", "Not included");
 
-        userProfile.put("message", message);
+        if (!message.isEmpty())
+            userProfile.put("message", message);
+        else
+            userProfile.put("message", "Not included");
 
         // Sets an empty string if videoDownloadUri has not been set
         if (packetCameraCheck.isChecked())

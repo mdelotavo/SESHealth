@@ -1,21 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="team7.seshealthpatient.Activities.PacketInfoActivity">
 
-    <ListView
-        android:id="@+id/list_of_packet_info"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/packetInfoToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/toolbarStyle"
+        app:titleTextColor="#eee" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/packetInfoToolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:id="@+id/packetNameLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Name"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetNameInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetNameLabelTV"
+                android:text="Name"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetMessageLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetNameInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Message"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetMessageInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetMessageLabelTV"
+                android:text="Message"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetMobileLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetMessageInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Mobile Number"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetMobileInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetMobileLabelTV"
+                android:text="Mobile"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetDOBLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetMobileInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Date of Birth"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetDOBInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetDOBLabelTV"
+                android:text="Date"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetGenderLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetDOBInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Gender"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetGenderInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetGenderLabelTV"
+                android:text="Gender"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetWeightLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetGenderInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Weight (kg)"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetWeightInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetWeightLabelTV"
+                android:text="Weight"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetHeightLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetWeightInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Height (cm)"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetHeightInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetHeightLabelTV"
+                android:text="Height"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetAllergiesLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetHeightInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Allergies"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetAllergiesInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetAllergiesLabelTV"
+                android:text="Allergies"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetMedicationLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetAllergiesInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Medication"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetMedicationInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetMedicationLabelTV"
+                android:text="medication"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetLocationLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetMedicationInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Location"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetLocationInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetLocationLabelTV"
+                android:textStyle="bold"
+                android:text="123 University of Technology, Sydney, NSW, 2000 (Tap to open in map)"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetHeartbeatLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetLocationInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Heart Rate"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetHeartbeatInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetHeartbeatLabelTV"
+                android:text="Heart"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/bottomVideoFileLL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetHeartbeatInfoTV"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="1">
+
+                <Button
+                    android:id="@+id/packetPlayVideoBtn"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_login_btn"
+                    android:text="Play Video"
+                    android:textColor="#eee"
+                    android:textSize="18sp"
+                    android:layout_weight="0.45"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1"/>
+
+                <Button
+                    android:id="@+id/packetDownloadFileBtn"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gradient_login_btn"
+                    android:text="Open file"
+                    android:textColor="#eee"
+                    android:textSize="18sp"
+                    android:layout_weight="0.45"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+</RelativeLayout>
