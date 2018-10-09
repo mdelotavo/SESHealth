@@ -108,6 +108,23 @@ public class PacketInfoActivity extends AppCompatActivity {
                         new DownloadVideo().execute(selectedKey.getInfo());
                     else
                         Toast.makeText(PacketInfoActivity.this, "no vid", Toast.LENGTH_SHORT).show();
+
+                if (selectedKey.getkey().equals("coordinates")){
+
+                    String latLon = selectedKey.getInfo();
+                    latLon = latLon.replaceAll("[^0-9.,-]","");
+
+                    String[] latLong = latLon.split(",");
+                    String latitude = latLong[0];
+                    String longitude = latLong[1];
+
+                    Intent intent = new Intent(PacketInfoActivity.this, PatientLocationActivity.class);
+                    intent.putExtra("Latitude", latitude);
+                    intent.putExtra("Longitude", longitude);
+                    intent.putExtra("uid", uid);
+                    startActivity(intent);
+
+                }
             }
         });
     }

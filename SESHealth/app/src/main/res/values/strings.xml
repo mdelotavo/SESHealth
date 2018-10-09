@@ -80,5 +80,7 @@
         <item>Female</item>
         <item>Prefer Not To Say</item>
     </string-array>
+    <string name="title_activity_patient_location">Map</string>
+    <string name="title_activity_patient_view_doctor_recommendation">Map</string>
 
 </resources>
