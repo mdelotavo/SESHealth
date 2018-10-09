@@ -465,6 +465,7 @@ public class SendFileActivity extends AppCompatActivity {
         userProfile.put("weight", weight);
         userProfile.put("allergies", allergies);
         userProfile.put("medication", medication);
+        userProfile.put("coordinates", setCoordinates());
 
 
         if (packetHeartBeatCheck.isChecked())

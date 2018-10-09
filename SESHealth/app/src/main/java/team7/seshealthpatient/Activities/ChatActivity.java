@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -15,6 +16,9 @@ import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import team7.seshealthpatient.Fragments.ChatMessage;
 import team7.seshealthpatient.R;
@@ -40,6 +44,8 @@ public class ChatActivity extends AppCompatActivity {
 
         fab = findViewById(R.id.fab);
         input = findViewById(R.id.input);
+
+        final List<String> chatMessages = new ArrayList<>();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,10 +84,37 @@ public class ChatActivity extends AppCompatActivity {
                         df.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()).toString()
                                 + " " + model.getMessageUser()
                 );
+
+                chatMessages.add(new String(model.getMessageText()));
             }
         };
 
         listOfMessages.setAdapter(adapter);
+
+        listOfMessages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String Coordinates = chatMessages.get(position);
+
+
+                if (Coordinates.contains("lat")){
+                    String latLon = Coordinates.replaceAll("[^0-9.,-]","");
+
+
+                    //Toast.makeText(ChatActivity.this, "This is doctor recommended location: " + latLon, Toast.LENGTH_SHORT).show();
+
+                    String[] latLong = latLon.split(",");
+                    String latitude = latLong[0];
+                    String longitude = latLong[1];
+
+                    Intent intent = new Intent(ChatActivity.this, PatientViewDoctorRecommendationActivity.class);
+                    intent.putExtra("Latitude", latitude);
+                    intent.putExtra("Longitude", longitude);
+                    startActivity(intent);
+
+                }
+            }
+        });
     }
 
     private void toastMessage(String message) {
