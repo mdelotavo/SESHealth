@@ -37,8 +37,15 @@ public class DiagnosisRequest extends AppCompatActivity {
                         || symptoms.getText().toString().trim().isEmpty()) {
                     toastMessage("Empty fields...");
                 } else {
-                    FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnose")
-                            .push().setValue(new Diagnose(description.getText().toString(), symptoms.getText().toString()));
+                    FirebaseDatabase.getInstance()
+                            .getReference().child("Users").child(uid).child("Diagnose")
+                            .push()
+                            .setValue(
+                                    new Diagnose(
+                                            description.getText().toString(),
+                                            symptoms.getText().toString()
+                                    )
+                            );
                     toastMessage("Sent");
                     finish();
                 }
