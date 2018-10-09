@@ -94,7 +94,7 @@ public class HeartRateMonitor extends Activity {
         heartBeatBtn = (Button) findViewById(R.id.heartbeatBtn);
         infoIV = (ImageView) findViewById(R.id.heartBeatInfoIV);
         infoAlertBuilder = new AlertDialog.Builder(this);
-        infoAlertBuilder.setMessage("Please hold your finger over the camera for 10-15 seconds to record your heartbeat.\nTouch the 'Select' button once you're happy!");
+        infoAlertBuilder.setMessage(R.string.heartbeat_info);
         infoAlertBuilder.setCancelable(true);
         infoAlert = infoAlertBuilder.create();
 
