@@ -220,15 +220,21 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @OnClick(R.id.packetLocationInfoTV)
     public void locationInMap() {
-        coordinates = coordinates.replaceAll("[^0-9.,-]","");
-        String[] latLong = coordinates.split(",");
-        String latitude = latLong[0];
-        String longitude = latLong[1];
-        Intent intent = new Intent(PacketInfoActivity.this, PatientLocationActivity.class);
-        intent.putExtra("Latitude", latitude);
-        intent.putExtra("Longitude", longitude);
-        intent.putExtra("uid", uid);
-        startActivity(intent);
+        if (!packetLocationInfoTV.getText().toString().equals("Not included") && !packetLocationInfoTV.getText().toString().isEmpty()) {
+            try {
+                coordinates = coordinates.replaceAll("[^0-9.,-]", "");
+                String[] latLong = coordinates.split(",");
+                String latitude = latLong[0];
+                String longitude = latLong[1];
+                Intent intent = new Intent(PacketInfoActivity.this, PatientLocationActivity.class);
+                intent.putExtra("Latitude", latitude);
+                intent.putExtra("Longitude", longitude);
+                intent.putExtra("uid", uid);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Unable to open location in Map", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void setPacketInfoValues(final String childKey, final TextView textView) {
@@ -327,7 +333,8 @@ public class PacketInfoActivity extends AppCompatActivity {
         packetReference.child("coordinates").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                coordinates = dataSnapshot.getValue().toString().trim();
+                if (dataSnapshot.getValue() != null)
+                    coordinates = dataSnapshot.getValue().toString().trim();
             }
 
             @Override
@@ -344,7 +351,8 @@ public class PacketInfoActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
