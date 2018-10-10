@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, DIAGNOSE, PROFILE, SETTINGS, LOGOUT
     }
 
+    private boolean isDoctor = false;
+
     /**
      * The current fragment being displayed.
      */
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new PatientListFragment();
                         currentState = MenuStates.PATIENT_LIST;
                         ChangeFragment(fragment);
+                        isDoctor = true;
                     }
                 }
             }
@@ -212,7 +215,10 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.id.diagnose:
                                 if (currentState != MenuStates.DIAGNOSE) {
-                                    fragment = new DiagnoseFragment();
+                                    if (isDoctor)
+                                        fragment = new DiagnosePatientFragment();
+                                    else
+                                        fragment = new DiagnoseFragment();
                                     currentState = MenuStates.DIAGNOSE;
                                 }
                                 break;

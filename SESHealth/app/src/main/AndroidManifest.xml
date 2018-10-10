@@ -76,6 +76,7 @@
         <activity android:name=".Activities.ChatActivity" />
         <activity android:name=".Activities.DiagnosisRequest" />
         <activity android:name=".Activities.EditDiagnosisRequest" />
+        <activity android:name=".Activities.DiagnosePatientActivity" />
     </application>
 
 </manifest>
