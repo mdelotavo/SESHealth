@@ -240,7 +240,7 @@ public class ConnectFragment extends Fragment {
         newDoctorReference.child("approved").setValue("pending");
         usersReference.child(mUser.getUid()).child("Doctor").child("UID").setValue(doctorUidList.get(doctorKey));
         usersReference.child(mUser.getUid()).child("Doctor").child("approved").setValue("pending");
-        Toast.makeText(getActivity(), "Created a request to your doctor", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), R.string.connect_with_doctor, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -250,7 +250,7 @@ public class ConnectFragment extends Fragment {
         doctorReference.child("approved").setValue("pending");
         usersReference.child(mUser.getUid()).child("Doctor").child("UID").setValue(doctorUidList.get(doctorKey));
         usersReference.child(mUser.getUid()).child("Doctor").child("approved").setValue("pending");
-        Toast.makeText(getActivity(), "Created a request to your doctor", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), R.string.connect_with_doctor, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.viewDoctorProfileBtn)
@@ -264,7 +264,7 @@ public class ConnectFragment extends Fragment {
                     patientPackets.putExtra("uid", UID);
                     startActivity(patientPackets);
                 } else {
-                    Toast.makeText(getActivity(), "You have not connected with a doctor yet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.connect_no_doctor, Toast.LENGTH_SHORT).show();
                 }
             }
 
