@@ -72,13 +72,20 @@ public class DiagnoseFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        requestList.clear();
+                        requestIdList.clear();
+                        requestSymptoms.clear();
+
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             String key = child.getKey();
+
                             String description = child.child("description").getValue() != null
                                     ? child.child("description").getValue().toString() : null;
+
                             String symptoms = child.child("symptoms").getValue() != null
                                     ? child.child("symptoms").getValue().toString() : null;
-                            if (description != null && !requestIdList.contains(key)) {
+
+                            if (description != null) {
                                 requestList.add(description);
                                 requestIdList.add(key);
                                 requestSymptoms.add(symptoms);
@@ -101,6 +108,7 @@ public class DiagnoseFragment extends Fragment {
                 String symptoms = requestSymptoms.get(position);
 
                 Intent intent = new Intent(getActivity(), EditDiagnosisRequest.class);
+                intent.putExtra("uid", uid);
                 intent.putExtra("requestId", requestId);
                 intent.putExtra("description", description);
                 intent.putExtra("symptoms", symptoms);
