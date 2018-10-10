@@ -139,13 +139,14 @@
 
             <Button
                 android:id="@+id/packetSubmitBtn"
-                android:layout_width="100dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/gradient_login_btn"
                 android:text="Submit"
-                android:textColor="#eee" />
+                android:textColor="#eee"
+                android:textSize="20sp"/>
 
         </LinearLayout>
 

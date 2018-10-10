@@ -3,6 +3,7 @@ package team7.seshealthpatient.Activities;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -37,9 +39,10 @@ import team7.seshealthpatient.R;
 
 public class PacketInfoActivity extends AppCompatActivity {
 
+    private TextView[] textViews;
+    private String[] childrenKeys;
     ListView listOfPacketInfo;
     private ProgressDialog progressDialog;
-    private String downloadedVideoName;
     private File videoFile = new File(
             Environment.getExternalStorageDirectory().getPath() + "/healthapp/video.mp4");
 
@@ -50,9 +53,17 @@ public class PacketInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_packet_info);
         listOfPacketInfo = findViewById(R.id.list_of_packet_info);
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Grabbing your video");
+        progressDialog.setMessage("Retrieving the video ...");
 
         final String uid, packetId;
+
+        /*textViews = new TextView[]{nameTV, mobileTV, dobTV, genderTV, weightTV,
+                heightTV, allergiesTV, medicationTV, videoDownloadUriTV, locationTV, TimestampTV,
+                fileDownloadUriTV, heartBeatTV, messageTV};
+
+        childrenKeys = new String[]{"name", "mobile", "DOB", "gender", "weight",
+                "height", "allergies", "medication", "videoDownloadUri", "location", "Timestamp",
+                "fileDownloadUri", "heartBeat", "message"};*/
 
         Intent receivedIntent = getIntent();
         uid = receivedIntent.getStringExtra("uid");
@@ -92,11 +103,28 @@ public class PacketInfoActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PacketInfo selectedKey = packetInfoList.get(position);
-                if (selectedKey.getkey().equals("videoURI"))
-                    if (!selectedKey.getInfo().trim().isEmpty())
+                if (selectedKey.getkey().equals("videoDownloadUri"))
+                    if (!selectedKey.getInfo().trim().isEmpty() && !selectedKey.getInfo().trim().equals("Not included"))
                         new DownloadVideo().execute(selectedKey.getInfo());
                     else
                         Toast.makeText(PacketInfoActivity.this, "no vid", Toast.LENGTH_SHORT).show();
+
+                if (selectedKey.getkey().equals("coordinates")){
+
+                    String latLon = selectedKey.getInfo();
+                    latLon = latLon.replaceAll("[^0-9.,-]","");
+
+                    String[] latLong = latLon.split(",");
+                    String latitude = latLong[0];
+                    String longitude = latLong[1];
+
+                    Intent intent = new Intent(PacketInfoActivity.this, PatientLocationActivity.class);
+                    intent.putExtra("Latitude", latitude);
+                    intent.putExtra("Longitude", longitude);
+                    intent.putExtra("uid", uid);
+                    startActivity(intent);
+
+                }
             }
         });
     }
@@ -121,9 +149,6 @@ public class PacketInfoActivity extends AppCompatActivity {
     }
 
     public void downloadVideo(String requestedVideoURL) {
-        /*DownloadManager.Request request = new DownloadManager.Request(Uri.parse(URL));
-        request.setMimeType("video/mp4");*/
-
         try {
             URL videoURL = new URL(requestedVideoURL);
             URLConnection connection = videoURL.openConnection();

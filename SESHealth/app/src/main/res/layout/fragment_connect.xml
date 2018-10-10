@@ -29,6 +29,31 @@
             android:layout_gravity="center_horizontal"
             android:text="Click me!" />
 
+        <Button
+            android:id="@+id/viewDoctorProfileBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="View Profile" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Approval Status: " />
+
+            <TextView
+                android:id="@+id/connectStatusTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A request has not yet been made" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

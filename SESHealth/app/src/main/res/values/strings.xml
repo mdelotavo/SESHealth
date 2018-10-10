@@ -75,11 +75,14 @@
     <string name="clinic_location">Your Clinic\'s Address</string>
     <string name="profile">Profile</string>
     <string name="connect">Connect</string>
+    <string name="heartbeat_info">Please hold your finger over the camera for 10-15 seconds to record your heartbeat. Touch the \'Select\' button once you\'re happy!</string>
 
     <string-array name="genders">
         <item>Male</item>
         <item>Female</item>
         <item>Prefer Not To Say</item>
     </string-array>
+    <string name="title_activity_patient_location">Map</string>
+    <string name="title_activity_patient_view_doctor_recommendation">Map</string>
 
 </resources>

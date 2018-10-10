@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -60,6 +61,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -90,6 +92,8 @@ public class SendFileActivity extends AppCompatActivity {
     private DatabaseReference reference;
     private Toolbar toolbar;
     private String[] userValues;
+    private Geocoder geocoder;
+    private String address;
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation = null;
@@ -138,6 +142,9 @@ public class SendFileActivity extends AppCompatActivity {
 
         Bundle extra = getIntent().getExtras();
         userValues = extra.getStringArray("userValues");
+
+        if (Geocoder.isPresent())
+            geocoder = new Geocoder(this, Locale.getDefault());
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -270,11 +277,15 @@ public class SendFileActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Could not get your current location, make sure your location settings are enabled", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d(TAG, "your latitude is: " + mLastKnownLocation.getLatitude() + "\tYour longitude is: " + mLastKnownLocation.getLongitude());
-                            DecimalFormat f = new DecimalFormat("##0.000");
-                            String latitude = f.format(mLastKnownLocation.getLatitude());
-                            String longitude = f.format(mLastKnownLocation.getLongitude());
-                            String coordinates = latitude + " " + longitude;
-                            packetGPSTV.setText(coordinates);
+                            //DecimalFormat f = new DecimalFormat("##0.000");
+                            Double latitude = mLastKnownLocation.getLatitude();
+                            Double longitude = mLastKnownLocation.getLongitude();
+                            try {
+                                address = geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);
+                            } catch (Exception e) {
+                                address = latitude + " " + longitude;
+                            }
+                            packetGPSTV.setText(address);
                             packetGPSCheck.setChecked(true);
                         }
                     }
@@ -462,6 +473,11 @@ public class SendFileActivity extends AppCompatActivity {
         else
             userProfile.put("heartBeat", "Not included");
 
+        if (packetGPSCheck.isChecked())
+            userProfile.put("location", address);
+        else
+            userProfile.put("location", "Not included");
+
         userProfile.put("message", message);
 
         // Sets an empty string if videoDownloadUri has not been set
@@ -469,15 +485,15 @@ public class SendFileActivity extends AppCompatActivity {
             try {
                 userProfile.put("videoDownloadUri", videoDownloadUri.toString());
             } catch (Exception e) {
-                userProfile.put("videoDownloadUri", "");
+                userProfile.put("videoDownloadUri", "Not included");
             }
         else
-            userProfile.put("videoDownloadUri", "");
+            userProfile.put("videoDownloadUri", "Not included");
 
         if (fileDownloadUri != null)
             userProfile.put("fileDownloadUri", fileDownloadUri.toString());
         else
-            userProfile.put("fileDownloadUri", "");
+            userProfile.put("fileDownloadUri", "Not included");
 
 
         // Creates a database reference with a unique ID and provides it with the data packet
@@ -517,7 +533,7 @@ public class SendFileActivity extends AppCompatActivity {
         switch (requestCode) {
             case RECORD_VIDEO_REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    cameraOnClick();
+                    recordVideo();
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.recordVideoPermissionException), Toast.LENGTH_SHORT).show();
                 }
@@ -537,13 +553,13 @@ public class SendFileActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), getString(R.string.locationPermissionException), Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case SELECT_FILE_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    selectType();
+                else
+                    Toast.makeText(SendFileActivity.this, "Please provide permissions for this application to access your files", Toast.LENGTH_SHORT).show();
         }
 
-        // Add this into the switch statement
-        if (requestCode == SELECT_FILE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            selectType();
-        else
-            Toast.makeText(SendFileActivity.this, "Please provide permission...", Toast.LENGTH_SHORT).show();
     }
 
     @Override

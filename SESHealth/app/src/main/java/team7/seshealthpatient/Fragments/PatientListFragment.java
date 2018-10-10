@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +35,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import team7.seshealthpatient.Activities.PatientPacketsActivity;
 import team7.seshealthpatient.Activities.ProfileActivity;
+import team7.seshealthpatient.Patient;
+import team7.seshealthpatient.PatientListAdapter;
 import team7.seshealthpatient.R;
 
 public class PatientListFragment extends Fragment {
-
+    private final String TAG = "PatientListFragment";
     FirebaseUser mUser;
     private FirebaseDatabase database;
     private DatabaseReference reference;
@@ -78,51 +82,36 @@ public class PatientListFragment extends Fragment {
         listOfPatients = v.findViewById(R.id.list_of_patients);
         listOfPendingPatients = v.findViewById(R.id.list_of_pending_patients);
 
-        final List<String> patientList = new ArrayList<>();
-        final List<String> patientUidList = new ArrayList<>();
-        final List<String> pendingPatientList = new ArrayList<>();
-        final List<String> pendingPatientUidList = new ArrayList<>();
+        final ArrayList<Patient> patientList = new ArrayList<>();
+        final ArrayList<Patient> pendingPatientList = new ArrayList<>();
 
-        final ListAdapter patientsAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                patientList
-        );
-
-        final ListAdapter pendingPatientsAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                pendingPatientList
-        );
-
-        listOfPatients.setAdapter(patientsAdapter);
-        listOfPendingPatients.setAdapter(pendingPatientsAdapter);
+        PatientListAdapter pendingPatientAdapter = new PatientListAdapter(getActivity(), R.layout.adapter_view_pending_patient_layout, pendingPatientList, PatientListFragment.this);
+        PatientListAdapter patientAdapter = new PatientListAdapter(getActivity(), R.layout.adapter_view_patient_layout, patientList, PatientListFragment.this);
+        listOfPendingPatients.setAdapter(pendingPatientAdapter);
+        listOfPatients.setAdapter(patientAdapter);
 
         reference.child(mUser.getUid()).child("Patients")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         patientList.clear();
-                        patientUidList.clear();
                         pendingPatientList.clear();
-                        pendingPatientUidList.clear();
                         pendingPatientsTV.setVisibility(View.VISIBLE);
                         currentPatientsTV.setVisibility(View.VISIBLE);
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String key = child.getKey();
-                            String patient = (child.child("name").getValue() != null)
+                            String patientId = child.getKey();
+                            String patientName = (child.child("name").getValue() != null)
                                     ? child.child("name").getValue().toString() : null;
-                            if (patient != null) {
-                                if(child.child("approved").getValue().toString().equals("false")) {
+                            if (patientName != null) {
+                                Patient patient = new Patient(patientName, patientId);
+                                if (child.child("approved").getValue().toString().equals("pending")) {
                                     pendingPatientList.add(patient);
-                                    pendingPatientUidList.add(key);
-                                    if(pendingPatientsTV.getVisibility() != View.INVISIBLE)
+                                    if (pendingPatientsTV.getVisibility() != View.INVISIBLE)
                                         pendingPatientsTV.setVisibility(View.INVISIBLE);
-                                } else {
+                                } else if (child.child("approved").getValue().toString().equals("accepted")) {
                                     patientList.add(patient);
-                                    patientUidList.add(key);
-                                    if(currentPatientsTV.getVisibility() != View.INVISIBLE)
+                                    if (currentPatientsTV.getVisibility() != View.INVISIBLE)
                                         currentPatientsTV.setVisibility(View.INVISIBLE);
                                 }
                                 listOfPatients.invalidateViews();
@@ -137,41 +126,13 @@ public class PatientListFragment extends Fragment {
                     }
                 });
 
-        listOfPendingPatients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String patientUid = pendingPatientUidList.get(position);
-                reference.child(mUser.getUid()).child("Patients").child(patientUid).child("approved").setValue(true);
-            }
-        });
-
-        listOfPatients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String patientUid = patientUidList.get(position);
-
-                Intent patientPackets = new Intent(getActivity(), PatientPacketsActivity.class);
-                patientPackets.putExtra("uid", patientUid);
-                startActivity(patientPackets);
-            }
-        });
-
-        // To view the selected user's profile
-        listOfPatients.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String patientUid = patientUidList.get(position);
-                Intent patientPackets = new Intent(getActivity(), ProfileActivity.class);
-                patientPackets.putExtra("uid", patientUid);
-                startActivity(patientPackets);
-                return true;
-            }
-        });
-
         return v;
     }
 
-    private void setTextView() {
-
+    public DatabaseReference getDBReference() {
+        return this.reference;
+    }
+    public FirebaseUser getUser() {
+        return mUser;
     }
 }

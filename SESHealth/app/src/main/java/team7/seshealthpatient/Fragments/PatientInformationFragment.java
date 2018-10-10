@@ -135,9 +135,7 @@ public class PatientInformationFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.edit_menu_edit)
-            startActivity(new Intent(getContext(), EditInfoActivity.class));
-        else if (item.getItemId() == R.id.send_file_info) {
+        if (item.getItemId() == R.id.send_file_info) {
             userValues = new String[8];
             for (int i = 0; i < textViews.length; i++)
                 userValues[i] = textViews[i].getText().toString().trim();

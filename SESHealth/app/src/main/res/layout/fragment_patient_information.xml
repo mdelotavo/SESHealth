@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context="team7.seshealthpatient.Fragments.PatientInformationFragment">
+        tools:context="team7.seshealthpatient.Activities.PacketInfoActivity">
 
         <android.support.v7.widget.CardView
             android:id="@+id/nameCard"
@@ -24,15 +24,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/nameLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="Name " />
 
                 <View
@@ -42,12 +46,10 @@
 
                 <TextView
                     android:id="@+id/nameTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
@@ -63,15 +65,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/genderLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="Gender" />
 
                 <View
@@ -81,12 +87,10 @@
 
                 <TextView
                     android:id="@+id/genderTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
@@ -102,15 +106,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/dobLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="DoB" />
 
                 <View
@@ -120,12 +128,10 @@
 
                 <TextView
                     android:id="@+id/dobTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
@@ -141,15 +147,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/phoneLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="Phone No" />
 
                 <View
@@ -159,12 +169,10 @@
 
                 <TextView
                     android:id="@+id/phoneTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
@@ -180,15 +188,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/weightLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="Weight (kg)" />
 
                 <View
@@ -198,12 +210,10 @@
 
                 <TextView
                     android:id="@+id/weightTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
@@ -219,15 +229,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/heightLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="Height (cm)" />
 
                 <View
@@ -237,12 +251,10 @@
 
                 <TextView
                     android:id="@+id/heightTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
@@ -258,15 +270,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/allergiesLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="Allergies" />
 
                 <View
@@ -276,12 +292,10 @@
 
                 <TextView
                     android:id="@+id/allergiesTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
@@ -300,15 +314,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/medicationLabelTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textColor="#444"
                     android:text="Medication" />
 
                 <View
@@ -318,12 +336,10 @@
 
                 <TextView
                     android:id="@+id/medicationTV"
-                    style="@style/patientInfoTVSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textSize="25sp"
-                    android:textColor="#333"
+                    android:textSize="22sp"
                     android:text="" />
 
             </LinearLayout>
