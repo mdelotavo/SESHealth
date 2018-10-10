@@ -1,4 +1,4 @@
-package team7.seshealthpatient.Activities;
+package team7.seshealthpatient.Fragments;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import team7.seshealthpatient.Activities.DiagnosePatientActivity;
 import team7.seshealthpatient.R;
 
 public class DiagnosePatientFragment extends Fragment {

@@ -38,6 +38,7 @@ import butterknife.BindView;
 import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.ConnectFragment;
 import team7.seshealthpatient.Fragments.DiagnoseFragment;
+import team7.seshealthpatient.Fragments.DiagnosePatientFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.PatientListFragment;
