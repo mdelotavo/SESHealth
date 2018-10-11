@@ -37,6 +37,8 @@ import butterknife.BindView;
 
 import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.ConnectFragment;
+import team7.seshealthpatient.Fragments.DiagnoseFragment;
+import team7.seshealthpatient.Fragments.DiagnosePatientFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
 import team7.seshealthpatient.Fragments.PatientListFragment;
@@ -93,8 +95,10 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, PROFILE, SETTINGS, LOGOUT
+        PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, DIAGNOSE, PROFILE, SETTINGS, LOGOUT
     }
+
+    private boolean isDoctor = false;
 
     /**
      * The current fragment being displayed.
@@ -160,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new PatientListFragment();
                         currentState = MenuStates.PATIENT_LIST;
                         ChangeFragment(fragment);
+                        isDoctor = true;
                         navigationView.setCheckedItem(R.id.nav_patient_list);
                         accountType = "doctor";
                     }
@@ -212,6 +217,15 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.PATIENT_LIST) {
                                     fragment = new PatientListFragment();
                                     currentState = MenuStates.PATIENT_LIST;
+                                }
+                                break;
+                            case R.id.diagnose:
+                                if (currentState != MenuStates.DIAGNOSE) {
+                                    if (isDoctor)
+                                        fragment = new DiagnosePatientFragment();
+                                    else
+                                        fragment = new DiagnoseFragment();
+                                    currentState = MenuStates.DIAGNOSE;
                                 }
                                 break;
                             case R.id.nav_settings:
