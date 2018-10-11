@@ -262,6 +262,19 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/packetReplyBtn"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_login_btn"
+                android:text="Reply"
+                android:textColor="#eee"
+                android:textSize="18sp"
+                android:layout_below="@+id/bottomVideoFileLL"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_weight="0.45"/>
+
         </RelativeLayout>
 
     </ScrollView>

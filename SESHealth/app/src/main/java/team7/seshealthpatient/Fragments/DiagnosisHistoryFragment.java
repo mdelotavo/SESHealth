@@ -75,7 +75,7 @@ public class DiagnosisHistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_diagnosis_history, container, false);
 
         ButterKnife.bind(this, view);
-        
+
         final List<String[]> diagnosisList = new ArrayList<>();
 
         final ListAdapter diagnosisListAdapter = new ArrayAdapter<>(

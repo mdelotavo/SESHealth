@@ -41,6 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import team7.seshealthpatient.MapModels.LocationDefaults;
+import team7.seshealthpatient.PacketInfo;
 import team7.seshealthpatient.R;
 
 public class PacketInfoActivity extends AppCompatActivity {
@@ -101,6 +102,8 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @BindView(R.id.packetDownloadFileBtn)
     Button packetDownloadFileBtn;
+    @BindView(R.id.packetReplyBtn)
+    Button packetReplyBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -235,6 +238,12 @@ public class PacketInfoActivity extends AppCompatActivity {
                 Toast.makeText(this, "Unable to open location in Map", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @OnClick(R.id.packetReplyBtn)
+    public void replyToPacket() {
+        Intent intent = new Intent(PacketInfoActivity.this, ReplyToPacketActivity.class);
+        startActivity(intent);
     }
 
     public void setPacketInfoValues(final String childKey, final TextView textView) {

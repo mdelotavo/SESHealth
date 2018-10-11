@@ -82,7 +82,11 @@
         <activity
             android:name=".Activities.PatientViewDoctorRecommendationActivity"
             android:label="@string/title_activity_patient_view_doctor_recommendation" />
-        <activity android:name=".Activities.DiagnosisHistoryActivity"></activity>
+        <activity android:name=".Activities.DiagnosisHistoryActivity" />
+        <activity
+            android:name=".Activities.ReplyToPacketActivity"
+            android:label="@string/title_activity_reply_to_packet"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

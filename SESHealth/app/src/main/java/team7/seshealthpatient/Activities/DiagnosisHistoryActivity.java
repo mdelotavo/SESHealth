@@ -142,9 +142,6 @@ public class DiagnosisHistoryActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-
     }
 
     // Using this so the activity isn't recreated on orientation change

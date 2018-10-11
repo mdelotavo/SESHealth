@@ -84,5 +84,6 @@
     </string-array>
     <string name="title_activity_patient_location">Map</string>
     <string name="title_activity_patient_view_doctor_recommendation">Map</string>
+    <string name="title_activity_reply_to_packet">ReplyToPacketActivity</string>
 
 </resources>
