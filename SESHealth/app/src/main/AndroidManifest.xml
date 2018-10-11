@@ -81,7 +81,8 @@
             android:label="@string/title_activity_patient_location" />
         <activity
             android:name=".Activities.PatientViewDoctorRecommendationActivity"
-            android:label="@string/title_activity_patient_view_doctor_recommendation"></activity>
+            android:label="@string/title_activity_patient_view_doctor_recommendation" />
+        <activity android:name=".Activities.DiagnosisHistoryActivity"></activity>
     </application>
 
 </manifest>
