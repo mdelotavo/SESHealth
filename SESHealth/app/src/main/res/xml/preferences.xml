@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory
+        android:id="@+id/doctorSummaryPreferenceGroup"
+        android:key="doctorSummaryPreferenceGroup"
+        android:title="Your Information">
+
+        <Preference
+            android:id="@+id/doctorSummaryPreference"
+            android:key="doctorSummaryPreference"
+            android:title="doctor info"
+            android:selectable="false"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
     <Preference
         android:id="@+id/editUserInfoPreference"
         android:key="editUserInfoPreference"
@@ -9,12 +23,17 @@
     <team7.seshealthpatient.EditDoctorInfoDialog
         android:id="@+id/editDoctorInfoPreference"
         android:key="editDoctorInfoPreference"
-        android:title="Edit Your Information" />
+        android:title="Edit your information" />
 
     <team7.seshealthpatient.ChangePasswordDialog
         android:id="@+id/changePasswordPreference"
         android:key="changePasswordPreference"
         android:title="Change your password" />
+
+    <team7.seshealthpatient.ConnectDoctorDialog
+        android:id="@+id/connectPasswordPreference"
+        android:key="connectPasswordPreference"
+        android:title="Connect to a doctor" />
 
     <Preference
         android:id="@+id/aboutPreference"

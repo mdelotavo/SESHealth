@@ -36,7 +36,6 @@ import com.google.firebase.database.ValueEventListener;
 import butterknife.BindView;
 
 import team7.seshealthpatient.Fragments.ChatFragment;
-import team7.seshealthpatient.Fragments.ConnectFragment;
 import team7.seshealthpatient.Fragments.DiagnosisHistoryFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
@@ -71,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     private Fragment fragment;
     private NavigationView navigationView;
     private String accountType;
+    private String[] doctorProfile;
+    private String currentDoctorUID;
 
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, CONNECT, PATIENT_LIST, PROFILE, DIAGNOSIS, SETTINGS, LOGOUT
+        PATIENT_INFO, NAVIGATION_MAP, CHAT, PATIENT_LIST, PROFILE, DIAGNOSIS, SETTINGS, LOGOUT
     }
 
     /**
@@ -114,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         fireBaseUser = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Users").child(fireBaseUser.getUid());
+
+        doctorProfile = new String[4];
 
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
@@ -135,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Bundle extra = getIntent().getExtras();
+        String accountType = extra.getString("accountType");
 
         // Set up the menu button
         ActionBar actionbar = getSupportActionBar();
@@ -144,32 +149,12 @@ public class MainActivity extends AppCompatActivity {
         // Setup the navigation drawer, most of this code was taken from:
         // https://developer.android.com/training/implementing-navigation/nav-drawer
         navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().clear();
 
-        reference.child("accountType").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    Toast.makeText(MainActivity.this, "null account type", Toast.LENGTH_SHORT).show();
-                } else {
-                    navigationView.getMenu().clear();
-                    if (dataSnapshot.getValue().toString().equals("patient")) {
-                        navigationView.inflateMenu(R.menu.drawer_view_patient);
-                        navigationView.setCheckedItem(R.id.nav_patient_info);
-                        accountType = "patient";
-                    } else if (dataSnapshot.getValue().toString().equals("doctor")) {
-                        navigationView.inflateMenu(R.menu.drawer_view_doctor);
-                        fragment = new PatientListFragment();
-                        currentState = MenuStates.PATIENT_LIST;
-                        ChangeFragment(fragment);
-                        navigationView.setCheckedItem(R.id.nav_patient_list);
-                        accountType = "doctor";
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+        if (accountType.equals("patient"))
+            initPatient();
+        else if (accountType.equals("doctor"))
+            initDoctor();
 
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -201,12 +186,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.CHAT) {
                                     fragment = new ChatFragment();
                                     currentState = MenuStates.CHAT;
-                                }
-                                break;
-                            case R.id.nav_connect:
-                                if (currentState != MenuStates.CONNECT) {
-                                    fragment = new ConnectFragment();
-                                    currentState = MenuStates.CONNECT;
                                 }
                                 break;
                             case R.id.nav_patient_list:
@@ -264,7 +243,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Add the default Fragment once the user logged in
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.add(R.id.fragment_container, new PatientInformationFragment());
+        if (accountType.equals("patient"))
+            ft.add(R.id.fragment_container, new PatientInformationFragment());
+        else if (accountType.equals("doctor"))
+            ft.add(R.id.fragment_container, new PatientListFragment());
         ft.commit();
     }
 
@@ -381,5 +363,79 @@ public class MainActivity extends AppCompatActivity {
 
     public String getAccountType() {
         return accountType;
+    }
+
+    public void setDoctorProfile(String childKey, final int index, boolean isDoctor) {
+        if (isDoctor) {
+            reference.child("Profile").child(childKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null)
+                        doctorProfile[index] = dataSnapshot.getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            DatabaseReference databaseReference = database.getReference("Users").child(currentDoctorUID);
+            databaseReference.child("Profile").child(childKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null)
+                        doctorProfile[index] = dataSnapshot.getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getCurrentDoctor() {
+        reference.child("Doctor").child("UID").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    doctorProfile[0] = "no doctor";
+                } else {
+                    currentDoctorUID = dataSnapshot.getValue().toString();
+                    doctorProfile[3] = dataSnapshot.getValue().toString().substring(0, 5);
+                    setDoctorProfile("name", 0, false);
+                    setDoctorProfile("location", 1, false);
+                    setDoctorProfile("occupation", 2, false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public String[] getDoctorProfile() {
+        return doctorProfile;
+    }
+
+    public void initDoctor() {
+        navigationView.inflateMenu(R.menu.drawer_view_doctor);
+        navigationView.setCheckedItem(R.id.nav_patient_list);
+        accountType = "doctor";
+        setDoctorProfile("name", 0, true);
+        setDoctorProfile("location", 1, true);
+        setDoctorProfile("occupation", 2, true);
+        doctorProfile[3] = fireBaseUser.getUid().substring(0, 5);
+    }
+
+    public void initPatient() {
+        navigationView.inflateMenu(R.menu.drawer_view_patient);
+        navigationView.setCheckedItem(R.id.nav_patient_info);
+        accountType = "patient";
+        getCurrentDoctor();
     }
 }

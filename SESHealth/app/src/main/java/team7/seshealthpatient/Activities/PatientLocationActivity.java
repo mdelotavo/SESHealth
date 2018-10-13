@@ -1,11 +1,17 @@
 package team7.seshealthpatient.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -39,25 +45,34 @@ import team7.seshealthpatient.PacketInfo;
 import team7.seshealthpatient.R;
 import team7.seshealthpatient.Services.Shigleton;
 
-public class PatientLocationActivity extends FragmentActivity implements OnMapReadyCallback {
+public class PatientLocationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private Toolbar toolbar;
     private GoogleMap mMap;
     private static final int DEFAULT_ZOOM = 15;
     Button sendLocationBtn;
     Location facilityLocation;
     Marker mMarker;
+    private AlertDialog.Builder helpAlertBuilder;
+    private AlertDialog helpAlert;
 
     Double Latitude, Longitude, dLatitude, dLongitude;
     String uid, name, dLocation;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_location);
+
+        toolbar = findViewById(R.id.patientLocationToolbar);
+        toolbar.setTitle("Patient Location");
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        createHelpDialog();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -71,7 +86,6 @@ public class PatientLocationActivity extends FragmentActivity implements OnMapRe
         String sessionLong = getIntent().getStringExtra("Longitude");
         Longitude = Double.parseDouble(sessionLong);
         uid = intent.getStringExtra("uid");
-
 
         FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Profile").child("name")
                 .addValueEventListener(new ValueEventListener() {
@@ -189,4 +203,47 @@ public class PatientLocationActivity extends FragmentActivity implements OnMapRe
         });
     }
 
+    public void createHelpDialog() {
+        helpAlertBuilder = new AlertDialog.Builder(this);
+        helpAlertBuilder.setMessage("placeholder");
+        helpAlertBuilder.setCancelable(true);
+        helpAlertBuilder.setPositiveButton(
+                "Ok",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        helpAlert = helpAlertBuilder.create();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.menu_patient_location, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.patient_location_help:
+                helpAlert.show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
 }

@@ -366,10 +366,10 @@ public class LoginActivity extends AppCompatActivity {
     public void setupCompletedCheck() {
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        reference = database.getReference("Users").child(user.getUid()).child("setupComplete");
+        reference = database.getReference("Users").child(user.getUid());
         reference.keepSynced(true);
 
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child("setupComplete").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
@@ -390,7 +390,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void startMain() {
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        reference.child("accountType").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    startSetup();
+                } else {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class).putExtra("accountType", dataSnapshot.getValue().toString()));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     public void startSetup() {
