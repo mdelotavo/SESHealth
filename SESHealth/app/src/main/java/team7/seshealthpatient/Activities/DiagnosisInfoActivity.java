@@ -191,7 +191,7 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                     replyTextView.setText(dataSnapshot.getValue().toString().trim());
                     recommendedLocationIV.setVisibility(View.VISIBLE);
                 } else {
-                    replyTextView.setText("No reply");
+                    replyTextView.setText(replyTextView.getText() + dataSnapshot.getValue().toString().trim());
                 }
             }
 

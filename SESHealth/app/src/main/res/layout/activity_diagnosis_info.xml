@@ -297,6 +297,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetLocationLL"
+                android:visibility="invisible"
                 android:src="@drawable/ic_map" />
 
 
