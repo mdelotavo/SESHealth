@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -420,18 +422,19 @@ public class PacketInfoActivity extends AppCompatActivity {
         return et;
     }
 
-
     // Sends a packet back to the patient with a reply about all the info
     @OnClick(R.id.packetReplyBtn)
     public void replyToPacket() {
         Map<String, String> replyPacket = new HashMap<>();
         packetReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnosis").child(packetId);
+        Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
         String message =  editTextNotNull(messageET);
         String weight = editTextNotNull(weightET);
         String height = editTextNotNull(heightET);
         String allergies = editTextNotNull(allergiesET);
         String medication = editTextNotNull(medicationET);
         String heartbeat = editTextNotNull(heartbeatET);
+        replyPacket.put("Timestamp", currentTimestamp.toString());
         replyPacket.put("message", message);
         replyPacket.put("weight", weight);
         replyPacket.put("height", height);
@@ -448,8 +451,6 @@ public class PacketInfoActivity extends AppCompatActivity {
                     Toast.makeText(PacketInfoActivity.this, "An error occurred, please try again...", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     private String editTextNotNull(EditText et) {

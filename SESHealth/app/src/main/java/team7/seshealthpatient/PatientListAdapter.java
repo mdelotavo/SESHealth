@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,9 +98,9 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
                 @Override
                 public void onClick(View view) {
                     if (view != null) {
-                        Intent userChat = new Intent(mContext, DiagnosisHistoryActivity.class);
-                        userChat.putExtra("uid", patientUid);
-                        mContext.startActivity(userChat);
+                        Intent diagnosisHistory = new Intent(mContext, DiagnosisHistoryActivity.class);
+                        diagnosisHistory.putExtra("uid", patientUid);
+                        mContext.startActivity(diagnosisHistory);
                     }
                 }
             });
