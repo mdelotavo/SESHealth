@@ -136,13 +136,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginTop="20dp"
                 android:layout_below="@+id/packetMessageLL">
 
                 <TextView
                     android:id="@+id/packetWeightLabelTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:text="Weight (kg)"
                     android:textSize="25sp"
                     android:textColor="#333"/>
@@ -164,103 +164,179 @@
                 android:layout_alignTop="@+id/packetWeightLL"
                 android:src="@drawable/ic_heart_icon" />
 
-            <TextView
-                android:id="@+id/packetHeightLabelTV"
+            <LinearLayout
+                android:id="@+id/packetHeightLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetWeightLL"
+                android:orientation="vertical"
                 android:layout_marginTop="20dp"
-                android:text="Height (cm)"
-                android:textSize="25sp"
-                android:textColor="#333"/>
+                android:layout_below="@+id/packetWeightLL">
 
-            <TextView
-                android:id="@+id/packetHeightInfoTV"
+                <TextView
+                    android:id="@+id/packetHeightLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height (cm)"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetHeightInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/packetReplyHeightIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetHeightLabelTV"
-                android:text="Height"
-                android:textSize="18sp" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetHeightLL"
+                android:src="@drawable/ic_heart_icon" />
 
-            <TextView
-                android:id="@+id/packetAllergiesLabelTV"
+            <LinearLayout
+                android:id="@+id/packetAllergiesLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetHeightInfoTV"
+                android:orientation="vertical"
                 android:layout_marginTop="20dp"
-                android:text="Allergies"
-                android:textSize="25sp"
-                android:textColor="#333"/>
+                android:layout_below="@+id/packetHeightLL">
 
-            <TextView
-                android:id="@+id/packetAllergiesInfoTV"
+                <TextView
+                    android:id="@+id/packetAllergiesLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allergies"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetAllergiesInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allergies"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/packetReplyAllergiesIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetAllergiesLabelTV"
-                android:text="Allergies"
-                android:textSize="18sp" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetAllergiesLL"
+                android:src="@drawable/ic_heart_icon" />
 
-            <TextView
-                android:id="@+id/packetMedicationLabelTV"
+            <LinearLayout
+                android:id="@+id/packetMedicationLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetAllergiesInfoTV"
+                android:orientation="vertical"
                 android:layout_marginTop="20dp"
-                android:text="Medication"
-                android:textSize="25sp"
-                android:textColor="#333"/>
+                android:layout_below="@+id/packetAllergiesLL">
 
-            <TextView
-                android:id="@+id/packetMedicationInfoTV"
+                <TextView
+                    android:id="@+id/packetMedicationLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medication"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetMedicationInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="medication"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/packetReplyMedicationIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetMedicationLabelTV"
-                android:text="medication"
-                android:textSize="18sp" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetMedicationLL"
+                android:src="@drawable/ic_heart_icon" />
 
-            <TextView
-                android:id="@+id/packetLocationLabelTV"
+            <LinearLayout
+                android:id="@+id/packetLocationLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetMedicationInfoTV"
+                android:orientation="vertical"
                 android:layout_marginTop="20dp"
-                android:text="Location"
-                android:textSize="25sp"
-                android:textColor="#333"/>
+                android:layout_below="@+id/packetMedicationLL">
 
-            <TextView
-                android:id="@+id/packetLocationInfoTV"
+                <TextView
+                    android:id="@+id/packetLocationLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetLocationInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#333"
+                    android:text="123 University of Technology, Sydney, NSW, 2000"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/packetReplyLocationIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetLocationLabelTV"
-                android:textStyle="bold"
-                android:textColor="#333"
-                android:text="123 University of Technology, Sydney, NSW, 2000 (Tap to open in map)"
-                android:textSize="18sp" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetLocationLL"
+                android:src="@drawable/ic_heart_icon" />
 
-            <TextView
-                android:id="@+id/packetHeartbeatLabelTV"
+            <LinearLayout
+                android:id="@+id/packetHeartbeatLL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetLocationInfoTV"
+                android:orientation="vertical"
                 android:layout_marginTop="20dp"
-                android:text="Heart Rate"
-                android:textSize="25sp"
-                android:textColor="#333"/>
+                android:layout_below="@+id/packetLocationLL">
 
-            <TextView
-                android:id="@+id/packetHeartbeatInfoTV"
+                <TextView
+                    android:id="@+id/packetHeartbeatLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Heart Rate"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetHeartbeatInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Heart"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/packetReplyHeartbeatIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetHeartbeatLabelTV"
-                android:text="Heart"
-                android:textSize="18sp" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetHeartbeatLL"
+                android:src="@drawable/ic_heart_icon" />
+
 
             <LinearLayout
                 android:id="@+id/bottomVideoFileLL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetHeartbeatInfoTV"
+                android:layout_below="@id/packetHeartbeatLL"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:gravity="center"

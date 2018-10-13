@@ -66,9 +66,9 @@ public class PacketInfoActivity extends AppCompatActivity {
     EditText messageET;
     EditText weightET;
     EditText heightET;
-    EditText AllergiesET;
-    EditText MedicationET;
-    EditText heartRateET;
+    EditText allergiesET;
+    EditText medicationET;
+    EditText heartbeatET;
 
     @BindView(R.id.packetInfoToolbar)
     Toolbar packetInfoToolbar;
@@ -120,6 +120,18 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @BindView(R.id.packetWeightLL)
     LinearLayout packetWeightLL;
+
+    @BindView(R.id.packetHeightLL)
+    LinearLayout packetHeightLL;
+
+    @BindView(R.id.packetAllergiesLL)
+    LinearLayout packetAllergiesLL;
+
+    @BindView(R.id.packetMedicationLL)
+    LinearLayout packetMedicationLL;
+
+    @BindView(R.id.packetHeartbeatLL)
+    LinearLayout packetHeartbeatLL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -237,7 +249,7 @@ public class PacketInfoActivity extends AppCompatActivity {
         videoFile.getParentFile().delete();
     }
 
-    @OnClick(R.id.packetLocationInfoTV)
+    @OnClick(R.id.packetReplyLocationIV)
     public void locationInMap() {
         if (!packetLocationInfoTV.getText().toString().equals("Not included") && !packetLocationInfoTV.getText().toString().isEmpty()) {
             try {
@@ -261,7 +273,7 @@ public class PacketInfoActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (childKey.equals("location") && !dataSnapshot.getValue().toString().trim().equals("Not included"))
-                    textView.setText(dataSnapshot.getValue().toString().trim() + "  (Tap to open in map)");
+                    textView.setText(dataSnapshot.getValue().toString().trim());
                 else
                     textView.setText(dataSnapshot.getValue().toString().trim());
             }
@@ -365,25 +377,45 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @OnClick(R.id.packetReplyMessageIV)
     public void setReplyMessageField() {
-        if (messageET == null) {
-            messageET = new EditText(PacketInfoActivity.this);
-            packetMessageLL.addView(messageET);
-        } else {
-            packetWeightLL.removeView(messageET);
-            messageET = null;
-        }
+        messageET = displayEditText(messageET, packetMessageLL);
     }
 
     @OnClick(R.id.packetReplyWeightIV)
     public void setReplyWeightField() {
-        if (weightET == null) {
-            weightET = new EditText(PacketInfoActivity.this);
-            packetWeightLL.addView(weightET);
-        } else {
-            packetWeightLL.removeView(weightET);
-            weightET = null;
-        }
+        weightET = displayEditText(weightET, packetWeightLL);
     }
+
+    @OnClick(R.id.packetReplyHeightIV)
+    public void setReplyHeightField() {
+        heightET = displayEditText(heightET, packetHeightLL);
+    }
+
+    @OnClick(R.id.packetReplyAllergiesIV)
+    public void setReplyAllergiesField() {
+        allergiesET = displayEditText(allergiesET, packetAllergiesLL);
+    }
+
+    @OnClick(R.id.packetReplyMedicationIV)
+    public void setReplyMedicationField() {
+        medicationET = displayEditText(medicationET, packetMedicationLL);
+    }
+
+    @OnClick(R.id.packetReplyHeartbeatIV)
+    public void setReplyHeartbeatField() {
+        heartbeatET = displayEditText(heartbeatET, packetHeartbeatLL);
+    }
+
+    private EditText displayEditText(EditText et, LinearLayout ll) {
+        if (et == null) {
+            et = new EditText(PacketInfoActivity.this);
+            ll.addView(et);
+        } else {
+            ll.removeView(et);
+            et = null;
+        }
+        return et;
+    }
+
 
     // Sends a packet back to the patient with a reply about all the info
     @OnClick(R.id.packetReplyBtn)
