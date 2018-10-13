@@ -192,7 +192,6 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                     recommendedLocationIV.setVisibility(View.VISIBLE);
                 } else {
                     replyTextView.setText("No reply");
-                    recommendedLocationIV.setVisibility(View.INVISIBLE);
                 }
             }
 
