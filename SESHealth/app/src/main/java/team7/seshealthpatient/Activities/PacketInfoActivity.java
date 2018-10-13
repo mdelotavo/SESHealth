@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,6 +54,7 @@ import team7.seshealthpatient.R;
 
 public class PacketInfoActivity extends AppCompatActivity {
 
+    private final String TAG = "PacketInfoActivity";
     private TextView[] textViews;
     private String[] childrenKeys;
     private String uid;
@@ -68,6 +70,10 @@ public class PacketInfoActivity extends AppCompatActivity {
     private File videoFile = new File(
             Environment.getExternalStorageDirectory().getPath() + "/healthapp/video.mp4");
 
+
+    // Request Codes
+    private static final int LOCATION_REQUEST_CODE = 6;
+
     // Reply Fields
     EditText messageET;
     EditText weightET;
@@ -75,6 +81,7 @@ public class PacketInfoActivity extends AppCompatActivity {
     EditText allergiesET;
     EditText medicationET;
     EditText heartbeatET;
+    TextView locationTV;
 
     @BindView(R.id.packetInfoToolbar)
     Toolbar packetInfoToolbar;
@@ -135,6 +142,9 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @BindView(R.id.packetMedicationLL)
     LinearLayout packetMedicationLL;
+
+    @BindView(R.id.packetLocationLL)
+    LinearLayout packetLocationLL;
 
     @BindView(R.id.packetHeartbeatLL)
     LinearLayout packetHeartbeatLL;
@@ -267,7 +277,7 @@ public class PacketInfoActivity extends AppCompatActivity {
                 intent.putExtra("Latitude", latitude);
                 intent.putExtra("Longitude", longitude);
                 intent.putExtra("uid", uid);
-                startActivity(intent);
+                startActivityForResult(intent, LOCATION_REQUEST_CODE);
             } catch (Exception e) {
                 Toast.makeText(this, "Unable to open location in Map", Toast.LENGTH_SHORT).show();
             }
@@ -472,6 +482,21 @@ public class PacketInfoActivity extends AppCompatActivity {
                     new DownloadVideo().execute(videoURI);
                 else
                     Toast.makeText(getApplicationContext(), getString(R.string.downloadVideoPermissionException), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_REQUEST_CODE && resultCode == RESULT_OK) {
+            if(locationTV == null) {
+                Log.d(TAG, "Made it here: " + data.getStringExtra("location"));
+                locationTV = new TextView(this);
+                locationTV.setText(data.getStringExtra("location"));
+                packetLocationLL.addView(locationTV);
+            } else {
+                locationTV.setText(data.getStringExtra("location"));
             }
         }
     }

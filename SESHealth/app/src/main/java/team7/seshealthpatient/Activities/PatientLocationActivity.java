@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 
 import team7.seshealthpatient.Fragments.ChatMessage;
 import team7.seshealthpatient.MapModels.PlaceResult;
+import team7.seshealthpatient.PacketInfo;
 import team7.seshealthpatient.R;
 import team7.seshealthpatient.Services.Shigleton;
 
@@ -185,12 +186,18 @@ public class PatientLocationActivity extends FragmentActivity implements OnMapRe
                                     .setValue(new ChatMessage(dLocation, name));
                             Toast.makeText(getApplicationContext(), "Location Sent", Toast.LENGTH_SHORT).show();
                             sendLocationBtn.setVisibility(View.GONE);
+
+
+                            Intent intent = new Intent(PatientLocationActivity.this, PacketInfoActivity.class);
+                            intent.putExtra("location", dLocation);
+                            setResult(RESULT_OK, intent);
+                            finish();
                         }
                     });
                 }
                 return false;
             }
         });
-
     }
+
 }
