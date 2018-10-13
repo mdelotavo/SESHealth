@@ -120,6 +120,13 @@
                     android:text="Message"
                     android:textSize="18sp" />
 
+                <TextView
+                    android:id="@+id/packetMessageReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -143,6 +150,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Weight"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetWeightReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
                     android:textSize="18sp" />
 
             </LinearLayout>
@@ -170,6 +184,13 @@
                     android:text="Height"
                     android:textSize="18sp" />
 
+                <TextView
+                    android:id="@+id/packetHeightReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -195,6 +216,13 @@
                     android:text="Allergies"
                     android:textSize="18sp" />
 
+                <TextView
+                    android:id="@+id/packetAllergiesReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -218,6 +246,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="medication"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetMedicationReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
                     android:textSize="18sp" />
 
             </LinearLayout>
@@ -247,6 +282,13 @@
                     android:text="123 University of Technology, Sydney, NSW, 2000"
                     android:textSize="18sp" />
 
+                <TextView
+                    android:id="@+id/packetLocationReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
             </LinearLayout>
 
 
@@ -271,6 +313,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Heart"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetHeartbeatReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
                     android:textSize="18sp" />
 
             </LinearLayout>

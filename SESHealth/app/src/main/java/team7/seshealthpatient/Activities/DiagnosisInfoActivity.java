@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -28,6 +29,8 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
 
     private TextView[] textViews;
     private String[] childrenKeys;
+    private TextView[] replyTextViews;
+    private String[] replyKeys;
 
     private FirebaseUser mUser;
     private FirebaseDatabase database;
@@ -71,6 +74,29 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
     @BindView(R.id.packetHeartbeatInfoTV)
     TextView packetHeartbeatInfoTV;
 
+    // Replies
+
+    @BindView(R.id.packetMessageReplyTV)
+    TextView packetMessageReplyTV;
+
+    @BindView(R.id.packetWeightReplyTV)
+    TextView packetWeightReplyTV;
+
+    @BindView(R.id.packetHeightReplyTV)
+    TextView packetHeightReplyTV;
+
+    @BindView(R.id.packetAllergiesReplyTV)
+    TextView packetAllergiesReplyTV;
+
+    @BindView(R.id.packetMedicationReplyTV)
+    TextView packetMedicationReplyTV;
+
+    @BindView(R.id.packetLocationReplyTV)
+    TextView packetLocationReplyTV;
+
+    @BindView(R.id.packetHeartbeatReplyTV)
+    TextView packetHeartbeatReplyTV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +123,9 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                 "allergies", "medication", "location", "heartBeat", "message",
                 "videoDownloadUri", "fileDownloadUri"};
 
+        replyTextViews = new TextView[] {packetMessageReplyTV, packetWeightReplyTV, packetHeightReplyTV, packetAllergiesReplyTV, packetMedicationReplyTV, packetHeartbeatReplyTV};
+        replyKeys = new String[] {"message", "weight", "height", "allergies", "medication", "heartBeat"};
+
         if(extras != null) {
             patientId = extras.get("patientId").toString();
             packetId = extras.get("packetId").toString();
@@ -118,6 +147,8 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
         protected Object doInBackground(Object[] objects) {
             for (int i = 0; i < textViews.length; i++)
                 setPacketInfoValues(childrenKeys[i], textViews[i]);
+            for (int i = 0; i < replyTextViews.length; i++)
+                setPacketReplyValues(replyKeys[i], replyTextViews[i]);
             return null;
         }
 
@@ -135,6 +166,26 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                     textView.setText(dataSnapshot.getValue().toString().trim());
                 else
                     textView.setText(dataSnapshot.getValue().toString().trim());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    public void setPacketReplyValues(final String replyKey, final TextView replyTextView) {
+        Log.d(TAG, "packet id: " + packetId);
+        reference.child("Diagnosis").child(packetId).child(replyKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (replyKey.equals("location") && !dataSnapshot.getValue().toString().trim().equals("Not included"))
+                    replyTextView.setText(dataSnapshot.getValue().toString().trim());
+                else
+                    replyTextView.setText(replyTextView.getText() + dataSnapshot.getValue().toString().trim());
+
             }
 
             @Override
