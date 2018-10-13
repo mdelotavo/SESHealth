@@ -291,6 +291,14 @@
 
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/recommendedLocationIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetLocationLL"
+                android:src="@drawable/ic_map" />
+
 
             <LinearLayout
                 android:id="@+id/packetHeartbeatLL"

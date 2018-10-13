@@ -63,6 +63,7 @@ public class PacketInfoActivity extends AppCompatActivity {
     private String fileURI;
     private Toolbar toolbar;
     private String coordinates;
+    private String locationReply;
     private boolean fileBtnDisabled;
     private boolean videoBtnDisabled;
     private DatabaseReference packetReference;
@@ -448,10 +449,16 @@ public class PacketInfoActivity extends AppCompatActivity {
         replyPacket.put("message", message);
         replyPacket.put("weight", weight);
         replyPacket.put("height", height);
-        // replyPacket.put("location", location);
+
+        if(locationReply != null)
+            replyPacket.put("location", locationReply);
+        else
+            replyPacket.put("location", "No reply");
+
         replyPacket.put("allergies", allergies);
         replyPacket.put("medication", medication);
         replyPacket.put("heartBeat", heartbeat);
+
         packetReference.setValue(replyPacket).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -464,7 +471,7 @@ public class PacketInfoActivity extends AppCompatActivity {
     }
 
     private String editTextNotNull(EditText et) {
-        return et != null ? et.getText().toString().trim() : "No Reply";
+        return et != null ? et.getText().toString().trim() : "No reply";
     }
 
     @Override
@@ -491,12 +498,14 @@ public class PacketInfoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_REQUEST_CODE && resultCode == RESULT_OK) {
             if(locationTV == null) {
-                Log.d(TAG, "Made it here: " + data.getStringExtra("location"));
                 locationTV = new TextView(this);
-                locationTV.setText(data.getStringExtra("location"));
+                locationReply = data.getStringExtra("location");
+                locationTV.setText(locationReply);
                 packetLocationLL.addView(locationTV);
+
             } else {
-                locationTV.setText(data.getStringExtra("location"));
+                locationReply = data.getStringExtra("location");
+                locationTV.setText(locationReply);
             }
         }
     }

@@ -1,13 +1,16 @@
 package team7.seshealthpatient.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import team7.seshealthpatient.R;
 
 public class DiagnosisInfoActivity extends AppCompatActivity {
@@ -97,6 +101,9 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
     @BindView(R.id.packetHeartbeatReplyTV)
     TextView packetHeartbeatReplyTV;
 
+    @BindView(R.id.recommendedLocationIV)
+    ImageView recommendedLocationIV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,15 +130,14 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                 "allergies", "medication", "location", "heartBeat", "message",
                 "videoDownloadUri", "fileDownloadUri"};
 
-        replyTextViews = new TextView[] {packetMessageReplyTV, packetWeightReplyTV, packetHeightReplyTV, packetAllergiesReplyTV, packetMedicationReplyTV, packetHeartbeatReplyTV};
-        replyKeys = new String[] {"message", "weight", "height", "allergies", "medication", "heartBeat"};
+        replyTextViews = new TextView[] {packetMessageReplyTV, packetWeightReplyTV, packetHeightReplyTV, packetAllergiesReplyTV, packetMedicationReplyTV, packetLocationReplyTV, packetHeartbeatReplyTV};
+        replyKeys = new String[] {"message", "weight", "height", "allergies", "medication", "location", "heartBeat"};
 
         if(extras != null) {
             patientId = extras.get("patientId").toString();
             packetId = extras.get("packetId").toString();
-        } else {
-            patientId = mUser.getUid();
         }
+
         reference = FirebaseDatabase.getInstance().getReference().child("Users").child(patientId);
 
         new SetView().execute();
@@ -181,11 +187,13 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
         reference.child("Diagnosis").child(packetId).child(replyKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (replyKey.equals("location") && !dataSnapshot.getValue().toString().trim().equals("Not included"))
+                if (replyKey.equals("location") && !dataSnapshot.getValue().toString().trim().equals("No reply")) {
                     replyTextView.setText(dataSnapshot.getValue().toString().trim());
-                else
-                    replyTextView.setText(replyTextView.getText() + dataSnapshot.getValue().toString().trim());
-
+                    recommendedLocationIV.setVisibility(View.VISIBLE);
+                } else {
+                    replyTextView.setText("No reply");
+                    recommendedLocationIV.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
@@ -193,6 +201,26 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @OnClick(R.id.recommendedLocationIV)
+    public void showRecommendedLocation() {
+        String Coordinates = packetLocationReplyTV.getText().toString().trim();
+
+        if (Coordinates.contains("lat")){
+            String latLon = Coordinates.replaceAll("[^0-9.,-]","");
+            //Toast.makeText(ChatActivity.this, "This is doctor recommended location: " + latLon, Toast.LENGTH_SHORT).show();
+
+            String[] latLong = latLon.split(",");
+            String latitude = latLong[0];
+            String longitude = latLong[1];
+
+            Intent intent = new Intent(DiagnosisInfoActivity.this, PatientViewDoctorRecommendationActivity.class);
+            intent.putExtra("Latitude", latitude);
+            intent.putExtra("Longitude", longitude);
+            startActivity(intent);
+
+        }
     }
 
 }
