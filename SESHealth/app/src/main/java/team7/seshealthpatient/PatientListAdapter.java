@@ -112,7 +112,7 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
                     if (view != null) {
                         Intent patientPackets = new Intent(mContext, PatientPacketsActivity.class);
                         patientPackets.putExtra("uid", patientUid);
-                        fragment.startActivity(patientPackets);
+                        mContext.startActivity(patientPackets);
                     }
                 }
             });

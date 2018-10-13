@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetMessageLL"
-                android:src="@drawable/ic_heart_icon" />
+                android:src="@drawable/ic_chat_icon" />
 
 
             <LinearLayout
@@ -162,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetWeightLL"
-                android:src="@drawable/ic_heart_icon" />
+                android:src="@drawable/ic_chat_icon" />
 
             <LinearLayout
                 android:id="@+id/packetHeightLL"
@@ -195,7 +195,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetHeightLL"
-                android:src="@drawable/ic_heart_icon" />
+                android:src="@drawable/ic_chat_icon" />
 
             <LinearLayout
                 android:id="@+id/packetAllergiesLL"
@@ -228,7 +228,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetAllergiesLL"
-                android:src="@drawable/ic_heart_icon" />
+                android:src="@drawable/ic_chat_icon" />
 
             <LinearLayout
                 android:id="@+id/packetMedicationLL"
@@ -261,7 +261,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetMedicationLL"
-                android:src="@drawable/ic_heart_icon" />
+                android:src="@drawable/ic_chat_icon" />
 
             <LinearLayout
                 android:id="@+id/packetLocationLL"
@@ -296,7 +296,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetLocationLL"
-                android:src="@drawable/ic_heart_icon" />
+                android:src="@drawable/ic_map" />
 
             <LinearLayout
                 android:id="@+id/packetHeartbeatLL"
@@ -329,7 +329,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetHeartbeatLL"
-                android:src="@drawable/ic_heart_icon" />
+                android:src="@drawable/ic_chat_icon" />
 
 
             <LinearLayout

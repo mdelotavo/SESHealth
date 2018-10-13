@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +39,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -420,7 +424,36 @@ public class PacketInfoActivity extends AppCompatActivity {
     // Sends a packet back to the patient with a reply about all the info
     @OnClick(R.id.packetReplyBtn)
     public void replyToPacket() {
+        Map<String, String> replyPacket = new HashMap<>();
+        packetReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnosis").child(packetId);
+        String message =  editTextNotNull(messageET);
+        String weight = editTextNotNull(weightET);
+        String height = editTextNotNull(heightET);
+        String allergies = editTextNotNull(allergiesET);
+        String medication = editTextNotNull(medicationET);
+        String heartbeat = editTextNotNull(heartbeatET);
+        replyPacket.put("message", message);
+        replyPacket.put("weight", weight);
+        replyPacket.put("height", height);
+        // replyPacket.put("location", location);
+        replyPacket.put("allergies", allergies);
+        replyPacket.put("medication", medication);
+        replyPacket.put("heartBeat", heartbeat);
+        packetReference.setValue(replyPacket).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    Toast.makeText(PacketInfoActivity.this, "Your reply was successfully submitted", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(PacketInfoActivity.this, "An error occurred, please try again...", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+
+    }
+
+    private String editTextNotNull(EditText et) {
+        return et != null ? et.getText().toString().trim() : "No Reply";
     }
 
     @Override
