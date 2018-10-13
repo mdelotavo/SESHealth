@@ -7,7 +7,7 @@
     tools:context="team7.seshealthpatient.Activities.PacketInfoActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/packetInfoToolbar"
+        android:id="@+id/diagnosisInfoToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/toolbarStyle"
@@ -16,7 +16,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/packetInfoToolbar">
+        android:layout_below="@id/diagnosisInfoToolbar">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -120,16 +120,14 @@
                     android:text="Message"
                     android:textSize="18sp" />
 
+                <TextView
+                    android:id="@+id/packetMessageReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/packetReplyMessageIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/packetMessageLL"
-                android:src="@drawable/ic_chat_icon" />
-
 
             <LinearLayout
                 android:id="@+id/packetWeightLL"
@@ -154,15 +152,14 @@
                     android:text="Weight"
                     android:textSize="18sp" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/packetWeightReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/packetReplyWeightIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/packetWeightLL"
-                android:src="@drawable/ic_chat_icon" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/packetHeightLL"
@@ -187,15 +184,14 @@
                     android:text="Height"
                     android:textSize="18sp" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/packetHeightReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/packetReplyHeightIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/packetHeightLL"
-                android:src="@drawable/ic_chat_icon" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/packetAllergiesLL"
@@ -220,15 +216,14 @@
                     android:text="Allergies"
                     android:textSize="18sp" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/packetAllergiesReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/packetReplyAllergiesIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/packetAllergiesLL"
-                android:src="@drawable/ic_chat_icon" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/packetMedicationLL"
@@ -253,15 +248,14 @@
                     android:text="medication"
                     android:textSize="18sp" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/packetMedicationReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/packetReplyMedicationIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/packetMedicationLL"
-                android:src="@drawable/ic_chat_icon" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/packetLocationLL"
@@ -288,15 +282,24 @@
                     android:text="123 University of Technology, Sydney, NSW, 2000"
                     android:textSize="18sp" />
 
+                <TextView
+                    android:id="@+id/packetLocationReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/packetReplyLocationIV"
+                android:id="@+id/recommendedLocationIV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/packetLocationLL"
+                android:visibility="invisible"
                 android:src="@drawable/ic_map" />
+
 
             <LinearLayout
                 android:id="@+id/packetHeartbeatLL"
@@ -321,66 +324,15 @@
                     android:text="Heart"
                     android:textSize="18sp" />
 
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/packetReplyHeartbeatIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/packetHeartbeatLL"
-                android:src="@drawable/ic_chat_icon" />
-
-
-            <LinearLayout
-                android:id="@+id/bottomVideoFileLL"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/packetHeartbeatLL"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:weightSum="1">
-
-                <Button
-                    android:id="@+id/packetPlayVideoBtn"
-                    android:layout_width="120dp"
+                <TextView
+                    android:id="@+id/packetHeartbeatReplyTV"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_login_btn"
-                    android:text="Play Video"
-                    android:textColor="#eee"
-                    android:textSize="18sp"
-                    android:layout_weight="0.45"/>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.1"/>
-
-                <Button
-                    android:id="@+id/packetDownloadFileBtn"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_login_btn"
-                    android:text="Open file"
-                    android:textColor="#eee"
-                    android:textSize="18sp"
-                    android:layout_weight="0.45"/>
+                    android:text="Reply: "
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/packetReplyBtn"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/gradient_login_btn"
-                android:text="Reply"
-                android:textColor="#eee"
-                android:textSize="18sp"
-                android:layout_below="@+id/bottomVideoFileLL"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:layout_weight="0.45"/>
 
         </RelativeLayout>
 

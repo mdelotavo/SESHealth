@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import team7.seshealthpatient.Activities.ChatActivity;
+import team7.seshealthpatient.Activities.DiagnosisHistoryActivity;
 import team7.seshealthpatient.Activities.PatientPacketsActivity;
 import team7.seshealthpatient.Activities.ProfileActivity;
 import team7.seshealthpatient.Fragments.PatientListFragment;
@@ -50,6 +53,7 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
         ImageView patientRejectIV = (ImageView) convertView.findViewById(R.id.patientRejectIV);
         ImageView patientAcceptIV = (ImageView) convertView.findViewById(R.id.patientAcceptIV);
         ImageView patientPacketIV = (ImageView) convertView.findViewById(R.id.patientPacketIV);
+        ImageView patientDiagnosisIV = (ImageView) convertView.findViewById(R.id.patientDiagnosisIV);
 
         if (patientProfileIV != null)
             patientProfileIV.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +93,19 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
                 }
             });
 
+        if (patientDiagnosisIV != null) {
+            patientDiagnosisIV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (view != null) {
+                        Intent diagnosisHistory = new Intent(mContext, DiagnosisHistoryActivity.class);
+                        diagnosisHistory.putExtra("uid", patientUid);
+                        mContext.startActivity(diagnosisHistory);
+                    }
+                }
+            });
+        }
+
         if (patientPacketIV != null)
             patientPacketIV.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,7 +113,7 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
                     if (view != null) {
                         Intent patientPackets = new Intent(mContext, PatientPacketsActivity.class);
                         patientPackets.putExtra("uid", patientUid);
-                        fragment.startActivity(patientPackets);
+                        mContext.startActivity(patientPackets);
                     }
                 }
             });

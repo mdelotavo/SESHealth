@@ -18,12 +18,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,15 +40,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import team7.seshealthpatient.MapModels.LocationDefaults;
+import team7.seshealthpatient.PacketInfo;
 import team7.seshealthpatient.R;
 
 public class PacketInfoActivity extends AppCompatActivity {
 
+    private final String TAG = "PacketInfoActivity";
     private TextView[] textViews;
     private String[] childrenKeys;
     private String uid;
@@ -53,12 +63,26 @@ public class PacketInfoActivity extends AppCompatActivity {
     private String fileURI;
     private Toolbar toolbar;
     private String coordinates;
+    private String locationReply;
     private boolean fileBtnDisabled;
     private boolean videoBtnDisabled;
     private DatabaseReference packetReference;
     private ProgressDialog progressDialog;
     private File videoFile = new File(
             Environment.getExternalStorageDirectory().getPath() + "/healthapp/video.mp4");
+
+
+    // Request Codes
+    private static final int LOCATION_REQUEST_CODE = 6;
+
+    // Reply Fields
+    EditText messageET;
+    EditText weightET;
+    EditText heightET;
+    EditText allergiesET;
+    EditText medicationET;
+    EditText heartbeatET;
+    TextView locationTV;
 
     @BindView(R.id.packetInfoToolbar)
     Toolbar packetInfoToolbar;
@@ -101,6 +125,30 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @BindView(R.id.packetDownloadFileBtn)
     Button packetDownloadFileBtn;
+
+    @BindView(R.id.packetReplyBtn)
+    Button packetReplyBtn;
+
+    @BindView(R.id.packetMessageLL)
+    LinearLayout packetMessageLL;
+
+    @BindView(R.id.packetWeightLL)
+    LinearLayout packetWeightLL;
+
+    @BindView(R.id.packetHeightLL)
+    LinearLayout packetHeightLL;
+
+    @BindView(R.id.packetAllergiesLL)
+    LinearLayout packetAllergiesLL;
+
+    @BindView(R.id.packetMedicationLL)
+    LinearLayout packetMedicationLL;
+
+    @BindView(R.id.packetLocationLL)
+    LinearLayout packetLocationLL;
+
+    @BindView(R.id.packetHeartbeatLL)
+    LinearLayout packetHeartbeatLL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -218,7 +266,7 @@ public class PacketInfoActivity extends AppCompatActivity {
         videoFile.getParentFile().delete();
     }
 
-    @OnClick(R.id.packetLocationInfoTV)
+    @OnClick(R.id.packetReplyLocationIV)
     public void locationInMap() {
         if (!packetLocationInfoTV.getText().toString().equals("Not included") && !packetLocationInfoTV.getText().toString().isEmpty()) {
             try {
@@ -230,7 +278,7 @@ public class PacketInfoActivity extends AppCompatActivity {
                 intent.putExtra("Latitude", latitude);
                 intent.putExtra("Longitude", longitude);
                 intent.putExtra("uid", uid);
-                startActivity(intent);
+                startActivityForResult(intent, LOCATION_REQUEST_CODE);
             } catch (Exception e) {
                 Toast.makeText(this, "Unable to open location in Map", Toast.LENGTH_SHORT).show();
             }
@@ -242,7 +290,7 @@ public class PacketInfoActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (childKey.equals("location") && !dataSnapshot.getValue().toString().trim().equals("Not included"))
-                    textView.setText(dataSnapshot.getValue().toString().trim() + "  (Tap to open in map)");
+                    textView.setText(dataSnapshot.getValue().toString().trim());
                 else
                     textView.setText(dataSnapshot.getValue().toString().trim());
             }
@@ -344,6 +392,88 @@ public class PacketInfoActivity extends AppCompatActivity {
         });
     }
 
+    @OnClick(R.id.packetReplyMessageIV)
+    public void setReplyMessageField() {
+        messageET = displayEditText(messageET, packetMessageLL);
+    }
+
+    @OnClick(R.id.packetReplyWeightIV)
+    public void setReplyWeightField() {
+        weightET = displayEditText(weightET, packetWeightLL);
+    }
+
+    @OnClick(R.id.packetReplyHeightIV)
+    public void setReplyHeightField() {
+        heightET = displayEditText(heightET, packetHeightLL);
+    }
+
+    @OnClick(R.id.packetReplyAllergiesIV)
+    public void setReplyAllergiesField() {
+        allergiesET = displayEditText(allergiesET, packetAllergiesLL);
+    }
+
+    @OnClick(R.id.packetReplyMedicationIV)
+    public void setReplyMedicationField() {
+        medicationET = displayEditText(medicationET, packetMedicationLL);
+    }
+
+    @OnClick(R.id.packetReplyHeartbeatIV)
+    public void setReplyHeartbeatField() {
+        heartbeatET = displayEditText(heartbeatET, packetHeartbeatLL);
+    }
+
+    private EditText displayEditText(EditText et, LinearLayout ll) {
+        if (et == null) {
+            et = new EditText(PacketInfoActivity.this);
+            ll.addView(et);
+        } else {
+            ll.removeView(et);
+            et = null;
+        }
+        return et;
+    }
+
+    // Sends a packet back to the patient with a reply about all the info
+    @OnClick(R.id.packetReplyBtn)
+    public void replyToPacket() {
+        Map<String, String> replyPacket = new HashMap<>();
+        packetReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnosis").child(packetId);
+        Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        String message =  editTextNotNull(messageET);
+        String weight = editTextNotNull(weightET);
+        String height = editTextNotNull(heightET);
+        String allergies = editTextNotNull(allergiesET);
+        String medication = editTextNotNull(medicationET);
+        String heartbeat = editTextNotNull(heartbeatET);
+        replyPacket.put("Timestamp", currentTimestamp.toString());
+        replyPacket.put("message", message);
+        replyPacket.put("weight", weight);
+        replyPacket.put("height", height);
+
+        if(locationReply != null)
+            replyPacket.put("location", locationReply);
+        else
+            replyPacket.put("location", "No reply");
+
+        replyPacket.put("allergies", allergies);
+        replyPacket.put("medication", medication);
+        replyPacket.put("heartBeat", heartbeat);
+
+        packetReference.setValue(replyPacket).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    Toast.makeText(PacketInfoActivity.this, "Your reply was successfully submitted", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(PacketInfoActivity.this, "An error occurred, please try again...", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String editTextNotNull(EditText et) {
+        return et != null ? et.getText().toString().trim() : "No reply";
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();
@@ -359,6 +489,23 @@ public class PacketInfoActivity extends AppCompatActivity {
                     new DownloadVideo().execute(videoURI);
                 else
                     Toast.makeText(getApplicationContext(), getString(R.string.downloadVideoPermissionException), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_REQUEST_CODE && resultCode == RESULT_OK) {
+            if(locationTV == null) {
+                locationTV = new TextView(this);
+                locationReply = data.getStringExtra("location");
+                locationTV.setText(locationReply);
+                packetLocationLL.addView(locationTV);
+
+            } else {
+                locationReply = data.getStringExtra("location");
+                locationTV.setText(locationReply);
             }
         }
     }

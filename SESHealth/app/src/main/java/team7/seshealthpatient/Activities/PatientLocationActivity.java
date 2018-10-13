@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 
 import team7.seshealthpatient.Fragments.ChatMessage;
 import team7.seshealthpatient.MapModels.PlaceResult;
+import team7.seshealthpatient.PacketInfo;
 import team7.seshealthpatient.R;
 import team7.seshealthpatient.Services.Shigleton;
 
@@ -167,30 +168,25 @@ public class PatientLocationActivity extends FragmentActivity implements OnMapRe
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
-                if(marker.isVisible()){
-                    sendLocationBtn.setVisibility(View.VISIBLE);
-                    sendLocationBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+            if(marker.isVisible()){
+                sendLocationBtn.setVisibility(View.VISIBLE);
+                sendLocationBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    dLocation = marker.getPosition().toString();
+                    sendLocationBtn.setVisibility(View.GONE);
 
-//                            dLatitude = marker.getPosition().latitude;
-//                            dLongitude = marker.getPosition().longitude;
-                            dLocation = marker.getPosition().toString();
-                            FirebaseDatabase.getInstance()
-                                    .getReference()
-                                    .child("Users")
-                                    .child(uid)
-                                    .child("Chat")
-                                    .push()
-                                    .setValue(new ChatMessage(dLocation, name));
-                            Toast.makeText(getApplicationContext(), "Location Sent", Toast.LENGTH_SHORT).show();
-                            sendLocationBtn.setVisibility(View.GONE);
-                        }
-                    });
-                }
-                return false;
+                    // Adds the location into the packet info to be sent when the doctor clicks reply
+                    Intent intent = new Intent(PatientLocationActivity.this, PacketInfoActivity.class);
+                    intent.putExtra("location", dLocation);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    }
+                });
+            }
+            return false;
             }
         });
-
     }
+
 }
