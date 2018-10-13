@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -40,6 +41,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import team7.seshealthpatient.Activities.DiagnosisHistoryActivity;
+import team7.seshealthpatient.Activities.DiagnosisInfoActivity;
 import team7.seshealthpatient.Activities.MainActivity;
 import team7.seshealthpatient.Activities.ProfileActivity;
 import team7.seshealthpatient.Patient;
@@ -51,10 +54,13 @@ public class DiagnosisHistoryFragment extends Fragment {
     private FirebaseUser mUser;
     private FirebaseDatabase database;
     private DatabaseReference reference;
-    private ListView diagnosisListView;
+    private String patientId;
 
     @BindView(R.id.noDiagnosticsMadeTV)
     TextView noDiagnosticsMadeTV;
+
+    @BindView(R.id.diagnosis_history_list)
+    ListView diagnosisListView;
 
     public DiagnosisHistoryFragment() {
     }
@@ -76,7 +82,8 @@ public class DiagnosisHistoryFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        final List<String[]> diagnosisList = new ArrayList<>();
+        final List<String> diagnosisList = new ArrayList<>();
+        final List<String> diagnosisUidList = new ArrayList<>();
 
         final ListAdapter diagnosisListAdapter = new ArrayAdapter<>(
                 getActivity(),
@@ -85,10 +92,11 @@ public class DiagnosisHistoryFragment extends Fragment {
         );
 
         diagnosisListView.setAdapter(diagnosisListAdapter);
+        diagnosisListView.setAdapter(diagnosisListAdapter);
 
-        String uuid = mUser.getUid();
+        patientId = mUser.getUid();
 
-        reference.child(uuid).child("Diagnosis")
+        reference.child(patientId).child("Diagnosis")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -96,12 +104,14 @@ public class DiagnosisHistoryFragment extends Fragment {
                         noDiagnosticsMadeTV.setVisibility(View.VISIBLE);
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String key = child.getKey();
+                            String key = child.getKey().toString();
                             String timeStamp = (child.child("Timestamp").getValue() != null)
                                     ? child.child("Timestamp").getValue().toString() : null;
                             if (timeStamp != null) {
-                                String[] diagnosisArr = new String[] {key, timeStamp};
-                                diagnosisList.add(diagnosisArr);
+                                if(noDiagnosticsMadeTV.getVisibility() != View.INVISIBLE)
+                                    noDiagnosticsMadeTV.setVisibility(View.INVISIBLE);
+                                diagnosisList.add(timeStamp);
+                                diagnosisUidList.add(key.toString());
                                 diagnosisListView.invalidateViews();
                             }
                         }
@@ -113,9 +123,16 @@ public class DiagnosisHistoryFragment extends Fragment {
                     }
                 });
 
-
-
-
+        diagnosisListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String key = diagnosisUidList.get(position);
+                Intent diagnosisInfo = new Intent(getActivity(), DiagnosisInfoActivity.class);
+                diagnosisInfo.putExtra("patientId", patientId);
+                diagnosisInfo.putExtra("packetId", key.toString());
+                startActivity(diagnosisInfo);
+            }
+        });
         return view;
     }
 

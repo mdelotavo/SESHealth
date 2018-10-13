@@ -79,8 +79,6 @@ public class DiagnosisHistoryActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
 
-        // Please try to use more String resources (values -> strings.xml) vs hardcoded Strings.
-
         toolbar.setTitle("Diagnosis History");
 
         // Set up the menu button
@@ -100,9 +98,7 @@ public class DiagnosisHistoryActivity extends AppCompatActivity {
 
         diagnosisListView.setAdapter(diagnosisListAdapter);
 
-        // TODO: Fix this logic
-        if (extras != null)
-            patientId = extras.getString("uid");
+        patientId = extras.getString("uid");
 
         reference.child(patientId).child("Diagnosis")
                 .addValueEventListener(new ValueEventListener() {
