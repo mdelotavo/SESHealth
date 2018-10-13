@@ -44,46 +44,10 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/packetMessageLabelTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/packetNameInfoTV"
-                android:layout_marginTop="20dp"
-                android:text="Message"
-                android:textSize="25sp"
-                android:textColor="#333"/>
-
-            <TextView
-                android:id="@+id/packetMessageInfoTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/packetMessageLabelTV"
-                android:text="Message"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/packetMobileLabelTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/packetMessageInfoTV"
-                android:layout_marginTop="20dp"
-                android:text="Mobile Number"
-                android:textSize="25sp"
-                android:textColor="#333"/>
-
-            <TextView
-                android:id="@+id/packetMobileInfoTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/packetMobileLabelTV"
-                android:text="Mobile"
-                android:textSize="18sp" />
-
-            <TextView
                 android:id="@+id/packetDOBLabelTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetMobileInfoTV"
+                android:layout_below="@id/packetNameInfoTV"
                 android:layout_marginTop="20dp"
                 android:text="Date of Birth"
                 android:textSize="25sp"
@@ -116,28 +80,95 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/packetWeightLabelTV"
+                android:id="@+id/packetMobileLabelTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/packetGenderInfoTV"
                 android:layout_marginTop="20dp"
-                android:text="Weight (kg)"
+                android:text="Mobile Number"
                 android:textSize="25sp"
                 android:textColor="#333"/>
 
             <TextView
-                android:id="@+id/packetWeightInfoTV"
+                android:id="@+id/packetMobileInfoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetWeightLabelTV"
-                android:text="Weight"
+                android:layout_below="@id/packetMobileLabelTV"
+                android:text="Mobile"
                 android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/packetMessageLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetMobileInfoTV">
+
+                <TextView
+                    android:id="@+id/packetMessageLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Message"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetMessageInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Message"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/packetReplyMessageIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetMessageLL"
+                android:src="@drawable/ic_heart_icon" />
+
+
+            <LinearLayout
+                android:id="@+id/packetWeightLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/packetMessageLL">
+
+                <TextView
+                    android:id="@+id/packetWeightLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Weight (kg)"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetWeightInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/packetReplyWeightIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetWeightLL"
+                android:src="@drawable/ic_heart_icon" />
 
             <TextView
                 android:id="@+id/packetHeightLabelTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/packetWeightInfoTV"
+                android:layout_below="@id/packetWeightLL"
                 android:layout_marginTop="20dp"
                 android:text="Height (cm)"
                 android:textSize="25sp"

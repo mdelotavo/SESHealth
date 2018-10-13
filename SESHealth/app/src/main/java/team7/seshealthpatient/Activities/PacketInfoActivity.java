@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,14 @@ public class PacketInfoActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private File videoFile = new File(
             Environment.getExternalStorageDirectory().getPath() + "/healthapp/video.mp4");
+
+    // Reply Fields
+    EditText messageET;
+    EditText weightET;
+    EditText heightET;
+    EditText AllergiesET;
+    EditText MedicationET;
+    EditText heartRateET;
 
     @BindView(R.id.packetInfoToolbar)
     Toolbar packetInfoToolbar;
@@ -102,8 +111,15 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @BindView(R.id.packetDownloadFileBtn)
     Button packetDownloadFileBtn;
+
     @BindView(R.id.packetReplyBtn)
     Button packetReplyBtn;
+
+    @BindView(R.id.packetMessageLL)
+    LinearLayout packetMessageLL;
+
+    @BindView(R.id.packetWeightLL)
+    LinearLayout packetWeightLL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -240,12 +256,6 @@ public class PacketInfoActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.packetReplyBtn)
-    public void replyToPacket() {
-        Intent intent = new Intent(PacketInfoActivity.this, ReplyToPacketActivity.class);
-        startActivity(intent);
-    }
-
     public void setPacketInfoValues(final String childKey, final TextView textView) {
         packetReference.child(childKey).addValueEventListener(new ValueEventListener() {
             @Override
@@ -351,6 +361,34 @@ public class PacketInfoActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @OnClick(R.id.packetReplyMessageIV)
+    public void setReplyMessageField() {
+        if (messageET == null) {
+            messageET = new EditText(PacketInfoActivity.this);
+            packetMessageLL.addView(messageET);
+        } else {
+            packetWeightLL.removeView(messageET);
+            messageET = null;
+        }
+    }
+
+    @OnClick(R.id.packetReplyWeightIV)
+    public void setReplyWeightField() {
+        if (weightET == null) {
+            weightET = new EditText(PacketInfoActivity.this);
+            packetWeightLL.addView(weightET);
+        } else {
+            packetWeightLL.removeView(weightET);
+            weightET = null;
+        }
+    }
+
+    // Sends a packet back to the patient with a reply about all the info
+    @OnClick(R.id.packetReplyBtn)
+    public void replyToPacket() {
+
     }
 
     @Override
