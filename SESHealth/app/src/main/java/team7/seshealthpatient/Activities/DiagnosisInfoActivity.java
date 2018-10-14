@@ -208,7 +208,6 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
 
         if (Coordinates.contains("lat")){
             String latLon = Coordinates.replaceAll("[^0-9.,-]","");
-            //Toast.makeText(ChatActivity.this, "This is doctor recommended location: " + latLon, Toast.LENGTH_SHORT).show();
 
             String[] latLong = latLon.split(",");
             String latitude = latLong[0];

@@ -18,7 +18,6 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import team7.seshealthpatient.Activities.ChatActivity;
 import team7.seshealthpatient.Activities.DiagnosisHistoryActivity;
 import team7.seshealthpatient.Activities.PatientPacketsActivity;
 import team7.seshealthpatient.Activities.ProfileActivity;

@@ -333,15 +333,16 @@ public class SendFileActivity extends AppCompatActivity {
             } else {
                 Log.d(TAG, "An error occurred when getting the heartbeat");
             }
-        }
+        } else if (requestCode == FILE_REQUEST_CODE ) {
+            if (resultCode == RESULT_OK && data != null) {
+                fileUri = data.getData();
+                packetFileTV.setText(data.getData().getLastPathSegment());
+                uploadFile(fileUri);
+                packetFileCheck.setChecked(true);
+            } else {
+                Toast.makeText(SendFileActivity.this, "Please select a file", Toast.LENGTH_SHORT).show();
 
-        if (requestCode == FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            fileUri = data.getData();
-            packetFileTV.setText(data.getData().getLastPathSegment());
-            uploadFile(fileUri);
-            packetFileCheck.setChecked(true);
-        } else {
-            Toast.makeText(SendFileActivity.this, "Please select a file", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

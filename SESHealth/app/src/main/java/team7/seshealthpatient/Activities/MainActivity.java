@@ -35,7 +35,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import butterknife.BindView;
 
-import team7.seshealthpatient.Fragments.ChatFragment;
 import team7.seshealthpatient.Fragments.DiagnosisHistoryFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, NAVIGATION_MAP, CHAT, PATIENT_LIST, PROFILE, DIAGNOSIS, SETTINGS, LOGOUT
+        PATIENT_INFO, NAVIGATION_MAP, PATIENT_LIST, PROFILE, DIAGNOSIS, SETTINGS, LOGOUT
     }
 
     /**
@@ -180,12 +179,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
                                     fragment = new MapFragment();
                                     currentState = MenuStates.NAVIGATION_MAP;
-                                }
-                                break;
-                            case R.id.nav_chat:
-                                if (currentState != MenuStates.CHAT) {
-                                    fragment = new ChatFragment();
-                                    currentState = MenuStates.CHAT;
                                 }
                                 break;
                             case R.id.nav_patient_list:

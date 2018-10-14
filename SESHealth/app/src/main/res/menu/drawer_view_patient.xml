@@ -14,10 +14,6 @@
             android:icon="@drawable/ic_map_outline"
             android:title="@string/facilities_map" />
         <item
-            android:id="@+id/nav_chat"
-            android:icon="@drawable/ic_chat_outline"
-            android:title="@string/chat" />
-        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_outline"
             android:title="@string/settings" />

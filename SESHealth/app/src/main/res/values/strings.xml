@@ -47,7 +47,6 @@
     <string name="downloadVideoPermissionException">Please change your security preferences to allow this application to use the storage to play the video</string>
     <string name="settings">Settings</string>
 
-    <string name="chat">Chat</string>
     <string name="next_setup"><![CDATA[Next >]]></string>
     <string name="back_setup"><![CDATA[< Back]]></string>
     <string name="doctor_setup">Doctor Setup</string>
@@ -75,7 +74,7 @@
     <string name="clinic_location">Your Clinic\'s Address</string>
     <string name="profile">Profile</string>
     <string name="connect">Connect</string>
-    <string name="heartbeat_info">Please hold your finger over the camera for 10-15 seconds to record your heartbeat. Touch the \'Select\' button once you\'re happy!</string>
+    <string name="heartbeat_info">Please hold your finger over the camera for 10-15 seconds to record your heartbeat. \nTouch the \'Select\' button once you\'re happy!</string>
 
     <string-array name="genders">
         <item>Male</item>
@@ -90,5 +89,6 @@
     <string name="connect_check_patient_is_sure">Are you positive you want to request for a new doctor?  This will disconnect you with your registered doctor</string>
     <string name="connect_with_doctor">Created a request to your doctor</string>
     <string name="connect_no_doctor">You do not have a registered doctor</string>
+    <string name="doctor_recommendation_info">Please select one of the locations marked that you believe your patient could go to for help. \nOnce selected, click \'Send Location\' which will be added to your reply to the patient.</string>
 
 </resources>

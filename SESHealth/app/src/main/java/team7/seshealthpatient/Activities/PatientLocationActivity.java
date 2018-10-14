@@ -39,7 +39,6 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 
-import team7.seshealthpatient.Fragments.ChatMessage;
 import team7.seshealthpatient.MapModels.PlaceResult;
 import team7.seshealthpatient.PacketInfo;
 import team7.seshealthpatient.R;
@@ -205,7 +204,7 @@ public class PatientLocationActivity extends AppCompatActivity implements OnMapR
 
     public void createHelpDialog() {
         helpAlertBuilder = new AlertDialog.Builder(this);
-        helpAlertBuilder.setMessage("placeholder");
+        helpAlertBuilder.setMessage(R.string.doctor_recommendation_info);
         helpAlertBuilder.setCancelable(true);
         helpAlertBuilder.setPositiveButton(
                 "Ok",
