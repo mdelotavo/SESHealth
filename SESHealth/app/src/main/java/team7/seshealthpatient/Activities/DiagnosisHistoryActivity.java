@@ -100,25 +100,31 @@ public class DiagnosisHistoryActivity extends AppCompatActivity {
 
         patientId = extras.getString("uid");
 
-        reference.child(patientId).child("Diagnosis")
+        reference.child(patientId).child("Diagnosis").child(mUser.getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         diagnosisList.clear();
                         noDiagnosticsMadeTV.setVisibility(View.VISIBLE);
+                        if(dataSnapshot.exists()) {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                Log.d(TAG, child.getValue().toString());
+                                if(child.exists()) {
+                                    String key = child.getKey().toString();
+                                    String timeStamp = (child.child("Timestamp").getValue() != null)
+                                            ? child.child("Timestamp").getValue().toString() : null;
+                                    if (timeStamp != null) {
+                                        if(noDiagnosticsMadeTV.getVisibility() != View.INVISIBLE)
+                                            noDiagnosticsMadeTV.setVisibility(View.INVISIBLE);
+                                        diagnosisList.add(timeStamp);
+                                        diagnosisUidList.add(key.toString());
+                                        diagnosisListView.invalidateViews();
+                                    }
+                                }
 
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String key = child.getKey().toString();
-                            String timeStamp = (child.child("Timestamp").getValue() != null)
-                                    ? child.child("Timestamp").getValue().toString() : null;
-                            if (timeStamp != null) {
-                                if(noDiagnosticsMadeTV.getVisibility() != View.INVISIBLE)
-                                    noDiagnosticsMadeTV.setVisibility(View.INVISIBLE);
-                                diagnosisList.add(timeStamp);
-                                diagnosisUidList.add(key.toString());
-                                diagnosisListView.invalidateViews();
                             }
                         }
+
                     }
 
                     @Override
@@ -133,7 +139,8 @@ public class DiagnosisHistoryActivity extends AppCompatActivity {
                 String key = diagnosisUidList.get(position);
                 Intent diagnosisInfo = new Intent(DiagnosisHistoryActivity.this, DiagnosisInfoActivity.class);
                 diagnosisInfo.putExtra("patientId", patientId);
-                diagnosisInfo.putExtra("packetId", key.toString());
+                diagnosisInfo.putExtra("packetId", key);
+                diagnosisInfo.putExtra("doctorId", mUser.getUid());
                 DiagnosisHistoryActivity.this.startActivity(diagnosisInfo);
             }
         });

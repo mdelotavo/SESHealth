@@ -84,6 +84,7 @@ public class DiagnosisHistoryFragment extends Fragment {
 
         final List<String> diagnosisList = new ArrayList<>();
         final List<String> diagnosisUidList = new ArrayList<>();
+        final List<String> diagnosisDoctorUidList = new ArrayList<>();
 
         final ListAdapter diagnosisListAdapter = new ArrayAdapter<>(
                 getActivity(),
@@ -103,16 +104,27 @@ public class DiagnosisHistoryFragment extends Fragment {
                         diagnosisList.clear();
                         noDiagnosticsMadeTV.setVisibility(View.VISIBLE);
 
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String key = child.getKey().toString();
-                            String timeStamp = (child.child("Timestamp").getValue() != null)
-                                    ? child.child("Timestamp").getValue().toString() : null;
-                            if (timeStamp != null) {
-                                if(noDiagnosticsMadeTV.getVisibility() != View.INVISIBLE)
-                                    noDiagnosticsMadeTV.setVisibility(View.INVISIBLE);
-                                diagnosisList.add(timeStamp);
-                                diagnosisUidList.add(key.toString());
-                                diagnosisListView.invalidateViews();
+                        if (dataSnapshot.exists()) {
+                            // Loops through the doctors that have provided diagnostics for the user
+                            for (DataSnapshot doctorSnapshot : dataSnapshot.getChildren()) {
+                                if(doctorSnapshot.exists()) {
+                                    // Loops through the packets that the doctor has replied to
+                                    for(DataSnapshot packet : doctorSnapshot.getChildren()) {
+                                        if(packet.exists()) {
+                                            String key = packet.getKey().toString();
+                                            String timeStamp = (packet.child("Timestamp").getValue() != null)
+                                                    ? packet.child("Timestamp").getValue().toString() : null;
+                                            if (timeStamp != null) {
+                                                if(noDiagnosticsMadeTV.getVisibility() != View.INVISIBLE)
+                                                    noDiagnosticsMadeTV.setVisibility(View.INVISIBLE);
+                                                diagnosisList.add(timeStamp);
+                                                diagnosisUidList.add(key.toString());
+                                                diagnosisDoctorUidList.add(doctorSnapshot.getKey().toString());
+                                                diagnosisListView.invalidateViews();
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -127,9 +139,11 @@ public class DiagnosisHistoryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String key = diagnosisUidList.get(position);
+                String doctorId = diagnosisDoctorUidList.get(position);
                 Intent diagnosisInfo = new Intent(getActivity(), DiagnosisInfoActivity.class);
                 diagnosisInfo.putExtra("patientId", patientId);
                 diagnosisInfo.putExtra("packetId", key.toString());
+                diagnosisInfo.putExtra("doctorId", doctorId.toString());
                 startActivity(diagnosisInfo);
             }
         });

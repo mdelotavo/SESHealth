@@ -40,6 +40,7 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference reference;
     private String patientId;
+    private String doctorId;
     private String packetId;
 
     @BindView(R.id.diagnosisInfoToolbar)
@@ -80,6 +81,12 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
 
     // Replies
 
+    @BindView(R.id.packetDoctorInfoTV)
+    TextView packetDoctorInfoTV;
+
+    @BindView(R.id.packetReplyDateInfoTV)
+    TextView packetReplyDateInfoTV;
+
     @BindView(R.id.packetMessageReplyTV)
     TextView packetMessageReplyTV;
 
@@ -113,7 +120,6 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("Users");
         Bundle extras = getIntent().getExtras();
 
         toolbar.setTitle("Packet Information");
@@ -130,15 +136,17 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                 "allergies", "medication", "location", "heartBeat", "message",
                 "videoDownloadUri", "fileDownloadUri"};
 
-        replyTextViews = new TextView[] {packetMessageReplyTV, packetWeightReplyTV, packetHeightReplyTV, packetAllergiesReplyTV, packetMedicationReplyTV, packetLocationReplyTV, packetHeartbeatReplyTV};
-        replyKeys = new String[] {"message", "weight", "height", "allergies", "medication", "location", "heartBeat"};
+        replyTextViews = new TextView[] {packetReplyDateInfoTV, packetMessageReplyTV, packetWeightReplyTV, packetHeightReplyTV, packetAllergiesReplyTV, packetMedicationReplyTV, packetLocationReplyTV, packetHeartbeatReplyTV};
+        replyKeys = new String[] {"Timestamp", "message", "weight", "height", "allergies", "medication", "location", "heartBeat"};
 
-        if(extras != null) {
-            patientId = extras.get("patientId").toString();
-            packetId = extras.get("packetId").toString();
-        }
+        //packetDoctorInfoTV
 
-        reference = FirebaseDatabase.getInstance().getReference().child("Users").child(patientId);
+        patientId = extras.get("patientId").toString();
+        doctorId = extras.get("doctorId").toString();
+        packetId = extras.get("packetId").toString();
+        Log.d(TAG, "doctorId " + doctorId);
+
+        reference = database.getReference().child("Users").child(patientId);
 
         new SetView().execute();
     }
@@ -155,6 +163,21 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                 setPacketInfoValues(childrenKeys[i], textViews[i]);
             for (int i = 0; i < replyTextViews.length; i++)
                 setPacketReplyValues(replyKeys[i], replyTextViews[i]);
+
+            DatabaseReference doctorRef = database.getReference().child("Users").child(doctorId);
+            doctorRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child("Profile").child("name").exists())
+                        packetDoctorInfoTV.setText(dataSnapshot.child("Profile").child("name").getValue().toString());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
             return null;
         }
 
@@ -165,13 +188,17 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
     }
 
     public void setPacketInfoValues(final String childKey, final TextView textView) {
+        // Gets the information from the original packet data
         reference.child("Packets").child(packetId).child(childKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (childKey.equals("location") && !dataSnapshot.getValue().toString().trim().equals("Not included"))
-                    textView.setText(dataSnapshot.getValue().toString().trim());
-                else
-                    textView.setText(dataSnapshot.getValue().toString().trim());
+                if(dataSnapshot.exists()) {
+                    if (childKey.equals("location")) {
+                        textView.setText(dataSnapshot.getValue().toString().trim());
+                    } else {
+                        textView.setText(dataSnapshot.getValue().toString().trim());
+                    }
+                }
             }
 
             @Override
@@ -184,7 +211,7 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
 
     public void setPacketReplyValues(final String replyKey, final TextView replyTextView) {
         Log.d(TAG, "packet id: " + packetId);
-        reference.child("Diagnosis").child(packetId).child(replyKey).addValueEventListener(new ValueEventListener() {
+        reference.child("Diagnosis").child(doctorId).child(packetId).child(replyKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (replyKey.equals("location") && !dataSnapshot.getValue().toString().trim().equals("No reply")) {

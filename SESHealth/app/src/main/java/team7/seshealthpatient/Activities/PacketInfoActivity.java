@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +71,7 @@ public class PacketInfoActivity extends AppCompatActivity {
     private boolean videoBtnDisabled;
     private DatabaseReference packetReference;
     private ProgressDialog progressDialog;
+    private FirebaseUser mUser;
     private File videoFile = new File(
             Environment.getExternalStorageDirectory().getPath() + "/healthapp/video.mp4");
 
@@ -175,6 +178,7 @@ public class PacketInfoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         progressDialog = new ProgressDialog(this);
 
@@ -444,7 +448,7 @@ public class PacketInfoActivity extends AppCompatActivity {
     @OnClick(R.id.packetReplyBtn)
     public void replyToPacket() {
         Map<String, String> replyPacket = new HashMap<>();
-        packetReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnosis").child(packetId);
+        packetReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnosis").child(mUser.getUid()).child(packetId);
         Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
         String message =  editTextNotNull(messageET);
         String weight = editTextNotNull(weightET);

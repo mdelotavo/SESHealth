@@ -1,6 +1,7 @@
 package team7.seshealthpatient.Activities;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -97,6 +98,16 @@ public class PatientPacketsActivity extends AppCompatActivity {
                 startActivity(packetInfo);
             }
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
