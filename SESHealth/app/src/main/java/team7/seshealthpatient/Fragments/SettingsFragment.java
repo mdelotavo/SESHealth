@@ -136,7 +136,7 @@ public class SettingsFragment extends PreferenceFragment {
         logoutAlert = logoutAlertBuilder.create();
 
         aboutAlertBuilder = new AlertDialog.Builder(getContext());
-        aboutAlertBuilder.setMessage("This application was developed by Software Engineering Studio 1B Team 7");
+        aboutAlertBuilder.setMessage("This application was developed by the Software Engineering Studio 1B Team 7");
         aboutAlertBuilder.setCancelable(true);
 
         aboutAlertBuilder.setPositiveButton(
