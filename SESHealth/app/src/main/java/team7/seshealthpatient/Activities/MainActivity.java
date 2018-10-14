@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Gets extra from either login activity or setupActivity
         Bundle extra = getIntent().getExtras();
         String accountType = extra.getString("accountType");
 

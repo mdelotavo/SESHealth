@@ -100,10 +100,10 @@ public class PatientListFragment extends Fragment {
                         currentPatientsTV.setVisibility(View.VISIBLE);
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String patientId = child.getKey();
-                            String patientName = (child.child("name").getValue() != null)
-                                    ? child.child("name").getValue().toString() : null;
-                            if (patientName != null) {
+                            if (child.exists()) {
+                                String patientId = child.getKey();
+                                String patientName = (child.child("name").getValue() != null)
+                                        ? child.child("name").getValue().toString() : null;
                                 Patient patient = new Patient(patientName, patientId);
                                 if (child.child("approved").getValue().toString().equals("pending")) {
                                     pendingPatientList.add(patient);
