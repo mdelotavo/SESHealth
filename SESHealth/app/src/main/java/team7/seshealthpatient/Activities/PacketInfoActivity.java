@@ -435,7 +435,9 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     private EditText displayEditText(EditText et, LinearLayout ll) {
         if (et == null) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             et = new EditText(PacketInfoActivity.this);
+            et.setLayoutParams(params);
             ll.addView(et);
         } else {
             ll.removeView(et);

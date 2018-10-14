@@ -99,7 +99,7 @@
 
             <LinearLayout
                 android:id="@+id/packetMessageLL"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -133,7 +133,7 @@
 
             <LinearLayout
                 android:id="@+id/packetWeightLL"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -166,7 +166,7 @@
 
             <LinearLayout
                 android:id="@+id/packetHeightLL"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -199,7 +199,7 @@
 
             <LinearLayout
                 android:id="@+id/packetAllergiesLL"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -232,7 +232,7 @@
 
             <LinearLayout
                 android:id="@+id/packetMedicationLL"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -265,7 +265,7 @@
 
             <LinearLayout
                 android:id="@+id/packetLocationLL"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
@@ -300,7 +300,7 @@
 
             <LinearLayout
                 android:id="@+id/packetHeartbeatLL"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
