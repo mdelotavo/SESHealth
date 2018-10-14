@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +27,7 @@ public class SettingsFragment extends PreferenceFragment {
     private AlertDialog logoutAlert;
     private AlertDialog.Builder aboutAlertBuilder;
     private AlertDialog aboutAlert;
+    private String[] doctorInformation;
 
     public SettingsFragment() {
 
@@ -39,6 +41,8 @@ public class SettingsFragment extends PreferenceFragment {
         setOnPreferenceClickListeners();
         initAlertBuilders();
 
+        doctorInformation = ((MainActivity) getActivity()).getDoctorProfile();
+
         // Note the use of getActivity() to reference the Activity holding this fragment
         getActivity().setTitle("Settings");
     }
@@ -50,10 +54,22 @@ public class SettingsFragment extends PreferenceFragment {
         View v = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, v);
 
-        if (((MainActivity) getActivity()).getAccountType().equals("doctor"))
+        if (((MainActivity) getActivity()).getAccountType().equals("doctor")) {
             getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editUserInfoPreference"));
-        else if (((MainActivity) getActivity()).getAccountType().equals("patient"))
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("connectPasswordPreference"));
+            findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
+            findPreference("doctorSummaryPreference").setSummary(doctorSummary());
+        } else if (((MainActivity) getActivity()).getAccountType().equals("patient")) {
             getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editDoctorInfoPreference"));
+            if (doctorInformation[0].equals("no doctor")) {
+                getPreferenceScreen().removePreference(getPreferenceManager().findPreference("doctorSummaryPreferenceGroup"));
+            } else {
+                findPreference("doctorSummaryPreferenceGroup").setTitle("Current Doctor");
+                findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
+                findPreference("doctorSummaryPreference").setSummary(doctorSummary());
+            }
+        }
+
 
         return v;
     }
@@ -133,5 +149,9 @@ public class SettingsFragment extends PreferenceFragment {
                 });
 
         aboutAlert = aboutAlertBuilder.create();
+    }
+
+    public String doctorSummary() {
+        return "Location: " + doctorInformation[1] + "\n" + "Occupation: " + doctorInformation[2] + "\n" + "Key: " + doctorInformation[3];
     }
 }
