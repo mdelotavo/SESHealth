@@ -204,9 +204,9 @@ public class ConnectDoctorDialog extends DialogPreference {
         usersReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot != null) {
-                    name = dataSnapshot.child(mUser.getUid()).child("Profile").child("name").getValue().toString();
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                name = dataSnapshot.child(mUser.getUid()).child("Profile").child("name").getValue().toString();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if(child.exists()) {
                         String key = child.getKey();
                         String doctor = (child.child("Profile").child("name").getValue() != null && child.child("accountType").getValue().toString().equals("doctor"))
                                 ? child.child("Profile").child("name").getValue().toString() : null;
@@ -216,6 +216,7 @@ public class ConnectDoctorDialog extends DialogPreference {
                         }
                     }
                 }
+
             }
 
             @Override

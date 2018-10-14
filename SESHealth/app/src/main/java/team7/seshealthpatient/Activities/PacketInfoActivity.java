@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -129,6 +130,8 @@ public class PacketInfoActivity extends AppCompatActivity {
     @BindView(R.id.packetReplyBtn)
     Button packetReplyBtn;
 
+
+    // Linear Layouts
     @BindView(R.id.packetMessageLL)
     LinearLayout packetMessageLL;
 
@@ -149,6 +152,9 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     @BindView(R.id.packetHeartbeatLL)
     LinearLayout packetHeartbeatLL;
+
+    @BindView(R.id.packetReplyLocationIV)
+    ImageView packetReplyLocationIV;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -282,7 +288,8 @@ public class PacketInfoActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Toast.makeText(this, "Unable to open location in Map", Toast.LENGTH_SHORT).show();
             }
-        }
+        } else
+            Toast.makeText(PacketInfoActivity.this, "The patient did not include their location", Toast.LENGTH_SHORT).show();
     }
 
     public void setPacketInfoValues(final String childKey, final TextView textView) {

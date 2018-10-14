@@ -86,7 +86,7 @@
     <string name="title_activity_reply_to_packet">ReplyToPacketActivity</string>
     <string name="connect_request_made">You have already sent a request to this doctor</string>
     <string name="connect_invalid_key">Please enter a valid key provided by your doctor</string>
-    <string name="connect_check_patient_is_sure">Are you positive you want to request for a new doctor?  This will disconnect you with your registered doctor</string>
+    <string name="connect_check_patient_is_sure">Are you positive you want to request for a new doctor?  This will disconnect you with your registered doctor.</string>
     <string name="connect_with_doctor">Created a request to your doctor</string>
     <string name="connect_no_doctor">You do not have a registered doctor</string>
     <string name="doctor_recommendation_info">Please select one of the locations marked that you believe your patient could go to for help. \nOnce selected, click \'Send Location\' which will be added to your reply to the patient.</string>
