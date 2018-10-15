@@ -162,13 +162,14 @@ public class LoginActivity extends AppCompatActivity {
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(LoginActivity.this, "Oops an error", Toast.LENGTH_SHORT).show();
+                        if (!connectionResult.isSuccess()) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.google_authentication_message_failure), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        // Placeholder image (update with logo when we have one)
         String logoName = "health_icon_1.png";
         try {
             InputStream stream = getAssets().open(logoName);
@@ -232,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
         return false;
     }
 
-    // Repeated code from CreateAccountActivity.... Sends a verification email to logged in user
+    // Sends a verification email to logged in user
     private void sendVerificationEmail() {
         mAuth.getCurrentUser()
                 .sendEmailVerification()
@@ -242,8 +243,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Authentication email sent successfully " + task.getResult());
                             Toast.makeText(LoginActivity.this, R.string.email_authentication_message_success, Toast.LENGTH_LONG).show();
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         } else {
                             Log.d(TAG, "Authentication email failed to send " + task.getException());
                             Toast.makeText(LoginActivity.this, R.string.email_authentication_message_failure, Toast.LENGTH_SHORT).show();

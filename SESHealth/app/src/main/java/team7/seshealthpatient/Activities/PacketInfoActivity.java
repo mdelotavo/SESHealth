@@ -22,12 +22,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,6 +71,7 @@ public class PacketInfoActivity extends AppCompatActivity {
     private boolean videoBtnDisabled;
     private DatabaseReference packetReference;
     private ProgressDialog progressDialog;
+    private FirebaseUser mUser;
     private File videoFile = new File(
             Environment.getExternalStorageDirectory().getPath() + "/healthapp/video.mp4");
 
@@ -129,6 +133,8 @@ public class PacketInfoActivity extends AppCompatActivity {
     @BindView(R.id.packetReplyBtn)
     Button packetReplyBtn;
 
+
+    // Linear Layouts
     @BindView(R.id.packetMessageLL)
     LinearLayout packetMessageLL;
 
@@ -150,6 +156,9 @@ public class PacketInfoActivity extends AppCompatActivity {
     @BindView(R.id.packetHeartbeatLL)
     LinearLayout packetHeartbeatLL;
 
+    @BindView(R.id.packetReplyLocationIV)
+    ImageView packetReplyLocationIV;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,6 +178,7 @@ public class PacketInfoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         progressDialog = new ProgressDialog(this);
 
@@ -282,7 +292,8 @@ public class PacketInfoActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Toast.makeText(this, "Unable to open location in Map", Toast.LENGTH_SHORT).show();
             }
-        }
+        } else
+            Toast.makeText(PacketInfoActivity.this, "The patient did not include their location", Toast.LENGTH_SHORT).show();
     }
 
     public void setPacketInfoValues(final String childKey, final TextView textView) {
@@ -424,7 +435,9 @@ public class PacketInfoActivity extends AppCompatActivity {
 
     private EditText displayEditText(EditText et, LinearLayout ll) {
         if (et == null) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
             et = new EditText(PacketInfoActivity.this);
+            et.setLayoutParams(params);
             ll.addView(et);
         } else {
             ll.removeView(et);
@@ -437,7 +450,7 @@ public class PacketInfoActivity extends AppCompatActivity {
     @OnClick(R.id.packetReplyBtn)
     public void replyToPacket() {
         Map<String, String> replyPacket = new HashMap<>();
-        packetReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnosis").child(packetId);
+        packetReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid).child("Diagnosis").child(mUser.getUid()).child(packetId);
         Timestamp currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
         String message =  editTextNotNull(messageET);
         String weight = editTextNotNull(weightET);

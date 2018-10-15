@@ -1,8 +1,10 @@
 package team7.seshealthpatient;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import team7.seshealthpatient.Activities.ChatActivity;
 import team7.seshealthpatient.Activities.DiagnosisHistoryActivity;
 import team7.seshealthpatient.Activities.PatientPacketsActivity;
 import team7.seshealthpatient.Activities.ProfileActivity;
@@ -29,6 +30,9 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
     private Context mContext;
     private PatientListFragment fragment;
     int mResource;
+    private String patientUid;
+    private AlertDialog.Builder declineAlertBuilder;
+    private AlertDialog declineAlert;
 
     public PatientListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Patient> objects, PatientListFragment fragment) {
         super(context, resource, objects);
@@ -41,7 +45,7 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         String name = getItem(position).getName();
-        final String patientUid = getItem(position).getId();
+        patientUid = getItem(position).getId();
 
         Patient patient = new Patient(name, patientUid);
 
@@ -54,6 +58,8 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
         ImageView patientAcceptIV = (ImageView) convertView.findViewById(R.id.patientAcceptIV);
         ImageView patientPacketIV = (ImageView) convertView.findViewById(R.id.patientPacketIV);
         ImageView patientDiagnosisIV = (ImageView) convertView.findViewById(R.id.patientDiagnosisIV);
+
+        createDeclineAlertDialog(); // Creates the decline alert dialog
 
         if (patientProfileIV != null)
             patientProfileIV.setOnClickListener(new View.OnClickListener() {
@@ -72,10 +78,7 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
                 @Override
                 public void onClick(View view) {
                     if (view != null) {
-                        DatabaseReference reference = fragment.getDBReference();
-                        FirebaseUser mUser = fragment.getUser();
-                        reference.child(mUser.getUid()).child("Patients").child(patientUid).child("approved").setValue("declined");
-                        reference.child(patientUid).child("Doctor").child("approved").setValue("declined");
+                        declineAlert.show();
                     }
                 }
             });
@@ -120,5 +123,24 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
 
         nameTV.setText(name);
         return convertView;
+    }
+
+    public void createDeclineAlertDialog() {
+        declineAlertBuilder = new AlertDialog.Builder(mContext);
+        declineAlertBuilder.setMessage(R.string.patient_decline_question);
+        declineAlertBuilder.setCancelable(true);
+        declineAlertBuilder.setPositiveButton(
+                "Decline patient",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        DatabaseReference reference = fragment.getDBReference();
+                        FirebaseUser mUser = fragment.getUser();
+                        reference.child(mUser.getUid()).child("Patients").child(patientUid).child("approved").setValue("declined");
+                        reference.child(patientUid).child("Doctor").child("approved").setValue("declined");
+                    }
+                });
+        declineAlert = declineAlertBuilder.create();
     }
 }

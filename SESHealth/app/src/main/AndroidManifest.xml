@@ -75,7 +75,6 @@
         <activity android:name=".Activities.PatientPacketsActivity" />
         <activity android:name=".Activities.PacketInfoActivity" />
         <activity android:name=".Activities.ProfileActivity" />
-        <activity android:name=".Activities.ChatActivity" />
         <activity
             android:name=".Activities.PatientLocationActivity"
             android:label="@string/title_activity_patient_location" />

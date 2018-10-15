@@ -100,22 +100,25 @@ public class PatientListFragment extends Fragment {
                         currentPatientsTV.setVisibility(View.VISIBLE);
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String patientId = child.getKey();
-                            String patientName = (child.child("name").getValue() != null)
-                                    ? child.child("name").getValue().toString() : null;
-                            if (patientName != null) {
+                            if (child.exists()) {
+                                String patientId = child.getKey();
+                                String patientName = (child.child("name").getValue() != null)
+                                        ? child.child("name").getValue().toString() : null;
                                 Patient patient = new Patient(patientName, patientId);
-                                if (child.child("approved").getValue().toString().equals("pending")) {
-                                    pendingPatientList.add(patient);
-                                    if (pendingPatientsTV.getVisibility() != View.INVISIBLE)
-                                        pendingPatientsTV.setVisibility(View.INVISIBLE);
-                                } else if (child.child("approved").getValue().toString().equals("accepted")) {
-                                    patientList.add(patient);
-                                    if (currentPatientsTV.getVisibility() != View.INVISIBLE)
-                                        currentPatientsTV.setVisibility(View.INVISIBLE);
+                                if (child.child("approved").exists()) {
+                                    if (child.child("approved").getValue().toString().equals("pending")) {
+                                        pendingPatientList.add(patient);
+                                        if (pendingPatientsTV.getVisibility() != View.INVISIBLE)
+                                            pendingPatientsTV.setVisibility(View.INVISIBLE);
+                                    } else if (child.child("approved").getValue().toString().equals("accepted")) {
+                                        patientList.add(patient);
+                                        if (currentPatientsTV.getVisibility() != View.INVISIBLE)
+                                            currentPatientsTV.setVisibility(View.INVISIBLE);
+                                    }
+                                    listOfPatients.invalidateViews();
+                                    listOfPendingPatients.invalidateViews();
                                 }
-                                listOfPatients.invalidateViews();
-                                listOfPendingPatients.invalidateViews();
+
                             }
                         }
                     }

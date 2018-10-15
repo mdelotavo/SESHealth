@@ -187,6 +187,7 @@ public class SetupActivity extends AppCompatActivity {
             reference.child("accountType").setValue("patient");
 
             Intent intent = new Intent(SetupActivity.this, MainActivity.class);
+            intent.putExtra("accountType", "patient");
             startActivity(intent);
             finish();
         }
@@ -274,6 +275,7 @@ public class SetupActivity extends AppCompatActivity {
             reference.child("accountType").setValue("doctor");
 
             Intent intent = new Intent(SetupActivity.this, MainActivity.class);
+            intent.putExtra("accountType", "doctor");
             startActivity(intent);
             finish();
         }

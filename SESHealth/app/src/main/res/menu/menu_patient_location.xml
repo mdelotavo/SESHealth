@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:title="PatientLocationHelp"
         android:id="@+id/patient_location_help"
-        android:icon="@drawable/ic_info"
+        android:title="PatientLocationHelp"
+        android:icon="@drawable/ic_info_white_icon"
         app:showAsAction="always"/>
 
 </menu>
