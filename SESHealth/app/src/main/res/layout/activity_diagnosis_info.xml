@@ -369,6 +369,31 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/packetDiagnoseCommentsLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetHeartbeatLL">
+
+                <TextView
+                    android:id="@+id/packetCommentsLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comments"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetCommentsReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
 
         </RelativeLayout>
 
