@@ -177,33 +177,13 @@ public class SettingsFragment extends PreferenceFragment {
             });
         } else if (((MainActivity) getActivity()).getAccountType().equals("patient")) {
             getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editDoctorInfoPreference"));
-            reference.child("Doctor").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child("approved").exists()) {
-                        if (dataSnapshot.getValue() == null || dataSnapshot.child("approved").getValue().toString().equals("pending")) {
-                            doctorProfile[0] = "no doctor";
-                            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("doctorSummaryPreferenceGroup"));
-                        } else {
-                            currentDoctorUID = dataSnapshot.child("UID").getValue().toString();
-                            doctorProfile[3] = dataSnapshot.child("UID").getValue().toString().substring(0, 5);
-                            setDoctorProfile("name", 0, false);
-                            setDoctorProfile("location", 1, false);
-                            setDoctorProfile("occupation", 2, false);
-                            onCreate(new Bundle());
-                            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editDoctorInfoPreference"));
-                            findPreference("doctorSummaryPreferenceGroup").setTitle("Current Doctor");
-                            findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
-                            findPreference("doctorSummaryPreference").setSummary(doctorInfo());
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            if (doctorInformation[0].equals("no doctor")) {
+                getPreferenceScreen().removePreference(getPreferenceManager().findPreference("doctorSummaryPreferenceGroup"));
+            } else {
+                findPreference("doctorSummaryPreferenceGroup").setTitle("Current Doctor");
+                findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
+                findPreference("doctorSummaryPreference").setSummary(doctorInfo());
+            }
         }
     }
 
