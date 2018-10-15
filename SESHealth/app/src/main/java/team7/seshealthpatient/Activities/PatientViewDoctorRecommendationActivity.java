@@ -1,8 +1,14 @@
 package team7.seshealthpatient.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,10 +20,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import team7.seshealthpatient.R;
 
-public class PatientViewDoctorRecommendationActivity extends FragmentActivity implements OnMapReadyCallback {
+public class PatientViewDoctorRecommendationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     Double Latitude, Longitude;
+    private Toolbar toolbar;
+    private AlertDialog.Builder helpAlertBuilder;
+    private AlertDialog helpAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +36,15 @@ public class PatientViewDoctorRecommendationActivity extends FragmentActivity im
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        toolbar = findViewById(R.id.patientLocationReccommendationToolbar);
+        toolbar.setTitle("Map Recommendation");
+
+        createHelpDialog();
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         Intent intent = getIntent();
         String sessionLat = intent.getStringExtra("Latitude");
@@ -54,5 +72,49 @@ public class PatientViewDoctorRecommendationActivity extends FragmentActivity im
         mMap.addMarker(new MarkerOptions().position(DoctorReco).title("Doctor Recommendation")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DoctorReco, 15));
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    public void createHelpDialog() {
+        helpAlertBuilder = new AlertDialog.Builder(this);
+        helpAlertBuilder.setMessage("This was a recommended location sent to you by your doctor.");
+        helpAlertBuilder.setCancelable(true);
+        helpAlertBuilder.setPositiveButton(
+                "Ok",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        helpAlert = helpAlertBuilder.create();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.menu_patient_location, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.patient_location_help:
+                helpAlert.show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
