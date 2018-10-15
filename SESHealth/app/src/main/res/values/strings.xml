@@ -90,5 +90,6 @@
     <string name="connect_with_doctor">Created a request to your doctor</string>
     <string name="connect_no_doctor">You do not have a registered doctor</string>
     <string name="doctor_recommendation_info">Please select one of the locations marked that you believe your patient could go to for help. \nOnce selected, click \'Send Location\' which will be added to your reply to the patient.</string>
+    <string name="patient_decline_question">Are you sure you want to decline this patient? You will not be able to access their details again unless they make another request to you.</string>
 
 </resources>
