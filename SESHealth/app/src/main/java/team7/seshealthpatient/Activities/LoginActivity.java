@@ -243,8 +243,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Authentication email sent successfully " + task.getResult());
                             Toast.makeText(LoginActivity.this, R.string.email_authentication_message_success, Toast.LENGTH_LONG).show();
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         } else {
                             Log.d(TAG, "Authentication email failed to send " + task.getException());
                             Toast.makeText(LoginActivity.this, R.string.email_authentication_message_failure, Toast.LENGTH_SHORT).show();
