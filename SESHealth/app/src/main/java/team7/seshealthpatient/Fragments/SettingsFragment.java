@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -13,6 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import butterknife.ButterKnife;
 import team7.seshealthpatient.Activities.EditInfoActivity;
@@ -28,6 +35,10 @@ public class SettingsFragment extends PreferenceFragment {
     private AlertDialog.Builder aboutAlertBuilder;
     private AlertDialog aboutAlert;
     private String[] doctorInformation;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+    private String[] doctorProfile;
+    private String currentDoctorUID;
 
     public SettingsFragment() {
 
@@ -37,6 +48,10 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        doctorProfile = new String[4];
 
         setOnPreferenceClickListeners();
         initAlertBuilders();
@@ -54,22 +69,7 @@ public class SettingsFragment extends PreferenceFragment {
         View v = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, v);
 
-        if (((MainActivity) getActivity()).getAccountType().equals("doctor")) {
-            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editUserInfoPreference"));
-            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("connectPasswordPreference"));
-            findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
-            findPreference("doctorSummaryPreference").setSummary(doctorSummary());
-        } else if (((MainActivity) getActivity()).getAccountType().equals("patient")) {
-            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editDoctorInfoPreference"));
-            if (doctorInformation[0].equals("no doctor")) {
-                getPreferenceScreen().removePreference(getPreferenceManager().findPreference("doctorSummaryPreferenceGroup"));
-            } else {
-                findPreference("doctorSummaryPreferenceGroup").setTitle("Current Doctor");
-                findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
-                findPreference("doctorSummaryPreference").setSummary(doctorSummary());
-            }
-        }
-
+        setDoctorProfileSummary();
 
         return v;
     }
@@ -153,5 +153,86 @@ public class SettingsFragment extends PreferenceFragment {
 
     public String doctorSummary() {
         return "Location: " + doctorInformation[1] + "\n" + "Occupation: " + doctorInformation[2] + "\n" + "Key: " + doctorInformation[3];
+    }
+
+    public String doctorInfo() {
+        return "Location: " + doctorInformation[1] + "\n" + "Occupation: " + doctorInformation[2];
+    }
+
+    public void setDoctorProfileSummary() {
+        if (((MainActivity) getActivity()).getAccountType().equals("doctor")) {
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editUserInfoPreference"));
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("connectPasswordPreference"));
+            reference.child("Profile").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
+                    findPreference("doctorSummaryPreference").setSummary(doctorSummary());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else if (((MainActivity) getActivity()).getAccountType().equals("patient")) {
+            getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editDoctorInfoPreference"));
+            reference.child("Doctor").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null || dataSnapshot.child("approved").getValue().toString().equals("pending")) {
+                        doctorProfile[0] = "no doctor";
+                        getPreferenceScreen().removePreference(getPreferenceManager().findPreference("doctorSummaryPreferenceGroup"));
+                    } else {
+                        currentDoctorUID = dataSnapshot.child("UID").getValue().toString();
+                        doctorProfile[3] = dataSnapshot.child("UID").getValue().toString().substring(0, 5);
+                        setDoctorProfile("name", 0, false);
+                        setDoctorProfile("location", 1, false);
+                        setDoctorProfile("occupation", 2, false);
+                        onCreate(new Bundle());
+                        getPreferenceScreen().removePreference(getPreferenceManager().findPreference("editDoctorInfoPreference"));
+                        findPreference("doctorSummaryPreferenceGroup").setTitle("Current Doctor");
+                        findPreference("doctorSummaryPreference").setTitle(doctorInformation[0]);
+                        findPreference("doctorSummaryPreference").setSummary(doctorInfo());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void setDoctorProfile(String childKey, final int index, boolean isDoctor) {
+        if (isDoctor) {
+            reference.child("Profile").child(childKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null)
+                        doctorProfile[index] = dataSnapshot.getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            DatabaseReference databaseReference = database.getReference("Users").child(currentDoctorUID);
+            databaseReference.child("Profile").child(childKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null)
+                        doctorProfile[index] = dataSnapshot.getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 }
