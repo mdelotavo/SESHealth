@@ -111,6 +111,9 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
     @BindView(R.id.recommendedLocationIV)
     ImageView recommendedLocationIV;
 
+    @BindView(R.id.packetCommentsReplyTV)
+    TextView packetCommentsReplyTV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +139,8 @@ public class DiagnosisInfoActivity extends AppCompatActivity {
                 "allergies", "medication", "location", "heartBeat", "message",
                 "videoDownloadUri", "fileDownloadUri"};
 
-        replyTextViews = new TextView[] {packetReplyDateInfoTV, packetMessageReplyTV, packetWeightReplyTV, packetHeightReplyTV, packetAllergiesReplyTV, packetMedicationReplyTV, packetLocationReplyTV, packetHeartbeatReplyTV};
-        replyKeys = new String[] {"Timestamp", "message", "weight", "height", "allergies", "medication", "location", "heartBeat"};
+        replyTextViews = new TextView[] {packetReplyDateInfoTV, packetMessageReplyTV, packetWeightReplyTV, packetHeightReplyTV, packetAllergiesReplyTV, packetMedicationReplyTV, packetLocationReplyTV, packetHeartbeatReplyTV, packetCommentsReplyTV};
+        replyKeys = new String[] {"Timestamp", "message", "weight", "height", "allergies", "medication", "location", "heartBeat", "comments"};
 
         //packetDoctorInfoTV
 

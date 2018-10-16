@@ -159,6 +159,9 @@ public class PacketInfoActivity extends AppCompatActivity {
     @BindView(R.id.packetReplyLocationIV)
     ImageView packetReplyLocationIV;
 
+    @BindView(R.id.packetCommentsET)
+    EditText packetComments;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -458,12 +461,14 @@ public class PacketInfoActivity extends AppCompatActivity {
         String allergies = editTextNotNull(allergiesET);
         String medication = editTextNotNull(medicationET);
         String heartbeat = editTextNotNull(heartbeatET);
+        String comments = packetComments.getText().toString().trim();
+
         replyPacket.put("Timestamp", currentTimestamp.toString());
         replyPacket.put("message", message);
         replyPacket.put("weight", weight);
         replyPacket.put("height", height);
 
-        if(locationReply != null)
+        if (locationReply != null)
             replyPacket.put("location", locationReply);
         else
             replyPacket.put("location", "No reply");
@@ -471,6 +476,11 @@ public class PacketInfoActivity extends AppCompatActivity {
         replyPacket.put("allergies", allergies);
         replyPacket.put("medication", medication);
         replyPacket.put("heartBeat", heartbeat);
+
+        if (comments.length() > 0)
+            replyPacket.put("comments", comments);
+        else
+            replyPacket.put("comments", "No reply");
 
         packetReference.setValue(replyPacket).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

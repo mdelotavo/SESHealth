@@ -369,6 +369,29 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/packetCommentsLL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/bottomVideoFileLL">
+
+                <TextView
+                    android:id="@+id/packetCommentsTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comments"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <EditText
+                    android:id="@+id/packetCommentsET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
             <Button
                 android:id="@+id/packetReplyBtn"
                 android:layout_width="120dp"
@@ -377,7 +400,7 @@
                 android:text="Reply"
                 android:textColor="#eee"
                 android:textSize="18sp"
-                android:layout_below="@+id/bottomVideoFileLL"
+                android:layout_below="@+id/packetCommentsLL"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:layout_weight="0.45"/>
