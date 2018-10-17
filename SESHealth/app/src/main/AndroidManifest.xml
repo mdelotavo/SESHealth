@@ -2,21 +2,87 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="team7.seshealthpatient">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.flash" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.hardware.camera2.full"
+        android:required="true" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
-        <activity android:name=".Activities.LoginActivity">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCGgXz5rhoUx-TgIzy1vcPHvYsCiHieSH4" />
+
+        <activity
+            android:name=".Activities.LoginActivity"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MainActivity"></activity>
+        <activity
+            android:name=".Activities.MainActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".Activities.SendFileActivity" />
+        <activity
+            android:name=".Activities.SetupActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".Activities.EditInfoActivity" />
+        <activity
+            android:name=".Activities.CreateAccountActivity"
+            android:label=".Activities.CreateAccountActivity"
+            android:parentActivityName=".Activities.LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.LoginActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.ForgotPasswordActivity"
+            android:label=".Activities.ForgotPasswordActivity"
+            android:parentActivityName=".Activities.LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.LoginActivity" />
+        </activity>
+        <activity android:name=".HeartBeat.HeartRateMonitor" />
+        <activity android:name=".Activities.PatientPacketsActivity" />
+        <activity android:name=".Activities.PacketInfoActivity" />
+        <activity android:name=".Activities.ProfileActivity" />
+        <activity
+            android:name=".Activities.PatientLocationActivity"
+            android:label="@string/title_activity_patient_location" />
+        <activity
+            android:name=".Activities.PatientViewDoctorRecommendationActivity"
+            android:label="@string/title_activity_patient_view_doctor_recommendation" />
+        <activity android:name=".Activities.DiagnosisHistoryActivity" />
+        <activity android:name=".Activities.DiagnosisInfoActivity"></activity>
     </application>
 
 </manifest>

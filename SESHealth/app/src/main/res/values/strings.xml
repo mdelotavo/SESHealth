@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">SESHealthPatient</string>
     <string name="username_txt">Username</string>
-    <string name="email_example_com">email@example.com</string>
+    <string name="email_txt">Email</string>
     <string name="password_txt">Password</string>
     <string name="log_in_txt">Log In</string>
     <string name="login_activity_title">Log In</string>
+    <string name="createAccount_activity_title">Create Account</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="patient_information">Patient Information</string>
@@ -15,7 +15,81 @@
     <string name="record_video">Record Video</string>
     <string name="send_local_file">Send Local File</string>
     <string name="facilities_map">Facilities Map</string>
+    <string name="patient_list">Patient List</string>
 
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
+    <string name="login_progressDialog">Logging in, please wait...</string>
+    <string name="emailCheck_toast">Please fill in a valid email</string>
+    <string name="passwordCheck_toast">Please fill in your password</string>
+    <string name="passwordCheckLength_toast">Password must be 6 or more characters</string>
+    <string name="create_account_txt">Creating account</string>
+    <string name="logout">Log Out</string>
+    <string name="email_authentication_message_success">A verification email has been sent to your account. Please click on the link sent to verify your account</string>
+    <string name="email_authentication_message_failure">Failed to create account</string>
+    <string name="email_success">Email sent, please check your inbox</string>
+    <string name="email_failure">Email failed to send, please try again</string>
+    <string name="google_authentication_message_failure">An error occurred when authenticating with Google</string>
+    <string name="exception_email_already_exists">The email address is already in use by another account</string>
+    <string name="exception_network_connectivity">Network connectivity issues, please check your internet connection</string>
+    <string name="forgotPassword_activity_title">Forgot Password</string>
+    <string name="firstNameCheckLength_toast">Please fill in your first name</string>
+    <string name="lastNameCheckLength_toast">Please fill in your last name</string>
+    <string name="dateOfBirthCheckLength_toast">Please fill in your date of birth</string>
+    <string name="genderCheckLength_toast">Please fill in your gender</string>
+    <string name="dateOfBirthCheckValidDate_toast">Date of birth must not be later than today\'s date</string>
+
+    <string name="heartbeat_view">HeartRateMonitor</string>
+
+    <string name="cameraPermissionException">Please change your security preferences to allow this application to use the camera</string>
+    <string name="locationPermissionException">Please change your security preferences to allow this application to access your location</string>
+    <string name="recordVideoPermissionException">Please change your security preferences to allow this application to use the camera and write to the gallery</string>
+    <string name="downloadVideoPermissionException">Please change your security preferences to allow this application to use the storage to play the video</string>
+    <string name="settings">Settings</string>
+
+    <string name="next_setup"><![CDATA[Next >]]></string>
+    <string name="back_setup"><![CDATA[< Back]]></string>
+    <string name="doctor_setup">Doctor Setup</string>
+    <string name="welcome_setup">Welcome to SESHealth</string>
+    <string name="doctor_selection_setup">I Am A Doctor</string>
+    <string name="patient_selection_setup">I Am A Patient</string>
+    <string name="patient_setup_title">Patient Setup</string>
+    <string name="patient_setup_first">Please complete the required fields below to continue setting up your profile</string>
+    <string name="name_et_hint">Full Name</string>
+    <string name="number_et_hint">Mobile No.</string>
+    <string name="dob_et_hint">Date of Birth</string>
+    <string name="height_et_hint">Height (cm)</string>
+    <string name="weight_et_hint">Weight (kg)</string>
+    <string name="gender_rg_title">Gender</string>
+    <string name="male_rb">Male</string>
+    <string name="female_rb">Female</string>
+    <string name="patient_setup_second">The fields below are optional and can be left blank. Please separate each allergy or medication with a comma (,) for multiple values</string>
+    <string name="finish_setup">Finish</string>
+    <string name="setup_doctor_desc">Please complete the fields below to set up your doctor profile.</string>
+    <string name="allergies_hint">Allergies</string>
+    <string name="medication_hint">Current Medication</string>
+    <string name="name_hint">Full Name</string>
+    <string name="occupation_hint">Current Occupation</string>
+    <string name="experience_hint">Past Experience (optional)</string>
+    <string name="clinic_location">Your Clinic\'s Address</string>
+    <string name="profile">Profile</string>
+    <string name="connect">Connect</string>
+    <string name="heartbeat_info">Please hold your finger over the camera for 10-15 seconds to record your heartbeat. \nTouch the \'Select\' button once you\'re happy!</string>
+
+    <string-array name="genders">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Prefer Not To Say</item>
+    </string-array>
+    <string name="title_activity_patient_location">Map</string>
+    <string name="title_activity_patient_view_doctor_recommendation">Map</string>
+    <string name="title_activity_reply_to_packet">ReplyToPacketActivity</string>
+    <string name="connect_request_made">You have already sent a request to this doctor</string>
+    <string name="connect_invalid_key">Please enter a valid key provided by your doctor</string>
+    <string name="connect_check_patient_is_sure">Are you positive you want to request for a new doctor?  This will disconnect you with your registered doctor.</string>
+    <string name="connect_with_doctor">Created a request to your doctor</string>
+    <string name="connect_no_doctor">You do not have a registered doctor</string>
+    <string name="doctor_recommendation_info">Please select one of the locations marked that you believe your patient could go to for help. \nOnce selected, click \'Send Location\' which will be added to your reply to the patient.</string>
+    <string name="patient_decline_question">Are you sure you want to decline this patient? You will not be able to access their details again unless they make another request to you.</string>
+
 </resources>

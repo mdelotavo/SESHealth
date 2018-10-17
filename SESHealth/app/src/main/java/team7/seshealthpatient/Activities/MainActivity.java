@@ -3,6 +3,10 @@ package team7.seshealthpatient.Activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,17 +17,29 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 
-
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
-import team7.seshealthpatient.Fragments.DataPacketFragment;
-import team7.seshealthpatient.Fragments.HeartRateFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import butterknife.BindView;
+
+import team7.seshealthpatient.Fragments.DiagnosisHistoryFragment;
 import team7.seshealthpatient.Fragments.MapFragment;
 import team7.seshealthpatient.Fragments.PatientInformationFragment;
-import team7.seshealthpatient.Fragments.RecordVideoFragment;
-import team7.seshealthpatient.Fragments.SendFileFragment;
+import team7.seshealthpatient.Fragments.PatientListFragment;
+import team7.seshealthpatient.Fragments.SettingsFragment;
 import team7.seshealthpatient.R;
 
 
@@ -44,6 +60,18 @@ import team7.seshealthpatient.R;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+    private FirebaseUser fireBaseUser;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FirebaseDatabase database;
+    private DatabaseReference reference;
+    private Location userLocation;
+    private Fragment fragment;
+    private NavigationView navigationView;
+    private String accountType;
+    private String[] doctorProfile;
+    private String currentDoctorUID;
+
     /**
      * A basic Drawer layout that helps you build the side menu. I followed the steps on how to
      * build a menu from this site:
@@ -52,9 +80,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private DrawerLayout mDrawerLayout;
 
-    /**
-     * A reference to the toolbar
-     */
     private Toolbar toolbar;
 
     /**
@@ -62,9 +87,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private FragmentManager fragmentManager;
 
-    /**
-     * TAG to use
-     */
     private static String TAG = "MainActivity";
 
     /**
@@ -72,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
      * what I mean with this later in this code.
      */
     private enum MenuStates {
-        PATIENT_INFO, DATA_PACKET, HEARTRATE, RECORD_VIDEO, SEND_FILE, NAVIGATION_MAP
+        PATIENT_INFO, NAVIGATION_MAP, PATIENT_LIST, PROFILE, DIAGNOSIS, SETTINGS, LOGOUT
     }
 
     /**
@@ -80,21 +102,44 @@ public class MainActivity extends AppCompatActivity {
      */
     private MenuStates currentState;
 
+    @BindView(R.id.nav_patient_info)
+    MenuItem patientInfoMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
+        fireBaseUser = mAuth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("Users").child(fireBaseUser.getUid());
+
+        doctorProfile = new String[4];
+
         // the default fragment on display is the patient information
         currentState = MenuStates.PATIENT_INFO;
+        fragment = new PatientInformationFragment();
 
         // go look for the main drawer layout
         mDrawerLayout = findViewById(R.id.main_drawer_layout);
 
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                }
+            }
+        };
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Gets extra from either login activity or setupActivity
+        Bundle extra = getIntent().getExtras();
+        String accountType = extra.getString("accountType");
 
         // Set up the menu button
         ActionBar actionbar = getSupportActionBar();
@@ -103,7 +148,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup the navigation drawer, most of this code was taken from:
         // https://developer.android.com/training/implementing-navigation/nav-drawer
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.getMenu().clear();
+
+        if (accountType.equals("patient"))
+            initPatient();
+        else if (accountType.equals("doctor"))
+            initDoctor();
+
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -115,43 +167,37 @@ public class MainActivity extends AppCompatActivity {
 
                         // Using a switch to see which item on the menu was clicked
                         switch (menuItem.getItemId()) {
-                            // You can find these id's at: res -> menu -> drawer_view.xml
+                            // You can find these id's at: res -> menu -> drawer_view_patient.xml
                             case R.id.nav_patient_info:
                                 // If the user clicked on a different item than the current item
                                 if (currentState != MenuStates.PATIENT_INFO) {
                                     // change the fragment to the new fragment
-                                    ChangeFragment(new PatientInformationFragment());
+                                    fragment = new PatientInformationFragment();
                                     currentState = MenuStates.PATIENT_INFO;
-                                }
-                                break;
-                            case R.id.nav_data_packet:
-                                if (currentState != MenuStates.DATA_PACKET) {
-                                    ChangeFragment(new DataPacketFragment());
-                                    currentState = MenuStates.DATA_PACKET;
-                                }
-                                break;
-                            case R.id.nav_heartrate:
-                                if (currentState != MenuStates.HEARTRATE) {
-                                    ChangeFragment(new HeartRateFragment());
-                                    currentState = MenuStates.HEARTRATE;
-                                }
-                                break;
-                            case R.id.nav_recordvideo:
-                                if (currentState != MenuStates.RECORD_VIDEO) {
-                                    ChangeFragment(new RecordVideoFragment());
-                                    currentState = MenuStates.RECORD_VIDEO;
-                                }
-                                break;
-                            case R.id.nav_sendfile:
-                                if (currentState != MenuStates.SEND_FILE) {
-                                    ChangeFragment(new SendFileFragment());
-                                    currentState = MenuStates.SEND_FILE;
                                 }
                                 break;
                             case R.id.nav_map:
                                 if (currentState != MenuStates.NAVIGATION_MAP) {
-                                    ChangeFragment(new MapFragment());
+                                    fragment = new MapFragment();
                                     currentState = MenuStates.NAVIGATION_MAP;
+                                }
+                                break;
+                            case R.id.nav_patient_list:
+                                if (currentState != MenuStates.PATIENT_LIST) {
+                                    fragment = new PatientListFragment();
+                                    currentState = MenuStates.PATIENT_LIST;
+                                }
+                                break;
+                            case R.id.nav_diagnosis:
+                                if (currentState != MenuStates.DIAGNOSIS) {
+                                    fragment = new DiagnosisHistoryFragment();
+                                    currentState = MenuStates.DIAGNOSIS;
+                                }
+                                break;
+                            case R.id.nav_settings:
+                                if (currentState != MenuStates.SETTINGS) {
+                                    fragment = new SettingsFragment();
+                                    currentState = MenuStates.SETTINGS;
                                 }
                                 break;
                         }
@@ -176,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerClosed(View drawerView) {
                         // Respond when the drawer is closed
+                        ChangeFragment(fragment);
                     }
 
                     @Override
@@ -185,15 +232,35 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-
         // More on this code, check the tutorial at http://www.vogella.com/tutorials/AndroidFragments/article.html
         fragmentManager = getFragmentManager();
 
         // Add the default Fragment once the user logged in
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.add(R.id.fragment_container, new PatientInformationFragment());
+        if (accountType.equals("patient"))
+            ft.add(R.id.fragment_container, new PatientInformationFragment());
+        else if (accountType.equals("doctor"))
+            ft.add(R.id.fragment_container, new PatientListFragment());
         ft.commit();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    /**
+     * Using this at the moment to stop the activity being recreated on orientation change
+     * This is needed as otherwise it will overlay any fragment with the patient info fragment
+     **/
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d(TAG, "Providers: " + FirebaseAuth.getInstance().getCurrentUser().getProviders().toString());
+    }
+
 
     /**
      * Called when one of the items in the toolbar was clicked, in this case, the menu button.
@@ -217,15 +284,152 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(newTitle);
     }
 
-
     /**
      * This function allows to change the content of the Fragment holder
-     * @param fragment The fragment to be displayed
+     *
+     * @param selectedFragment The fragment to be displayed
      */
-    private void ChangeFragment(Fragment fragment) {
+    private void ChangeFragment(Fragment selectedFragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        transaction.replace(R.id.fragment_container, selectedFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawer(Gravity.START);
+        } else {
+            this.finishAffinity();
+        }
+    }
+
+    public void setTVValuesProfile(final TextView textView, String child) {
+        reference.child("Profile").child(child).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    textView.setText("null");
+                } else {
+                    // Added (+ """) to make our Long values Strings so that we could set appropriate text values
+                    textView.setText((dataSnapshot.getValue() + "").toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void setTVValues(final TextView textView, String child) {
+        reference.child(child).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null)
+                    textView.setText("null");
+                else {
+                    textView.setText("");
+                    for (String value : dataSnapshot.getValue().toString().split(","))
+                        textView.append("- " + value.trim() + "\n");
+                    textView.setText(textView.getText().toString().trim());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void setUserLocation(Location location) {
+        this.userLocation = location;
+    }
+
+    public Location getUserLocation() {
+        return this.userLocation;
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuth;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setDoctorProfile(String childKey, final int index, boolean isDoctor) {
+        if (isDoctor) {
+            reference.child("Profile").child(childKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null)
+                        doctorProfile[index] = dataSnapshot.getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            DatabaseReference databaseReference = database.getReference("Users").child(currentDoctorUID);
+            databaseReference.child("Profile").child(childKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null)
+                        doctorProfile[index] = dataSnapshot.getValue().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    public void getCurrentDoctor() {
+        reference.child("Doctor").child("UID").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    doctorProfile[0] = "no doctor";
+                } else {
+                    currentDoctorUID = dataSnapshot.getValue().toString();
+                    doctorProfile[3] = dataSnapshot.getValue().toString().substring(0, 5);
+                    setDoctorProfile("name", 0, false);
+                    setDoctorProfile("location", 1, false);
+                    setDoctorProfile("occupation", 2, false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public String[] getDoctorProfile() {
+        return doctorProfile;
+    }
+
+    public void initDoctor() {
+        navigationView.inflateMenu(R.menu.drawer_view_doctor);
+        navigationView.setCheckedItem(R.id.nav_patient_list);
+        accountType = "doctor";
+        setDoctorProfile("name", 0, true);
+        setDoctorProfile("location", 1, true);
+        setDoctorProfile("occupation", 2, true);
+        doctorProfile[3] = fireBaseUser.getUid().substring(0, 5);
+    }
+
+    public void initPatient() {
+        navigationView.inflateMenu(R.menu.drawer_view_patient);
+        navigationView.setCheckedItem(R.id.nav_patient_info);
+        accountType = "patient";
+        getCurrentDoctor();
     }
 }

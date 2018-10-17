@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="team7.seshealthpatient.Activities.PacketInfoActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/diagnosisInfoToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/toolbarStyle"
+        app:titleTextColor="#eee" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/diagnosisInfoToolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:id="@+id/packetDoctorTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Doctor"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetDoctorInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetDoctorTV"
+                android:text=""
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetReplyDateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/packetDoctorInfoTV"
+                android:text="Date received"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetReplyDateInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetReplyDateTV"
+                android:text=""
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetNameLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/packetReplyDateInfoTV"
+                android:text="Name"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetNameInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetNameLabelTV"
+                android:text="Name"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetDOBLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetNameInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Date of Birth"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetDOBInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetDOBLabelTV"
+                android:text="Date"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetGenderLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetDOBInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Gender"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetGenderInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetGenderLabelTV"
+                android:text="Gender"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/packetMobileLabelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetGenderInfoTV"
+                android:layout_marginTop="20dp"
+                android:text="Mobile Number"
+                android:textSize="25sp"
+                android:textColor="#333"/>
+
+            <TextView
+                android:id="@+id/packetMobileInfoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/packetMobileLabelTV"
+                android:text="Mobile"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/packetMessageLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetMobileInfoTV">
+
+                <TextView
+                    android:id="@+id/packetMessageLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Message"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetMessageInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Message"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetMessageReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/packetWeightLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetMessageLL">
+
+                <TextView
+                    android:id="@+id/packetWeightLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight (kg)"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetWeightInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetWeightReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/packetHeightLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetWeightLL">
+
+                <TextView
+                    android:id="@+id/packetHeightLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height (cm)"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetHeightInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetHeightReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/packetAllergiesLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetHeightLL">
+
+                <TextView
+                    android:id="@+id/packetAllergiesLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allergies"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetAllergiesInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Allergies"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetAllergiesReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/packetMedicationLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetAllergiesLL">
+
+                <TextView
+                    android:id="@+id/packetMedicationLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medication"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetMedicationInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="medication"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetMedicationReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/packetLocationLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetMedicationLL">
+
+                <TextView
+                    android:id="@+id/packetLocationLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetLocationInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#333"
+                    android:text="123 University of Technology, Sydney, NSW, 2000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetLocationReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/recommendedLocationIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/packetLocationLL"
+                android:visibility="invisible"
+                android:src="@drawable/ic_map" />
+
+
+            <LinearLayout
+                android:id="@+id/packetHeartbeatLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetLocationLL">
+
+                <TextView
+                    android:id="@+id/packetHeartbeatLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Heart Rate"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetHeartbeatInfoTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Heart"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/packetHeartbeatReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/packetDiagnoseCommentsLL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/packetHeartbeatLL">
+
+                <TextView
+                    android:id="@+id/packetCommentsLabelTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comments"
+                    android:textSize="25sp"
+                    android:textColor="#333"/>
+
+                <TextView
+                    android:id="@+id/packetCommentsReplyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reply: "
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+</RelativeLayout>
