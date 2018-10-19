@@ -22,14 +22,13 @@ Once the files are all synced, select 'Run' from the toolbar and select the devi
 The application will now start up and can be used.
 
 ## Developing for this Application
-Requires the completion of the steps from 'Setting up te Application Locally'.
+Requires the completion of the steps from 'Setting up the Application Locally'.
 
 
 During the development of this application, you should follow [Git Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) as the branching strategy and developing features.
 
 
-When preparing for a release, a pull request from Develop to Master should be set up and following a successful release, this should then be merged. 
+When preparing for a release, a pull request from Develop to Master should be set up and following a successful release, this should then be merged.
 
 
 The commit for the release should then be tagged according to the [Semantic Versioning Convention](https://semver.org/)
-
