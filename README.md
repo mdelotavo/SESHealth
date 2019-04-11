@@ -13,7 +13,9 @@
 In your terminal, navigate to the directory you want to clone the repository to and run:
 
 
-`git clone https://gitlab.com/mdelotavo/seshealth`
+```sh
+git clone https://gitlab.com/mdelotavo/seshealth
+```
 
 
 Open up Android Studio and select `Open an existing Android Studio project`. Search for the directory that you cloned and then expand it. Select SESHealth and click `Open`.
