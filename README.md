@@ -22,7 +22,7 @@ Once the files are all synced, select `Run` from the toolbar and select the devi
 The application will now start up and can be used.
 
 ## Developing for this Application
-Requires the completion of the steps from `Setting up the Application Locally`.
+Requires the completion of the steps from [Setting up the Application Locally](#setting-up-the-application-locally).
 
 
 During the development of this application, you should follow [Git Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) as the branching strategy and developing features.
